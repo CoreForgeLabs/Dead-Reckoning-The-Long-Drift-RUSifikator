@@ -1878,5 +1878,18 @@
  "Suspected cause: hull deterioration.": "Предполагаемая причина: износ корпуса.",
  "Suspected cause: life support failure.": "Предполагаемая причина: отказ жизнеобеспечения.",
  "Suspected cause: life support stress.": "Предполагаемая причина: перегрузка жизнеобеспечения.",
- "Settled colonies stand under an enclosed dome again -- a sealed shell on airless and hostile ground, a glassed biosphere on ice and temperate worlds.": "Заселённые колонии вновь стоят под закрытым куполом — герметичная оболочка на безвоздушной и враждебной поверхности, остеклённая биосфера на ледяных и умеренных мирах."
+ "Settled colonies stand under an enclosed dome again -- a sealed shell on airless and hostile ground, a glassed biosphere on ice and temperate worlds.": "Заселённые колонии вновь стоят под закрытым куполом — герметичная оболочка на безвоздушной и враждебной поверхности, остеклённая биосфера на ледяных и умеренных мирах.",
+ "hull +15%  food -15%": "корпус +15%  провиант -15%",
+ "Force extra output from reactors.\n+20% power, -8% hull. One-time use.": "Форсировать реакторы сверх нормы.\n+20% энергии, -8% корпуса. Разовое применение.",
+ "pwr +20%  hull -8%": "энергия +20%  корпус -8%",
+ "Redistribute emergency food reserves.\n+10% food, +8 class drift, +3 knowledge loss. One-time use.": "Перераспределить резервные запасы провианта.\n+10% провианта, +8 классового дрейфа, +3 утраты знаний. Разовое применение.",
+ "food +10%  class +8  know +3": "провиант +10%  класс +8  знания +3",
+ "Override reactor safeties.\n+30% power, -12% hull, +8 AI drift. One-time use.": "Отключить защиту реакторов.\n+30% энергии, -12% корпуса, +8 дрейфа ИИ. Разовое применение.",
+ "pwr +30%  hull -12%  ai +8": "энергия +30%  корпус -12%  ИИ +8",
+ "Eject failed cryo pods to recover power.\n+12% power, +12 class drift, +5 ideology drift.\nKills ~5% population. One-time use.": "Сбросить неисправные криокапсулы ради экономии энергии.\n+12% энергии, +12 классового дрейфа, +5 идеологического дрейфа.\nУбивает ~5% населения. Разовое применение.",
+ "pwr +12%  kills ~5% pop\nclass +12  ideo +5": "энергия +12%  убивает ~5% нас.\nкласс +12  идеол. +5",
+ "Mandatory genetic diversity protocol.\nBirth rate doubled for 20 years. +15 class drift, +10 ideology drift. One-time use.": "Обязательный протокол генетического разнообразия.\nРождаемость удвоена на 20 лет. +15 классового дрейфа, +10 идеологического дрейфа. Разовое применение.",
+ "births x2  class +15  ideo +10": "рождаемость x2  класс +15  идеол. +10",
+ "Surrender resource management to AI.\n+8% food, +8% power. +25 AI drift. Permanent.": "Передать управление ресурсами ИИ.\n+8% провианта, +8% энергии. +25 дрейфа ИИ. Навсегда.",
+ "food +8  pwr +8  ai +25": "провиант +8  энергия +8  ИИ +25"
 }

@@ -1,2077 +1,2182 @@
 [
-{
-"file": "ui/screens/EventsPanel.gdc",
-"en": " [color=#44aaff][AI REC][/color]",
-"ru": " [color=#44aaff][РЕКОМ. ИИ][/color]"
-},
-{
-"file": "ui/screens/EventsPanel.gdc",
-"en": "[color=#ff1744]-- POWER INSUFFICIENT FOR SURVEY --[/color]\n",
-"ru": "[color=#ff1744]-- НЕДОСТАТОЧНО ЭНЕРГИИ ДЛЯ ОБСЛЕДОВАНИЯ --[/color]\n"
-},
-{
-"file": "ui/screens/EventsPanel.gdc",
-"en": "[color=#ff1744]-- POWER AT ZERO -- DESCENT SYSTEMS OFFLINE --[/color]\n",
-"ru": "[color=#ff1744]-- ЭНЕРГИЯ НА НУЛЕ -- СИСТЕМЫ СПУСКА ОТКЛЮЧЕНЫ --[/color]\n"
-},
-{
-"file": "ui/Main.gdc",
-"en": "[color=#ff1744]HULL CRITICAL %.0f%%[/color]",
-"ru": "[color=#ff1744]КОРПУС: КРИТИЧНО %.0f%%[/color]"
-},
-{
-"file": "ui/Main.gdc",
-"en": "[color=#ff1744]POWER CRITICAL %.0f%%[/color]",
-"ru": "[color=#ff1744]ЭНЕРГИЯ: КРИТИЧНО %.0f%%[/color]"
-},
-{
-"file": "ui/Main.gdc",
-"en": "[color=#ff1744]FOOD CRITICAL %.0f%%[/color]",
-"ru": "[color=#ff1744]ПРОВИАНТ: КРИТИЧНО %.0f%%[/color]"
-},
-{
-"file": "ui/Main.gdc",
-"en": "[color=#ff8c00]AI DRIFT %.0f%%[/color]",
-"ru": "[color=#ff8c00]ДРЕЙФ ИИ %.0f%%[/color]"
-},
-{
-"file": "ui/Main.gdc",
-"en": "\n[color=#334f5c]CREW WHO SAW LANDFALL[/color]\n",
-"ru": "\n[color=#334f5c]ЭКИПАЖ, ДОЖИВШИЙ ДО ВЫСАДКИ[/color]\n"
-},
-{
-"file": "ui/Main.gdc",
-"en": "\n[color=#334f5c]CREW WE LOST[/color]\n",
-"ru": "\n[color=#334f5c]ПОТЕРИ ЭКИПАЖА[/color]\n"
-},
-{
-"file": "ui/Main.gdc",
-"en": "  [color=#334f5c]CLASS:[/color] [color=%s]%s[/color]   [color=#334f5c]Y%03d%s  POP %d[/color]",
-"ru": "  [color=#334f5c]КЛАСС:[/color] [color=%s]%s[/color]   [color=#334f5c]Y%03d%s  НАС. %d[/color]"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Amara",
-"ru": "Амара"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bjorn",
-"ru": "Бьорн"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Celia",
-"ru": "Селия"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dmitri",
-"ru": "Дмитрий"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Esme",
-"ru": "Эсме"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Farid",
-"ru": "Фарид"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Greta",
-"ru": "Грета"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hassan",
-"ru": "Хасан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ingrid",
-"ru": "Ингрид"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jamal",
-"ru": "Джамаль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Keiko",
-"ru": "Кэйко"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Luca",
-"ru": "Лука"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Maya",
-"ru": "Майя"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nadia",
-"ru": "Надя"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Omar",
-"ru": "Омар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Petra",
-"ru": "Петра"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Quentin",
-"ru": "Квентин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Riya",
-"ru": "Рия"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Stefan",
-"ru": "Стефан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Talia",
-"ru": "Талия"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Usman",
-"ru": "Усман"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vera",
-"ru": "Вера"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Wren",
-"ru": "Рэн"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xian",
-"ru": "Сянь"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yuki",
-"ru": "Юки"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zara",
-"ru": "Зара"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Alexei",
-"ru": "Алексей"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bridget",
-"ru": "Бриджит"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Caden",
-"ru": "Кейден"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Daria",
-"ru": "Дарья"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Eli",
-"ru": "Илай"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fiona",
-"ru": "Фиона"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gabriel",
-"ru": "Габриэль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hana",
-"ru": "Хана"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ivan",
-"ru": "Иван"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jade",
-"ru": "Джейд"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kofi",
-"ru": "Кофи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lena",
-"ru": "Лена"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Marcus",
-"ru": "Маркус"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Niamh",
-"ru": "Нив"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Otto",
-"ru": "Отто"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Priya",
-"ru": "Прия"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Rashid",
-"ru": "Рашид"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Saoirse",
-"ru": "Сирша"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Theo",
-"ru": "Тео"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Uma",
-"ru": "Ума"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Viktor",
-"ru": "Виктор"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Willa",
-"ru": "Уилла"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xiomara",
-"ru": "Сиомара"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yusuf",
-"ru": "Юсуф"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zoe",
-"ru": "Зои"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Adriana",
-"ru": "Адриана"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bastian",
-"ru": "Бастиан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Chiara",
-"ru": "Кьяра"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dion",
-"ru": "Дион"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Elena",
-"ru": "Елена"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Felix",
-"ru": "Феликс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gyda",
-"ru": "Гюда"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hiroshi",
-"ru": "Хироси"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Isadora",
-"ru": "Изадора"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Joren",
-"ru": "Йорен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kira",
-"ru": "Кира"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Leila",
-"ru": "Лейла"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Maren",
-"ru": "Марен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nico",
-"ru": "Нико"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Odessa",
-"ru": "Одесса"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pascal",
-"ru": "Паскаль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Quinoa",
-"ru": "Киноа"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Roshan",
-"ru": "Рошан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Selene",
-"ru": "Селена"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tobias",
-"ru": "Тобиас"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ulyana",
-"ru": "Ульяна"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vance",
-"ru": "Вэнс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Waverly",
-"ru": "Уэверли"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xander",
-"ru": "Ксандер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yasmin",
-"ru": "Ясмин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zeno",
-"ru": "Зено"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Aiko",
-"ru": "Айко"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bram",
-"ru": "Брам"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Corvin",
-"ru": "Корвин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dahlia",
-"ru": "Далия"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Emeka",
-"ru": "Эмека"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Freya",
-"ru": "Фрейя"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gael",
-"ru": "Гаэль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hira",
-"ru": "Хира"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Idris",
-"ru": "Идрис"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jaya",
-"ru": "Джая"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kenji",
-"ru": "Кэндзи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Liora",
-"ru": "Лиора"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mateo",
-"ru": "Матео"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nesta",
-"ru": "Неста"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Oskar",
-"ru": "Оскар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Phoebe",
-"ru": "Фиби"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Quinlan",
-"ru": "Куинлан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Reina",
-"ru": "Рейна"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Soren",
-"ru": "Сёрен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tamsin",
-"ru": "Тэмсин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Uriah",
-"ru": "Урия"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Veda",
-"ru": "Веда"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Win",
-"ru": "Вин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xochitl",
-"ru": "Хочитль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yael",
-"ru": "Яэль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zuri",
-"ru": "Зури"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Asa",
-"ru": "Аса"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bex",
-"ru": "Бекс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Cal",
-"ru": "Кэл"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dex",
-"ru": "Декс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Eira",
-"ru": "Эйра"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Flynn",
-"ru": "Флинн"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gwen",
-"ru": "Гвен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hal",
-"ru": "Хэл"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Io",
-"ru": "Ио"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jin",
-"ru": "Цзинь"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kael",
-"ru": "Кейл"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lore",
-"ru": "Лор"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mio",
-"ru": "Мио"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nyx",
-"ru": "Никс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Oryn",
-"ru": "Орин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pax",
-"ru": "Пакс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Quin",
-"ru": "Квин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ren",
-"ru": "Рен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sol",
-"ru": "Сол"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tao",
-"ru": "Тао"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Una",
-"ru": "Уна"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Michael",
-"ru": "Майкл"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "John",
-"ru": "Джон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Joerg",
-"ru": "Йорг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Brienna",
-"ru": "Бриенна"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pravin",
-"ru": "Правин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Osei",
-"ru": "Осеи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Larsson",
-"ru": "Ларссон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Marchetti",
-"ru": "Маркетти"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Volkov",
-"ru": "Волков"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hartley",
-"ru": "Хартли"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nazari",
-"ru": "Назари"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fischer",
-"ru": "Фишер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Al-Rashid",
-"ru": "Аль-Рашид"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Eriksson",
-"ru": "Эрикссон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Okafor",
-"ru": "Окафор"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tanaka",
-"ru": "Танака"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Romano",
-"ru": "Романо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Patel",
-"ru": "Патель"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ivanova",
-"ru": "Иванова"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kowalski",
-"ru": "Ковальски"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dubois",
-"ru": "Дюбуа"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Singh",
-"ru": "Сингх"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Muller",
-"ru": "Мюллер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kim",
-"ru": "Ким"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Diallo",
-"ru": "Диалло"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Novak",
-"ru": "Новак"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Chen",
-"ru": "Чэнь"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Santos",
-"ru": "Сантос"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Andersen",
-"ru": "Андерсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Reyes",
-"ru": "Рейес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Johansson",
-"ru": "Юханссон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nakamura",
-"ru": "Накамура"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Weber",
-"ru": "Вебер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mensah",
-"ru": "Менса"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fernandez",
-"ru": "Фернандес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Petrov",
-"ru": "Петров"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yamamoto",
-"ru": "Ямамото"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Becker",
-"ru": "Беккер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nguyen",
-"ru": "Нгуен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Svensson",
-"ru": "Свенссон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Abubakar",
-"ru": "Абубакар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Castellanos",
-"ru": "Кастельянос"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Demirel",
-"ru": "Демирель"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ekwueme",
-"ru": "Эквуеме"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fortunato",
-"ru": "Фортунато"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gutierrez",
-"ru": "Гутьеррес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hashimoto",
-"ru": "Хасимото"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ibarra",
-"ru": "Ибарра"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jorgensen",
-"ru": "Йёргенсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kazakov",
-"ru": "Казаков"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lindqvist",
-"ru": "Линдквист"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mbeki",
-"ru": "Мбеки"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Narayanan",
-"ru": "Нараянан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Okonkwo",
-"ru": "Оконкво"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Papadopoulos",
-"ru": "Пападопулос"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Quiroz",
-"ru": "Кирос"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ramirez",
-"ru": "Рамирес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sato",
-"ru": "Сато"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Thorvaldsen",
-"ru": "Торвальдсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ueda",
-"ru": "Уэда"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vasquez",
-"ru": "Васкес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Watanabe",
-"ru": "Ватанабэ"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xenakis",
-"ru": "Ксенакис"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yilmaz",
-"ru": "Йылмаз"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zhao",
-"ru": "Чжао"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Abramowitz",
-"ru": "Абрамовиц"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bernhardt",
-"ru": "Бернхардт"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Castillo",
-"ru": "Кастильо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dakarai",
-"ru": "Дакарай"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Egan",
-"ru": "Иган"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Flores",
-"ru": "Флорес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Goncharov",
-"ru": "Гончаров"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hwang",
-"ru": "Хван"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Iyengar",
-"ru": "Айенгар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jacobsen",
-"ru": "Якобсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Keita",
-"ru": "Кейта"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lund",
-"ru": "Лунд"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Moreau",
-"ru": "Моро"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nielsen",
-"ru": "Нильсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Obasi",
-"ru": "Обаси"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Perkins",
-"ru": "Перкинс"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Quintero",
-"ru": "Кинтеро"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Reddy",
-"ru": "Редди"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Strand",
-"ru": "Странд"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tran",
-"ru": "Чан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ugwu",
-"ru": "Угву"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vidal",
-"ru": "Видаль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Wong",
-"ru": "Вонг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xu",
-"ru": "Сюй"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yeboah",
-"ru": "Йебоа"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zimmermann",
-"ru": "Циммерман"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Arnold",
-"ru": "Арнольд"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fasan",
-"ru": "Фазан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Oakman",
-"ru": "Оукман"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Reisig",
-"ru": "Райзиг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ayliff",
-"ru": "Эйлифф"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ravikten",
-"ru": "Равиктен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lal",
-"ru": "Лал"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Adebayo",
-"ru": "Адебайо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Achebe",
-"ru": "Ачебе"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Balogun",
-"ru": "Балогун"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Chukwu",
-"ru": "Чукву"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Danso",
-"ru": "Дансо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Eze",
-"ru": "Эзе"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gueye",
-"ru": "Гейе"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kamau",
-"ru": "Камау"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kone",
-"ru": "Коне"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lumumba",
-"ru": "Лумумба"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ndiaye",
-"ru": "Ндиайе"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Olawale",
-"ru": "Олавале"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sankara",
-"ru": "Санкара"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sow",
-"ru": "Соу"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tutu",
-"ru": "Туту"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Wanjiru",
-"ru": "Ванджиру"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Afolabi",
-"ru": "Афолаби"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Boateng",
-"ru": "Боатенг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dlamini",
-"ru": "Дламини"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Faye",
-"ru": "Фай"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Githinji",
-"ru": "Гитинджи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ouattara",
-"ru": "Уаттара"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mwangi",
-"ru": "Мванги"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nwosu",
-"ru": "Нвосу"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sesay",
-"ru": "Сесай"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Adeyemi",
-"ru": "Адейеми"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bello",
-"ru": "Белло"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Cisse",
-"ru": "Сиссе"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kamara",
-"ru": "Камара"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Traore",
-"ru": "Траоре"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bakken",
-"ru": "Баккен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dahl",
-"ru": "Даль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Engstrom",
-"ru": "Энгстрём"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Halvorsen",
-"ru": "Хальворсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lindholm",
-"ru": "Линдхольм"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nystrom",
-"ru": "Нюстрём"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Solberg",
-"ru": "Сульберг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Aaltonen",
-"ru": "Аалтонен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bjornson",
-"ru": "Бьёрнсон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Holmgren",
-"ru": "Хольмгрен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kallio",
-"ru": "Каллио"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ronning",
-"ru": "Рённинг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sundqvist",
-"ru": "Сундквист"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Wikstrom",
-"ru": "Викстрём"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Haugen",
-"ru": "Хауген"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Moller",
-"ru": "Мёллер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pedersen",
-"ru": "Педерсен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sandberg",
-"ru": "Сандберг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Forsberg",
-"ru": "Форсберг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lehtonen",
-"ru": "Лехтонен"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Baranov",
-"ru": "Баранов"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dvorak",
-"ru": "Дворжак"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Hruska",
-"ru": "Грушка"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kovac",
-"ru": "Ковач"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Marek",
-"ru": "Марек"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sokolov",
-"ru": "Соколов"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tomic",
-"ru": "Томич"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zielinski",
-"ru": "Зелиньски"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Andric",
-"ru": "Андрич"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Horvat",
-"ru": "Хорват"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jankovic",
-"ru": "Янкович"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lukic",
-"ru": "Лукич"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Petrenko",
-"ru": "Петренко"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Stankovic",
-"ru": "Станкович"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yakovlev",
-"ru": "Яковлев"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Borisov",
-"ru": "Борисов"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pavlov",
-"ru": "Павлов"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Szabo",
-"ru": "Сабо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vesely",
-"ru": "Веселы"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Wozniak",
-"ru": "Возняк"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fujimoto",
-"ru": "Фудзимото"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Goto",
-"ru": "Гото"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Han",
-"ru": "Хань"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Inoue",
-"ru": "Иноуэ"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kobayashi",
-"ru": "Кобаяси"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Liang",
-"ru": "Лян"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Matsuda",
-"ru": "Мацуда"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ono",
-"ru": "Оно"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Park",
-"ru": "Пак"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Shimizu",
-"ru": "Симидзу"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Takahashi",
-"ru": "Такахаси"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Wu",
-"ru": "У"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yoon",
-"ru": "Юн"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Zhang",
-"ru": "Чжан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Cho",
-"ru": "Чо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Endo",
-"ru": "Эндо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ishikawa",
-"ru": "Исикава"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jung",
-"ru": "Чон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lim",
-"ru": "Лим"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mori",
-"ru": "Мори"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Okada",
-"ru": "Окада"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ryu",
-"ru": "Рю"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Suzuki",
-"ru": "Судзуки"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tsai",
-"ru": "Цай"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Xie",
-"ru": "Се"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Yang",
-"ru": "Ян"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lin",
-"ru": "Линь"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Huang",
-"ru": "Хуан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Choi",
-"ru": "Чхве"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Saito",
-"ru": "Сайто"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Banerjee",
-"ru": "Банерджи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Chakraborty",
-"ru": "Чакраборти"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Gupta",
-"ru": "Гупта"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Iqbal",
-"ru": "Икбал"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Joshi",
-"ru": "Джоши"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kapoor",
-"ru": "Капур"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mehta",
-"ru": "Мехта"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nair",
-"ru": "Наир"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Rao",
-"ru": "Рао"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sharma",
-"ru": "Шарма"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Verma",
-"ru": "Верма"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bose",
-"ru": "Бос"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Das",
-"ru": "Дас"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Khan",
-"ru": "Хан"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pillai",
-"ru": "Пиллай"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sengupta",
-"ru": "Сенгупта"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Thakur",
-"ru": "Тхакур"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Anand",
-"ru": "Ананд"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kulkarni",
-"ru": "Кулкарни"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Menon",
-"ru": "Менон"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Prasad",
-"ru": "Прасад"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Chowdhury",
-"ru": "Чоудхури"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Fernando",
-"ru": "Фернандо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bhatt",
-"ru": "Бхатт"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Desai",
-"ru": "Десаи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Aydin",
-"ru": "Айдын"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Farahani",
-"ru": "Фарахани"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Haddad",
-"ru": "Хаддад"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Karimi",
-"ru": "Карими"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mansour",
-"ru": "Мансур"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Najjar",
-"ru": "Наджар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ozturk",
-"ru": "Озтюрк"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Rahimi",
-"ru": "Рахими"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Sabbagh",
-"ru": "Саббаг"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Cetin",
-"ru": "Четин"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Esfahani",
-"ru": "Эсфахани"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Khalil",
-"ru": "Халиль"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Saleh",
-"ru": "Салех"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bakir",
-"ru": "Бакир"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Demir",
-"ru": "Демир"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ghorbani",
-"ru": "Горбани"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Kaya",
-"ru": "Кая"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nasser",
-"ru": "Насер"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Tahir",
-"ru": "Тахир"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Aguilar",
-"ru": "Агилар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bravo",
-"ru": "Браво"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Cordova",
-"ru": "Кордова"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Delgado",
-"ru": "Дельгадо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Espinoza",
-"ru": "Эспиноса"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Guerrero",
-"ru": "Герреро"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Herrera",
-"ru": "Эррера"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Jimenez",
-"ru": "Хименес"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lozano",
-"ru": "Лосано"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Mendoza",
-"ru": "Мендоса"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Navarro",
-"ru": "Наварро"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ortega",
-"ru": "Ортега"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Pacheco",
-"ru": "Пачеко"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Rojas",
-"ru": "Рохас"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Salazar",
-"ru": "Саласар"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Trujillo",
-"ru": "Трухильо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Carrasco",
-"ru": "Карраско"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Montero",
-"ru": "Монтеро"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Peralta",
-"ru": "Перальта"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vargas",
-"ru": "Варгас"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Conti",
-"ru": "Конти"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Esposito",
-"ru": "Эспозито"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ferrari",
-"ru": "Феррари"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Greco",
-"ru": "Греко"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Lombardi",
-"ru": "Ломбарди"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Moretti",
-"ru": "Моретти"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ricci",
-"ru": "Риччи"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Russo",
-"ru": "Руссо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Vitale",
-"ru": "Витале"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Alexopoulos",
-"ru": "Алексопулос"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Christou",
-"ru": "Христу"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Dimitriou",
-"ru": "Димитриу"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Galanis",
-"ru": "Галанис"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Nikolaidis",
-"ru": "Николаидис"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Bianchi",
-"ru": "Бьянки"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Caruso",
-"ru": "Карузо"
-},
-{
-"file": "simulation/GameState.gdc",
-"en": "Ferraro",
-"ru": "Ферраро"
-},
-{
-"file": "ui/screens/EventsPanel.gdc",
-"en": "POWER",
-"ru": "ЭНЕРГИЯ"
-},
-{
-"file": "ui/screens/EventsPanel.gdc",
-"en": "CREW",
-"ru": "ЭКИПАЖ"
-}
+ {
+  "file": "ui/screens/EventsPanel.gdc",
+  "en": " [color=#44aaff][AI REC][/color]",
+  "ru": " [color=#44aaff][РЕКОМ. ИИ][/color]"
+ },
+ {
+  "file": "ui/screens/EventsPanel.gdc",
+  "en": "[color=#ff1744]-- POWER INSUFFICIENT FOR SURVEY --[/color]\n",
+  "ru": "[color=#ff1744]-- НЕДОСТАТОЧНО ЭНЕРГИИ ДЛЯ ОБСЛЕДОВАНИЯ --[/color]\n"
+ },
+ {
+  "file": "ui/screens/EventsPanel.gdc",
+  "en": "[color=#ff1744]-- POWER AT ZERO -- DESCENT SYSTEMS OFFLINE --[/color]\n",
+  "ru": "[color=#ff1744]-- ЭНЕРГИЯ НА НУЛЕ -- СИСТЕМЫ СПУСКА ОТКЛЮЧЕНЫ --[/color]\n"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "[color=#ff1744]HULL CRITICAL %.0f%%[/color]",
+  "ru": "[color=#ff1744]КОРПУС: КРИТИЧНО %.0f%%[/color]"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "[color=#ff1744]POWER CRITICAL %.0f%%[/color]",
+  "ru": "[color=#ff1744]ЭНЕРГИЯ: КРИТИЧНО %.0f%%[/color]"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "[color=#ff1744]FOOD CRITICAL %.0f%%[/color]",
+  "ru": "[color=#ff1744]ПРОВИАНТ: КРИТИЧНО %.0f%%[/color]"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "[color=#ff8c00]AI DRIFT %.0f%%[/color]",
+  "ru": "[color=#ff8c00]ДРЕЙФ ИИ %.0f%%[/color]"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "\n[color=#334f5c]CREW WHO SAW LANDFALL[/color]\n",
+  "ru": "\n[color=#334f5c]ЭКИПАЖ, ДОЖИВШИЙ ДО ВЫСАДКИ[/color]\n"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "\n[color=#334f5c]CREW WE LOST[/color]\n",
+  "ru": "\n[color=#334f5c]ПОТЕРИ ЭКИПАЖА[/color]\n"
+ },
+ {
+  "file": "ui/Main.gdc",
+  "en": "  [color=#334f5c]CLASS:[/color] [color=%s]%s[/color]   [color=#334f5c]Y%03d%s  POP %d[/color]",
+  "ru": "  [color=#334f5c]КЛАСС:[/color] [color=%s]%s[/color]   [color=#334f5c]Y%03d%s  НАС. %d[/color]"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Amara",
+  "ru": "Амара"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bjorn",
+  "ru": "Бьорн"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Celia",
+  "ru": "Селия"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dmitri",
+  "ru": "Дмитрий"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Esme",
+  "ru": "Эсме"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Farid",
+  "ru": "Фарид"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Greta",
+  "ru": "Грета"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hassan",
+  "ru": "Хасан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ingrid",
+  "ru": "Ингрид"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jamal",
+  "ru": "Джамаль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Keiko",
+  "ru": "Кэйко"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Luca",
+  "ru": "Лука"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Maya",
+  "ru": "Майя"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nadia",
+  "ru": "Надя"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Omar",
+  "ru": "Омар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Petra",
+  "ru": "Петра"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Quentin",
+  "ru": "Квентин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Riya",
+  "ru": "Рия"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Stefan",
+  "ru": "Стефан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Talia",
+  "ru": "Талия"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Usman",
+  "ru": "Усман"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vera",
+  "ru": "Вера"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Wren",
+  "ru": "Рэн"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xian",
+  "ru": "Сянь"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yuki",
+  "ru": "Юки"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zara",
+  "ru": "Зара"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Alexei",
+  "ru": "Алексей"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bridget",
+  "ru": "Бриджит"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Caden",
+  "ru": "Кейден"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Daria",
+  "ru": "Дарья"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Eli",
+  "ru": "Илай"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fiona",
+  "ru": "Фиона"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gabriel",
+  "ru": "Габриэль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hana",
+  "ru": "Хана"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ivan",
+  "ru": "Иван"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jade",
+  "ru": "Джейд"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kofi",
+  "ru": "Кофи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lena",
+  "ru": "Лена"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Marcus",
+  "ru": "Маркус"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Niamh",
+  "ru": "Нив"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Otto",
+  "ru": "Отто"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Priya",
+  "ru": "Прия"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Rashid",
+  "ru": "Рашид"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Saoirse",
+  "ru": "Сирша"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Theo",
+  "ru": "Тео"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Uma",
+  "ru": "Ума"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Viktor",
+  "ru": "Виктор"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Willa",
+  "ru": "Уилла"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xiomara",
+  "ru": "Сиомара"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yusuf",
+  "ru": "Юсуф"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zoe",
+  "ru": "Зои"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Adriana",
+  "ru": "Адриана"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bastian",
+  "ru": "Бастиан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Chiara",
+  "ru": "Кьяра"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dion",
+  "ru": "Дион"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Elena",
+  "ru": "Елена"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Felix",
+  "ru": "Феликс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gyda",
+  "ru": "Гюда"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hiroshi",
+  "ru": "Хироси"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Isadora",
+  "ru": "Изадора"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Joren",
+  "ru": "Йорен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kira",
+  "ru": "Кира"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Leila",
+  "ru": "Лейла"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Maren",
+  "ru": "Марен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nico",
+  "ru": "Нико"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Odessa",
+  "ru": "Одесса"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pascal",
+  "ru": "Паскаль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Quinoa",
+  "ru": "Киноа"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Roshan",
+  "ru": "Рошан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Selene",
+  "ru": "Селена"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tobias",
+  "ru": "Тобиас"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ulyana",
+  "ru": "Ульяна"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vance",
+  "ru": "Вэнс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Waverly",
+  "ru": "Уэверли"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xander",
+  "ru": "Ксандер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yasmin",
+  "ru": "Ясмин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zeno",
+  "ru": "Зено"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Aiko",
+  "ru": "Айко"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bram",
+  "ru": "Брам"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Corvin",
+  "ru": "Корвин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dahlia",
+  "ru": "Далия"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Emeka",
+  "ru": "Эмека"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Freya",
+  "ru": "Фрейя"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gael",
+  "ru": "Гаэль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hira",
+  "ru": "Хира"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Idris",
+  "ru": "Идрис"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jaya",
+  "ru": "Джая"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kenji",
+  "ru": "Кэндзи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Liora",
+  "ru": "Лиора"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mateo",
+  "ru": "Матео"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nesta",
+  "ru": "Неста"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Oskar",
+  "ru": "Оскар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Phoebe",
+  "ru": "Фиби"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Quinlan",
+  "ru": "Куинлан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Reina",
+  "ru": "Рейна"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Soren",
+  "ru": "Сёрен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tamsin",
+  "ru": "Тэмсин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Uriah",
+  "ru": "Урия"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Veda",
+  "ru": "Веда"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Win",
+  "ru": "Вин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xochitl",
+  "ru": "Хочитль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yael",
+  "ru": "Яэль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zuri",
+  "ru": "Зури"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Asa",
+  "ru": "Аса"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bex",
+  "ru": "Бекс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Cal",
+  "ru": "Кэл"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dex",
+  "ru": "Декс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Eira",
+  "ru": "Эйра"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Flynn",
+  "ru": "Флинн"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gwen",
+  "ru": "Гвен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hal",
+  "ru": "Хэл"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Io",
+  "ru": "Ио"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jin",
+  "ru": "Цзинь"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kael",
+  "ru": "Кейл"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lore",
+  "ru": "Лор"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mio",
+  "ru": "Мио"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nyx",
+  "ru": "Никс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Oryn",
+  "ru": "Орин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pax",
+  "ru": "Пакс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Quin",
+  "ru": "Квин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ren",
+  "ru": "Рен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sol",
+  "ru": "Сол"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tao",
+  "ru": "Тао"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Una",
+  "ru": "Уна"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Michael",
+  "ru": "Майкл"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "John",
+  "ru": "Джон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Joerg",
+  "ru": "Йорг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Brienna",
+  "ru": "Бриенна"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pravin",
+  "ru": "Правин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Osei",
+  "ru": "Осеи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Larsson",
+  "ru": "Ларссон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Marchetti",
+  "ru": "Маркетти"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Volkov",
+  "ru": "Волков"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hartley",
+  "ru": "Хартли"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nazari",
+  "ru": "Назари"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fischer",
+  "ru": "Фишер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Al-Rashid",
+  "ru": "Аль-Рашид"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Eriksson",
+  "ru": "Эрикссон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Okafor",
+  "ru": "Окафор"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tanaka",
+  "ru": "Танака"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Romano",
+  "ru": "Романо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Patel",
+  "ru": "Патель"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ivanova",
+  "ru": "Иванова"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kowalski",
+  "ru": "Ковальски"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dubois",
+  "ru": "Дюбуа"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Singh",
+  "ru": "Сингх"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Muller",
+  "ru": "Мюллер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kim",
+  "ru": "Ким"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Diallo",
+  "ru": "Диалло"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Novak",
+  "ru": "Новак"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Chen",
+  "ru": "Чэнь"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Santos",
+  "ru": "Сантос"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Andersen",
+  "ru": "Андерсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Reyes",
+  "ru": "Рейес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Johansson",
+  "ru": "Юханссон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nakamura",
+  "ru": "Накамура"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Weber",
+  "ru": "Вебер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mensah",
+  "ru": "Менса"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fernandez",
+  "ru": "Фернандес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Petrov",
+  "ru": "Петров"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yamamoto",
+  "ru": "Ямамото"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Becker",
+  "ru": "Беккер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nguyen",
+  "ru": "Нгуен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Svensson",
+  "ru": "Свенссон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Abubakar",
+  "ru": "Абубакар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Castellanos",
+  "ru": "Кастельянос"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Demirel",
+  "ru": "Демирель"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ekwueme",
+  "ru": "Эквуеме"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fortunato",
+  "ru": "Фортунато"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gutierrez",
+  "ru": "Гутьеррес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hashimoto",
+  "ru": "Хасимото"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ibarra",
+  "ru": "Ибарра"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jorgensen",
+  "ru": "Йёргенсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kazakov",
+  "ru": "Казаков"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lindqvist",
+  "ru": "Линдквист"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mbeki",
+  "ru": "Мбеки"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Narayanan",
+  "ru": "Нараянан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Okonkwo",
+  "ru": "Оконкво"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Papadopoulos",
+  "ru": "Пападопулос"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Quiroz",
+  "ru": "Кирос"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ramirez",
+  "ru": "Рамирес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sato",
+  "ru": "Сато"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Thorvaldsen",
+  "ru": "Торвальдсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ueda",
+  "ru": "Уэда"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vasquez",
+  "ru": "Васкес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Watanabe",
+  "ru": "Ватанабэ"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xenakis",
+  "ru": "Ксенакис"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yilmaz",
+  "ru": "Йылмаз"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zhao",
+  "ru": "Чжао"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Abramowitz",
+  "ru": "Абрамовиц"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bernhardt",
+  "ru": "Бернхардт"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Castillo",
+  "ru": "Кастильо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dakarai",
+  "ru": "Дакарай"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Egan",
+  "ru": "Иган"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Flores",
+  "ru": "Флорес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Goncharov",
+  "ru": "Гончаров"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hwang",
+  "ru": "Хван"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Iyengar",
+  "ru": "Айенгар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jacobsen",
+  "ru": "Якобсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Keita",
+  "ru": "Кейта"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lund",
+  "ru": "Лунд"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Moreau",
+  "ru": "Моро"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nielsen",
+  "ru": "Нильсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Obasi",
+  "ru": "Обаси"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Perkins",
+  "ru": "Перкинс"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Quintero",
+  "ru": "Кинтеро"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Reddy",
+  "ru": "Редди"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Strand",
+  "ru": "Странд"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tran",
+  "ru": "Чан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ugwu",
+  "ru": "Угву"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vidal",
+  "ru": "Видаль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Wong",
+  "ru": "Вонг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xu",
+  "ru": "Сюй"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yeboah",
+  "ru": "Йебоа"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zimmermann",
+  "ru": "Циммерман"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Arnold",
+  "ru": "Арнольд"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fasan",
+  "ru": "Фазан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Oakman",
+  "ru": "Оукман"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Reisig",
+  "ru": "Райзиг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ayliff",
+  "ru": "Эйлифф"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ravikten",
+  "ru": "Равиктен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lal",
+  "ru": "Лал"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Adebayo",
+  "ru": "Адебайо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Achebe",
+  "ru": "Ачебе"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Balogun",
+  "ru": "Балогун"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Chukwu",
+  "ru": "Чукву"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Danso",
+  "ru": "Дансо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Eze",
+  "ru": "Эзе"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gueye",
+  "ru": "Гейе"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kamau",
+  "ru": "Камау"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kone",
+  "ru": "Коне"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lumumba",
+  "ru": "Лумумба"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ndiaye",
+  "ru": "Ндиайе"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Olawale",
+  "ru": "Олавале"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sankara",
+  "ru": "Санкара"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sow",
+  "ru": "Соу"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tutu",
+  "ru": "Туту"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Wanjiru",
+  "ru": "Ванджиру"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Afolabi",
+  "ru": "Афолаби"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Boateng",
+  "ru": "Боатенг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dlamini",
+  "ru": "Дламини"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Faye",
+  "ru": "Фай"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Githinji",
+  "ru": "Гитинджи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ouattara",
+  "ru": "Уаттара"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mwangi",
+  "ru": "Мванги"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nwosu",
+  "ru": "Нвосу"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sesay",
+  "ru": "Сесай"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Adeyemi",
+  "ru": "Адейеми"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bello",
+  "ru": "Белло"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Cisse",
+  "ru": "Сиссе"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kamara",
+  "ru": "Камара"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Traore",
+  "ru": "Траоре"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bakken",
+  "ru": "Баккен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dahl",
+  "ru": "Даль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Engstrom",
+  "ru": "Энгстрём"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Halvorsen",
+  "ru": "Хальворсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lindholm",
+  "ru": "Линдхольм"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nystrom",
+  "ru": "Нюстрём"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Solberg",
+  "ru": "Сульберг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Aaltonen",
+  "ru": "Аалтонен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bjornson",
+  "ru": "Бьёрнсон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Holmgren",
+  "ru": "Хольмгрен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kallio",
+  "ru": "Каллио"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ronning",
+  "ru": "Рённинг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sundqvist",
+  "ru": "Сундквист"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Wikstrom",
+  "ru": "Викстрём"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Haugen",
+  "ru": "Хауген"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Moller",
+  "ru": "Мёллер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pedersen",
+  "ru": "Педерсен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sandberg",
+  "ru": "Сандберг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Forsberg",
+  "ru": "Форсберг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lehtonen",
+  "ru": "Лехтонен"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Baranov",
+  "ru": "Баранов"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dvorak",
+  "ru": "Дворжак"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Hruska",
+  "ru": "Грушка"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kovac",
+  "ru": "Ковач"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Marek",
+  "ru": "Марек"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sokolov",
+  "ru": "Соколов"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tomic",
+  "ru": "Томич"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zielinski",
+  "ru": "Зелиньски"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Andric",
+  "ru": "Андрич"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Horvat",
+  "ru": "Хорват"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jankovic",
+  "ru": "Янкович"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lukic",
+  "ru": "Лукич"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Petrenko",
+  "ru": "Петренко"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Stankovic",
+  "ru": "Станкович"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yakovlev",
+  "ru": "Яковлев"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Borisov",
+  "ru": "Борисов"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pavlov",
+  "ru": "Павлов"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Szabo",
+  "ru": "Сабо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vesely",
+  "ru": "Веселы"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Wozniak",
+  "ru": "Возняк"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fujimoto",
+  "ru": "Фудзимото"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Goto",
+  "ru": "Гото"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Han",
+  "ru": "Хань"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Inoue",
+  "ru": "Иноуэ"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kobayashi",
+  "ru": "Кобаяси"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Liang",
+  "ru": "Лян"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Matsuda",
+  "ru": "Мацуда"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ono",
+  "ru": "Оно"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Park",
+  "ru": "Пак"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Shimizu",
+  "ru": "Симидзу"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Takahashi",
+  "ru": "Такахаси"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Wu",
+  "ru": "У"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yoon",
+  "ru": "Юн"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Zhang",
+  "ru": "Чжан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Cho",
+  "ru": "Чо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Endo",
+  "ru": "Эндо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ishikawa",
+  "ru": "Исикава"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jung",
+  "ru": "Чон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lim",
+  "ru": "Лим"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mori",
+  "ru": "Мори"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Okada",
+  "ru": "Окада"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ryu",
+  "ru": "Рю"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Suzuki",
+  "ru": "Судзуки"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tsai",
+  "ru": "Цай"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Xie",
+  "ru": "Се"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Yang",
+  "ru": "Ян"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lin",
+  "ru": "Линь"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Huang",
+  "ru": "Хуан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Choi",
+  "ru": "Чхве"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Saito",
+  "ru": "Сайто"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Banerjee",
+  "ru": "Банерджи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Chakraborty",
+  "ru": "Чакраборти"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Gupta",
+  "ru": "Гупта"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Iqbal",
+  "ru": "Икбал"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Joshi",
+  "ru": "Джоши"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kapoor",
+  "ru": "Капур"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mehta",
+  "ru": "Мехта"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nair",
+  "ru": "Наир"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Rao",
+  "ru": "Рао"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sharma",
+  "ru": "Шарма"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Verma",
+  "ru": "Верма"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bose",
+  "ru": "Бос"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Das",
+  "ru": "Дас"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Khan",
+  "ru": "Хан"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pillai",
+  "ru": "Пиллай"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sengupta",
+  "ru": "Сенгупта"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Thakur",
+  "ru": "Тхакур"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Anand",
+  "ru": "Ананд"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kulkarni",
+  "ru": "Кулкарни"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Menon",
+  "ru": "Менон"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Prasad",
+  "ru": "Прасад"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Chowdhury",
+  "ru": "Чоудхури"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Fernando",
+  "ru": "Фернандо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bhatt",
+  "ru": "Бхатт"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Desai",
+  "ru": "Десаи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Aydin",
+  "ru": "Айдын"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Farahani",
+  "ru": "Фарахани"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Haddad",
+  "ru": "Хаддад"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Karimi",
+  "ru": "Карими"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mansour",
+  "ru": "Мансур"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Najjar",
+  "ru": "Наджар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ozturk",
+  "ru": "Озтюрк"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Rahimi",
+  "ru": "Рахими"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Sabbagh",
+  "ru": "Саббаг"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Cetin",
+  "ru": "Четин"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Esfahani",
+  "ru": "Эсфахани"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Khalil",
+  "ru": "Халиль"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Saleh",
+  "ru": "Салех"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bakir",
+  "ru": "Бакир"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Demir",
+  "ru": "Демир"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ghorbani",
+  "ru": "Горбани"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Kaya",
+  "ru": "Кая"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nasser",
+  "ru": "Насер"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Tahir",
+  "ru": "Тахир"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Aguilar",
+  "ru": "Агилар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bravo",
+  "ru": "Браво"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Cordova",
+  "ru": "Кордова"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Delgado",
+  "ru": "Дельгадо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Espinoza",
+  "ru": "Эспиноса"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Guerrero",
+  "ru": "Герреро"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Herrera",
+  "ru": "Эррера"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Jimenez",
+  "ru": "Хименес"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lozano",
+  "ru": "Лосано"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Mendoza",
+  "ru": "Мендоса"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Navarro",
+  "ru": "Наварро"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ortega",
+  "ru": "Ортега"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Pacheco",
+  "ru": "Пачеко"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Rojas",
+  "ru": "Рохас"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Salazar",
+  "ru": "Саласар"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Trujillo",
+  "ru": "Трухильо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Carrasco",
+  "ru": "Карраско"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Montero",
+  "ru": "Монтеро"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Peralta",
+  "ru": "Перальта"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vargas",
+  "ru": "Варгас"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Conti",
+  "ru": "Конти"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Esposito",
+  "ru": "Эспозито"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ferrari",
+  "ru": "Феррари"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Greco",
+  "ru": "Греко"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Lombardi",
+  "ru": "Ломбарди"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Moretti",
+  "ru": "Моретти"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ricci",
+  "ru": "Риччи"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Russo",
+  "ru": "Руссо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Vitale",
+  "ru": "Витале"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Alexopoulos",
+  "ru": "Алексопулос"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Christou",
+  "ru": "Христу"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Dimitriou",
+  "ru": "Димитриу"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Galanis",
+  "ru": "Галанис"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Nikolaidis",
+  "ru": "Николаидис"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Bianchi",
+  "ru": "Бьянки"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Caruso",
+  "ru": "Карузо"
+ },
+ {
+  "file": "simulation/GameState.gdc",
+  "en": "Ferraro",
+  "ru": "Ферраро"
+ },
+ {
+  "file": "ui/screens/EventsPanel.gdc",
+  "en": "POWER",
+  "ru": "ЭНЕРГИЯ"
+ },
+ {
+  "file": "ui/screens/EventsPanel.gdc",
+  "en": "CREW",
+  "ru": "ЭКИПАЖ"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Cryo life support\n-20% deaths, -0.5 pwr/yr",
+  "ru": "Жизнеобеспечение криостаза\n-20% смертности, -0.5 энергии/год"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "mort -20%  pwr -0.5/yr",
+  "ru": "смерт. -20%  эн. -0.5/yr"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "standard allocation",
+  "ru": "стандартное распределение"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "hull +0.08/yr  pwr -0.6/yr",
+  "ru": "корпус +0.08/год  энергия -0.6/год"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Deploy all-hands repair crews.\n+15% hull, -15% food. One-time use.",
+  "ru": "Задействовать все ремонтные бригады.\n+15% корпуса, -15% провианта. Разовое применение."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "hull +15%  food -15%",
+  "ru": "корпус +15%  провиант -15%"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Force extra output from reactors.\n+20% power, -8% hull. One-time use.",
+  "ru": "Форсировать реакторы сверх нормы.\n+20% энергии, -8% корпуса. Разовое применение."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "pwr +20%  hull -8%",
+  "ru": "энергия +20%  корпус -8%"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Redistribute emergency food reserves.\n+10% food, +8 class drift, +3 knowledge loss. One-time use.",
+  "ru": "Перераспределить резервные запасы провианта.\n+10% провианта, +8 классового дрейфа, +3 утраты знаний. Разовое применение."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "food +10%  class +8  know +3",
+  "ru": "провиант +10%  класс +8  знания +3"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Override reactor safeties.\n+30% power, -12% hull, +8 AI drift. One-time use.",
+  "ru": "Отключить защиту реакторов.\n+30% энергии, -12% корпуса, +8 дрейфа ИИ. Разовое применение."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "pwr +30%  hull -12%  ai +8",
+  "ru": "энергия +30%  корпус -12%  ИИ +8"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Eject failed cryo pods to recover power.\n+12% power, +12 class drift, +5 ideology drift.\nKills ~5% population. One-time use.",
+  "ru": "Сбросить неисправные криокапсулы ради экономии энергии.\n+12% энергии, +12 классового дрейфа, +5 идеологического дрейфа.\nУбивает ~5% населения. Разовое применение."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "pwr +12%  kills ~5% pop\nclass +12  ideo +5",
+  "ru": "энергия +12%  убивает ~5% нас.\nкласс +12  идеол. +5"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Mandatory genetic diversity protocol.\nBirth rate doubled for 20 years. +15 class drift, +10 ideology drift. One-time use.",
+  "ru": "Обязательный протокол генетического разнообразия.\nРождаемость удвоена на 20 лет. +15 классового дрейфа, +10 идеологического дрейфа. Разовое применение."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "births x2  class +15  ideo +10",
+  "ru": "рождаемость x2  класс +15  идеол. +10"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Surrender resource management to AI.\n+8% food, +8% power. +25 AI drift. Permanent.",
+  "ru": "Передать управление ресурсами ИИ.\n+8% провианта, +8% энергии. +25 дрейфа ИИ. Навсегда."
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "food +8  pwr +8  ai +25",
+  "ru": "провиант +8  энергия +8  ИИ +25"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Standard allocation\nNo modifiers",
+  "ru": "Стандартное распределение\nБез модификаторов"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "Repair crews active\n+0.08 hull/yr, -0.6 pwr/yr",
+  "ru": "Ремонтные бригады активны\n+0.08 корпуса/год, -0.6 энергии/год"
+ },
+ {
+  "file": "ui/screens/ShipCondition.gdc",
+  "en": "CRYO",
+  "ru": "Жизнеобеспечение"
+ }
 ]

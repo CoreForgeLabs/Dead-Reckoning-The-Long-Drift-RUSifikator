@@ -2082,7 +2082,7 @@
  {
   "file": "ui/screens/ShipCondition.gdc",
   "en": "mort -20%  pwr -0.5/yr",
-  "ru": "смерт. -20%  эн. -0.5/yr"
+  "ru": "смертн. -20%  эн. -0.5/год"
  },
  {
   "file": "ui/screens/ShipCondition.gdc",
@@ -2172,11 +2172,11 @@
  {
   "file": "ui/screens/ShipCondition.gdc",
   "en": "Repair crews active\n+0.08 hull/yr, -0.6 pwr/yr",
-  "ru": "Ремонтные бригады активны\n+0.08 корпуса/год, -0.6 энергии/год"
+  "ru": "Ремонтные бригады работают\n+0.08 корпуса/год, -0.6 энергии/год"
  },
  {
   "file": "ui/screens/ShipCondition.gdc",
   "en": "CRYO",
-  "ru": "Жизнеобеспечение"
+  "ru": "КРИО"
  }
 ]

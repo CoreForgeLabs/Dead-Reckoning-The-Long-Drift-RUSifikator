@@ -197,41 +197,43 @@ def iter_entries(props):
             yield i, j, raw.split(b"\x00")[0].decode("utf-8", "replace")
 
 
-def rebuild_with_values(blob, remap, locale, uid):
-    """Rewrite a .translation's text while keeping every key it already had.
+def rebuild_by_position(blob, values, locale, uid):
+    """Rewrite a .translation's text by POSITION rather than by old value.
 
-    282 of the game's 1317 UI keys are built at runtime, so their key strings
-    exist nowhere in the pack and cannot be reproduced. Rebuilding the table
-    from our own key list therefore silently drops them and the game falls back
-    to English -- which is exactly what happened to the charter screen.
+    Addressing an entry by the Russian it currently holds is the wrong anchor:
+    the developer rewrites Russian in almost every update -- 585 of 1336 values changed in one of them -- and every
+    entry whose old text moved is silently left untranslated. The English side
+    changed 0 in the same update, and the two tables share a bucket layout
+    entry for entry, so a position carries a stable identity.
 
-    Instead keep the original bucket layout, seeds and key hashes untouched and
-    swap only the stored strings. `remap` maps an original value to its
-    replacement; anything unmapped keeps its original text.
+    `values` is indexed by `iter_entries` order and may hold None for entries
+    that keep their current text.
     """
     props = read_optimized_translation(blob)
     ht, bt = list(props["hash_table"]), list(props["bucket_table"])
+    sb = props["strings"]
 
     strings_blob = bytearray()
     replaced = kept = 0
+    idx = 0
     for i, p in enumerate(ht):
         if p == 0xFFFFFFFF:
             continue
         for j in range(bt[p]):
             b = p + 2 + j * 4
             off, comp, unc = bt[b + 1], bt[b + 2], bt[b + 3]
-            sb = props["strings"]
             raw = sb[off:off + comp] if comp == unc else smaz_decompress(sb[off:off + comp])
             old = raw.split(b"\x00")[0].decode("utf-8", "replace")
-            new = remap.get(old)
+            new = values[idx] if idx < len(values) else None
             if new is None:
                 new = old
                 kept += 1
             else:
                 replaced += 1
+            idx += 1
             enc = new.encode("utf-8") + b"\x00"
             bt[b + 1] = len(strings_blob)
-            bt[b + 2] = len(enc)          # stored uncompressed: comp == unc
+            bt[b + 2] = len(enc)
             bt[b + 3] = len(enc)
             strings_blob += enc
     return _serialize(ht, bt, bytes(strings_blob), locale, uid), replaced, kept

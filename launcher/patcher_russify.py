@@ -67,10 +67,15 @@ def run_russify(exe, log=print):
     by_en = json.load(open(data_path("remap_by_en.json"), encoding="utf-8"))
     main_blob, replaced, kept = G.rebuild_by_position(
         orig_blob, [by_en.get(e) for e in en_vals], "ru", G.read_uid(orig_blob))
-    if replaced < len(en_vals) * 0.9:
-        raise RuntimeError("переведено лишь %d из %d строк интерфейса -- "
-                            "эта сборка игры новее русификатора. Обновите "
-                            "русификатор." % (replaced, len(en_vals)))
+    # Неполнота -- не повод отказывать. Строки, которых нет в нашей поставке,
+    # остаются английскими, всё остальное переводится; игра при этом рабочая.
+    # Отказ здесь означал бы, что после каждого добавления строк разработчиком
+    # инструмент перестаёт работать целиком, пока не выйдет новая поставка, --
+    # а выпускать её каждый день никто не может. Отказ остаётся только там, где
+    # на выходе получился бы ИСПОРЧЕННЫЙ файл, а не неполный.
+    if replaced < len(en_vals):
+        log("Новых строк в этой сборке игры: %d -- они останутся на английском."
+            % (len(en_vals) - replaced))
 
     # rebuild_by_position keeps the original hash_table/bucket_table untouched
     # and only swaps stored strings, so every key the original table could

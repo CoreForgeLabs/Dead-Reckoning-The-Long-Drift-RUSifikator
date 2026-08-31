@@ -979,7 +979,10 @@
       localStorage.setItem('zen_lang', l);
       applyStaticI18n();
       updateAdminUI();
-      if (typeof applyFilter === 'function' && allData.length) applyFilter(true);
+      if (allData.length) {
+        updateStats();
+        applyFilter(true);
+      }
     }
 
     function toggleLang() {

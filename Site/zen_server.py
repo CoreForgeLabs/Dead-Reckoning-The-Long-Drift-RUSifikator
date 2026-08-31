@@ -420,11 +420,18 @@ class ZenHandler(http.server.SimpleHTTPRequestHandler):
 
         self.send_error(404, "Not found")
 
+class ZenServer(socketserver.ThreadingTCPServer):
+    # Без этого сокет после падения/systemctl restart остаётся в TIME_WAIT
+    # ~60 секунд, и каждая попытка автоперезапуска валится в EADDRINUSE --
+    # снаружи это выглядит как сайт лёг и не поднимается несколько минут.
+    allow_reuse_address = True
+
+
 if __name__ == "__main__":
     # По умолчанию только localhost -- наружу сайт смотрит через reverse proxy
     # (Caddy/nginx) с TLS. Слушать 0.0.0.0 напрямую -- значит отдавать HTTP
     # без шифрования (включая /api/admin_login) любому в интернете.
     host = os.environ.get("ZEN_HOST", "127.0.0.1")
     print(f"Starting Zen Standalone Dashboard Server on http://{host}:{PORT}...")
-    with socketserver.ThreadingTCPServer((host, PORT), ZenHandler) as httpd:
+    with ZenServer((host, PORT), ZenHandler) as httpd:
         httpd.serve_forever()

@@ -2162,6 +2162,8 @@
         });
         const respData = await res.json();
 
+        const dataRes = await fetch('/api/data');
+        allData = (await dataRes.json()).items;
         updateStats();
         applyFilter(true);
 

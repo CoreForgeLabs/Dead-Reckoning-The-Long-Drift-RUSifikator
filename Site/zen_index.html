@@ -454,45 +454,6 @@
     </div>
   </div>
 
-  <!-- Suggestion / Proposal Form Modal (For proposing alternative translation) -->
-  <div id="suggestModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-xl w-full flex flex-col shadow-2xl overflow-hidden">
-      <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30" data-i18n="suggest.badge">Предложить свой вариант перевода</span>
-          <span id="suggestModalKey" class="font-mono text-[11px] text-gray-400 truncate max-w-xs"></span>
-        </div>
-        <button onclick="closeSuggestModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
-      </div>
-      <div class="p-5 space-y-3.5 text-xs">
-        <div>
-          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]" data-i18n="suggest.currentLabel">Текущий вариант:</label>
-          <div id="suggestCurrentRu" class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg text-gray-300 leading-relaxed"></div>
-        </div>
-
-        <!-- Variable Chips for Suggestion Form -->
-        <div id="suggestVarChips" class="flex flex-wrap items-center gap-1.5 text-xs text-zen-muted"></div>
-
-        <div>
-          <label class="block text-amber-400 mb-1 font-semibold uppercase text-[10px]" data-i18n="suggest.newLabel">Ваш улучшенный перевод:</label>
-          <textarea id="suggestInput" class="w-full p-3 bg-[#0d1117] border border-amber-500/70 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-amber-500 leading-relaxed text-sm" rows="3" placeholder="Введите ваш вариант перевода..." data-i18n-placeholder="suggest.inputPlaceholder"></textarea>
-        </div>
-        <div>
-          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]" data-i18n="suggest.commentLabel">Комментарий / аргументация (почему так лучше):</label>
-          <input id="suggestComment" type="text" class="w-full px-3 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-white placeholder-zen-muted text-xs focus:outline-none focus:border-amber-500" placeholder="Терминология лора, звучание фразы, точность..." data-i18n-placeholder="suggest.commentPlaceholder" />
-        </div>
-      </div>
-      <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end gap-2 text-xs">
-        <button onclick="closeSuggestModal()" class="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md transition" data-i18n="suggest.cancel">
-          Отмена
-        </button>
-        <button onclick="submitSuggestion()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md transition shadow-sm" data-i18n="suggest.submit">
-          Отправить на голосование
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Keyboard Shortcuts Modal -->
   <div id="shortcutsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4 text-xs">
@@ -564,7 +525,6 @@
     let baseFontSize = 16;
     let renderedLimit = 50;
     let currentFocusedIndex = 0;
-    let activeSuggestId = null;
 
     // Interface Language (RU/EN) -- this toggles the SITE's own chrome
     // (buttons, labels, toasts), NOT the translated game text itself.
@@ -1043,12 +1003,6 @@
     const glossaryGrid = document.getElementById('glossaryGrid');
     const statsModal = document.getElementById('statsModal');
     const statsModalBody = document.getElementById('statsModalBody');
-    const suggestModal = document.getElementById('suggestModal');
-    const suggestModalKey = document.getElementById('suggestModalKey');
-    const suggestCurrentRu = document.getElementById('suggestCurrentRu');
-    const suggestInput = document.getElementById('suggestInput');
-    const suggestComment = document.getElementById('suggestComment');
-    const suggestVarChips = document.getElementById('suggestVarChips');
     const shortcutsModal = document.getElementById('shortcutsModal');
     const focusModal = document.getElementById('focusModal');
     const focusRuText = document.getElementById('focusRuText');
@@ -1211,17 +1165,6 @@
       ta.focus();
       ta.selectionStart = ta.selectionEnd = start + varText.length;
       ta.dispatchEvent(new Event('input'));
-    }
-
-    function insertVarInSuggest(varText) {
-      const ta = document.getElementById('suggestInput');
-      if (!ta) return;
-      const start = ta.selectionStart || 0;
-      const end = ta.selectionEnd || 0;
-      const val = ta.value;
-      ta.value = val.substring(0, start) + varText + val.substring(end);
-      ta.focus();
-      ta.selectionStart = ta.selectionEnd = start + varText.length;
     }
 
     // 100% Robust Tokenizer & Clean Renderer
@@ -1675,7 +1618,7 @@
                 </div>
 
                 <!-- Propose Alternative / Suggestion Button (Available to Everyone) -->
-                <button onclick="openSuggestModal(${item.id})" class="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-amber-300 hover:text-amber-200 rounded-lg text-[11px] font-medium transition border border-amber-500/30 flex items-center gap-1.5 shadow-sm" title="${t('card.suggestBtnTitle')}">
+                <button onclick="startEdit(${item.id})" class="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-amber-300 hover:text-amber-200 rounded-lg text-[11px] font-medium transition border border-amber-500/30 flex items-center gap-1.5 shadow-sm" title="${t('card.suggestBtnTitle')}">
                   <span>💡</span>
                   <span>${t('card.suggestBtn')}</span>
                 </button>
@@ -1709,7 +1652,7 @@
                   <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">${t('card.originalEn')}</span>
                   ${formatRichText(item.en, searchQuery, false)}
                 </div>
-                <div class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text" style="font-size: ${baseFontSize}px" onclick="${isAdmin ? `startEdit(${item.id})` : `openSuggestModal(${item.id})`}">
+                <div class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text" style="font-size: ${baseFontSize}px" onclick="startEdit(${item.id})">
                   ${formatRichText(item.ru, searchQuery)}
                 </div>
               </div>
@@ -1718,8 +1661,8 @@
               <div
                 class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text"
                 style="font-size: ${baseFontSize}px"
-                onclick="${isAdmin ? `startEdit(${item.id})` : `openSuggestModal(${item.id})`}"
-                title="${isAdmin ? t('card.editTitle') : t('card.suggestTitle')}"
+                onclick="startEdit(${item.id})"
+                title="${t('card.editTitle')}"
               >
                 ${formatRichText(item.ru, searchQuery)}
               </div>
@@ -1768,41 +1711,44 @@
               </div>
             ` : ''}
 
-            <!-- Inline Admin Direct Edit Form -->
-            ${isAdmin ? `
-              <div class="edit-form hidden mt-3 pt-3 border-t border-[#30363d]">
-                ${itemVars.length > 0 ? `
-                  <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-zen-muted">
-                    <span class="text-gray-500 text-[11px]">${t('suggest.insertVar')}</span>
-                    ${itemVars.map(v => `
-                      <button type="button" onclick="insertVarAtCursor(${item.id}, '${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-brand-900 hover:text-brand-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm" title="${t('card.insertVarTitle')}">
-                        + ${v}
-                      </button>
-                    `).join('')}
-                  </div>
-                ` : ''}
-                <textarea 
-                  class="edit-textarea w-full p-3 bg-[#0d1117] border border-brand-500/80 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-brand-500 leading-relaxed custom-scroll font-sans" 
-                  rows="4" 
-                  style="font-size: ${baseFontSize}px"
-                >${item.ru}</textarea>
-                <div class="flex items-center justify-between mt-2.5">
-                  <div class="flex items-center gap-2 text-xs text-zen-muted">
-                    <span class="edit-counter font-mono text-[11px]">${t('edit.charCount', { n: item.ru.length })}</span>
-                    <span>·</span>
-                    <kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-gray-300 font-mono text-[11px]">Ctrl+Enter</kbd> ${t('card.editSaveHint')}
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <button onclick="cancelEdit(${item.id})" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md text-xs transition">
-                      ${t('card.editCancel')}
+            <!-- Inline Edit / Suggest Form (available to everyone) -->
+            <div class="edit-form hidden mt-3 pt-3 border-t border-[#30363d]">
+              ${itemVars.length > 0 ? `
+                <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-zen-muted">
+                  <span class="text-gray-500 text-[11px]">${t('suggest.insertVar')}</span>
+                  ${itemVars.map(v => `
+                    <button type="button" onclick="insertVarAtCursor(${item.id}, '${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-brand-900 hover:text-brand-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm" title="${t('card.insertVarTitle')}">
+                      + ${v}
                     </button>
-                    <button onclick="saveEdit(${item.id})" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md text-xs transition shadow-sm">
-                      ${t('card.editSaveSubmit')}
-                    </button>
-                  </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+              <textarea
+                class="edit-textarea w-full p-3 bg-[#0d1117] border border-brand-500/80 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-brand-500 leading-relaxed custom-scroll font-sans"
+                rows="4"
+                style="font-size: ${baseFontSize}px"
+              >${item.ru}</textarea>
+              <input
+                type="text"
+                class="edit-comment w-full mt-2 px-3 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-lg text-white placeholder-zen-muted text-xs focus:outline-none focus:border-amber-500"
+                placeholder="${t('suggest.commentPlaceholder')}"
+              />
+              <div class="flex items-center justify-between mt-2.5">
+                <div class="flex items-center gap-2 text-xs text-zen-muted">
+                  <span class="edit-counter font-mono text-[11px]">${t('edit.charCount', { n: item.ru.length })}</span>
+                  <span>·</span>
+                  <kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-gray-300 font-mono text-[11px]">Ctrl+Enter</kbd> ${t('card.editSaveHint')}
+                </div>
+                <div class="flex items-center gap-2">
+                  <button onclick="cancelEdit(${item.id})" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md text-xs transition">
+                    ${t('card.editCancel')}
+                  </button>
+                  <button onclick="saveEdit(${item.id})" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md text-xs transition shadow-sm">
+                    ${t('card.editSaveSubmit')}
+                  </button>
                 </div>
               </div>
-            ` : ''}
+            </div>
 
           </div>
         `;
@@ -2041,69 +1987,6 @@
       }
     }
 
-    // Suggestion Modal & Proposal Handling
-    function openSuggestModal(id) {
-      const item = allData.find(d => d.id === id);
-      if (!item) return;
-      activeSuggestId = id;
-      suggestModalKey.innerText = item.key;
-      suggestCurrentRu.innerHTML = formatRichText(item.ru, '', false);
-      suggestInput.value = item.ru;
-      suggestComment.value = '';
-
-      const vars = extractVariables(item.en);
-      if (vars.length > 0) {
-        suggestVarChips.innerHTML = `
-          <span class="text-gray-500 text-[11px]">${t('suggest.insertVar')}</span>
-          ${vars.map(v => `
-            <button type="button" onclick="insertVarInSuggest('${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-amber-900 hover:text-amber-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm">
-              + ${v}
-            </button>
-          `).join('')}
-        `;
-      } else {
-        suggestVarChips.innerHTML = '';
-      }
-
-      suggestModal.classList.remove('hidden');
-      setTimeout(() => suggestInput.focus(), 50);
-    }
-
-    function closeSuggestModal() {
-      suggestModal.classList.add('hidden');
-    }
-
-    async function submitSuggestion() {
-      const item = allData.find(d => d.id === activeSuggestId);
-      if (!item) return;
-
-      const text = suggestInput.value.trim();
-      const comment = suggestComment.value.trim();
-      if (!text) return;
-
-      try {
-        await fetch('/api/suggest', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            uid: item.uid,
-            text: text,
-            comment: comment
-          })
-        });
-
-        closeSuggestModal();
-        showToast(t('toast.suggestionPublished'));
-
-        const res = await fetch('/api/data');
-        allData = (await res.json()).items;
-        updateStats();
-        applyFilter(true);
-      } catch (err) {
-        alert(t('error.suggest') + err.message);
-      }
-    }
-
     async function voteSuggestion(id, sugId, voteVal) {
       const item = allData.find(d => d.id === id);
       if (!item) return;
@@ -2225,10 +2108,6 @@
 
     // Direct Edit Functionality (Admin Only)
     function startEdit(id) {
-      if (!isAdmin) {
-        openSuggestModal(id);
-        return;
-      }
       const card = document.getElementById(`card-${id}`);
       if (!card) return;
       card.querySelector('.ru-text-display').classList.add('hidden');
@@ -2268,6 +2147,8 @@
 
       const ta = card.querySelector('.edit-textarea');
       const newRu = ta.value.trim();
+      const commentInput = card.querySelector('.edit-comment');
+      const comment = commentInput ? commentInput.value.trim() : '';
 
       try {
         const res = await fetch('/api/suggest', {
@@ -2276,7 +2157,7 @@
           body: JSON.stringify({
             uid: item.uid,
             text: newRu,
-            comment: ''
+            comment: comment
           })
         });
         const respData = await res.json();
@@ -2442,7 +2323,6 @@
         if (!diffModal.classList.contains('hidden')) closeDiffModal();
         if (!glossaryModal.classList.contains('hidden')) closeGlossaryModal();
         if (!statsModal.classList.contains('hidden')) closeStatsModal();
-        if (!suggestModal.classList.contains('hidden')) closeSuggestModal();
         if (!shortcutsModal.classList.contains('hidden')) closeShortcutsModal();
         return;
       }
@@ -2502,10 +2382,7 @@
         } else if (e.key === 'e' || e.key === 'E') {
           e.preventDefault();
           const item = filteredData[currentFocusedIndex];
-          if (item) {
-            if (isAdmin) startEdit(item.id);
-            else openSuggestModal(item.id);
-          }
+          if (item) startEdit(item.id);
         }
       }
     });

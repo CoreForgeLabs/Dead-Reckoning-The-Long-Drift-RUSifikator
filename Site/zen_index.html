@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dead Reckoning — Платформа Командной Вычитки</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d',
+            },
+            zen: {
+              bg: '#0d1117',
+              card: '#161b22',
+              cardHover: '#1c2128',
+              border: '#30363d',
+              borderHover: '#484f58',
+              text: '#e6edf3',
+              muted: '#8b949e',
+              var: '#38bdf8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .var-badge {
+      background-color: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 500;
+      font-size: 0.88em;
+      display: inline-block;
+      cursor: help;
+      user-select: all;
+    }
+    .mock-var-badge {
+      color: #38bdf8;
+      border-bottom: 1.5px dashed rgba(56, 189, 248, 0.6);
+      font-weight: 500;
+      padding: 0 1px;
+      cursor: help;
+    }
+    .highlight-match {
+      background-color: rgba(234, 179, 8, 0.35);
+      color: #fef08a;
+      border-radius: 2px;
+      padding: 0 2px;
+      font-weight: 600;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #0d1117;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #30363d;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #484f58;
+    }
+    .active-focused-card {
+      border-color: #22c55e !important;
+      box-shadow: 0 0 0 1px #22c55e, 0 8px 20px -4px rgba(34, 197, 94, 0.15);
+    }
+    .admin-approved-glow {
+      border-color: rgba(245, 158, 11, 0.6) !important;
+      background-color: rgba(245, 158, 11, 0.04) !important;
+      box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-600 selection:text-white">
+
+  <!-- Top Sticky Header & Dashboard -->
+  <header class="sticky top-0 z-40 bg-[#161b22]/95 backdrop-blur border-b border-[#30363d] px-4 py-2.5 shadow-xl">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Progress Summary -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-brand-950/80 border border-brand-500/30 flex items-center justify-center text-brand-500 shadow-sm cursor-pointer hover:bg-brand-900 transition" onclick="openStatsModal()" title="Нажмите для подробной статистики по разделам">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor" fill-opacity="0.15"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm font-bold text-white">Dead Reckoning</h1>
+            <span class="text-[10px] tracking-wider px-2 py-0.5 rounded bg-[#21262d] text-brand-500 border border-brand-500/20 font-semibold uppercase">Краудсорсинг Вычитки</span>
+          </div>
+          <!-- Tiny Live Progress Bar -->
+          <div class="flex items-center gap-2 mt-0.5 cursor-pointer" onclick="openStatsModal()" title="Открыть статистику">
+            <div class="w-28 bg-[#21262d] h-1.5 rounded-full overflow-hidden border border-[#30363d]/60">
+              <div id="topProgressBar" class="bg-brand-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <span id="topProgressText" class="text-[11px] font-mono text-zen-muted hover:text-white transition">0% (0 / 13 547)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Instant Search with Power Filters -->
+      <div class="flex-1 max-w-lg mx-2">
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zen-muted">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Поиск по тексту, переменным или авторам... (нажмите /)"
+            class="w-full pl-9 pr-9 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-lg text-xs text-white placeholder-zen-muted focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-inner"
+            autocomplete="off"
+          />
+          <button 
+            id="clearSearch"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-zen-muted hover:text-white hidden text-xs font-bold"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center gap-2 text-xs">
+        
+        <!-- Admin Role Toggle -->
+        <button id="adminToggleBtn" onclick="toggleAdminRole()" class="px-2.5 py-1.5 rounded-md bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 font-bold shadow-sm" title="Переключить между режимом Главного Редактора (Админа) и Участника">
+          <span id="adminBtnIcon">👑</span>
+          <span id="adminBtnText">Админ</span>
+        </button>
+
+        <button onclick="changeNickname()" class="text-xs px-2 py-1 rounded hover:bg-white/10" title="Задать ник, видимый в истории правок">
+          ✏️ Ник
+        </button>
+
+        <!-- Zen Fullscreen Focus Mode -->
+        <button onclick="openFocusMode()" class="px-2.5 py-1.5 rounded-md bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 transition flex items-center gap-1.5 font-medium shadow-sm" title="Полноэкранный режим скоростной вычитки одной кнопкой (Z)">
+          <span>⚡ Zen Фокус</span>
+        </button>
+
+        <!-- View Layout Toggle: Cards vs Split-View -->
+        <button id="toggleLayoutBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" title="Переключить между обычными карточками и двухколоночным режимом">
+          <span id="layoutBtnIcon">📑</span>
+          <span id="layoutBtnText">2 Колонки</span>
+        </button>
+
+        <!-- Lore Glossary Modal -->
+        <button onclick="openGlossaryModal()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" title="Глоссарий терминов лора и каноничных названий">
+          <span>📖 Глоссарий</span>
+        </button>
+
+        <!-- Live Mock Preview Toggle -->
+        <button id="toggleMockBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" title="Подставлять имена и числа вместо %s и %d (M)">
+          <svg class="w-3.5 h-3.5 text-zen-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <span id="mockBtnText">Живой текст</span>
+        </button>
+
+        <!-- Toggle English Subtitle -->
+        <button id="toggleEnBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+          <span id="enBtnText">Оригинал</span>
+        </button>
+
+        <!-- Shortcuts Modal Button -->
+        <button onclick="openShortcutsModal()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1 font-medium text-xs shadow-sm" title="Открыть список горячих клавиш">
+          <span>⌨️</span>
+          <span class="hidden md:inline">Клавиши</span>
+        </button>
+
+        <!-- Font Size Adjuster -->
+        <div class="flex items-center bg-[#21262d] border border-[#30363d] rounded-md overflow-hidden">
+          <button id="fontDecBtn" class="px-2 py-1 hover:bg-[#30363d] text-zen-muted hover:text-white transition font-mono">A-</button>
+          <span id="fontSizeDisplay" class="px-1.5 text-[11px] text-zen-muted font-mono">16px</span>
+          <button id="fontIncBtn" class="px-2 py-1 hover:bg-[#30363d] text-zen-muted hover:text-white transition font-mono">A+</button>
+        </div>
+
+        <!-- ZIP Backup -->
+        <a href="/api/backup" download class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1" title="Скачать полный ZIP бэкап перевода">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="hidden sm:inline">Бэкап</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Status & Section Filters Row -->
+    <div class="max-w-7xl mx-auto mt-2 pt-2 border-t border-[#30363d]/50 flex flex-wrap items-center justify-between gap-2 text-xs">
+      
+      <!-- Primary Status & Queue Filters -->
+      <div class="flex items-center gap-1 overflow-x-auto custom-scroll pb-0.5">
+        <button class="status-btn px-2.5 py-1 rounded-md bg-brand-600 text-white font-medium transition flex items-center gap-1" data-status="all">
+          <span>Все</span> <span class="opacity-75 font-mono" id="stat-all">(0)</span>
+        </button>
+
+        <!-- Admin Priority Queue Tab -->
+        <button class="status-btn px-2.5 py-1 rounded-md bg-amber-950/70 text-amber-300 hover:bg-amber-900 border border-amber-500/40 transition flex items-center gap-1 font-semibold" data-status="admin_queue" title="Строки с голосами и предложениями сообщества, ожидающие утверждения админом">
+          <span>🔥 Очередь на утверждение</span> <span class="opacity-90 font-mono" id="stat-admin-queue">(0)</span>
+        </button>
+
+        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-amber-400 hover:text-amber-300 transition flex items-center gap-1 border border-amber-500/20" data-status="admin_approved" title="Окончательно утверждено Главным Редактором">
+          <span>👑 В релизе</span> <span class="opacity-75 font-mono" id="stat-approved">(0)</span>
+        </button>
+
+        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-zen-muted hover:text-white transition flex items-center gap-1" data-status="has_suggestions" title="Строки с предложенными вариантами перевода">
+          <span>💡 С вариантами</span> <span class="opacity-75 font-mono" id="stat-suggestions">(0)</span>
+        </button>
+
+        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-zen-muted hover:text-white transition flex items-center gap-1" data-status="unvoted" title="Строки, которые ещё никто не проверял и не оценивал">
+          <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+          <span>Без оценок</span> <span class="opacity-75 font-mono" id="stat-unvoted">(0)</span>
+        </button>
+      </div>
+
+      <!-- Component Section Tabs -->
+      <div class="flex items-center gap-1 text-[11px] text-zen-muted overflow-x-auto custom-scroll">
+        <span class="text-gray-500 mr-1">Раздел:</span>
+        <button class="comp-btn px-2 py-0.5 rounded bg-brand-600 text-white font-medium transition" data-comp="all">Все</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="narrative">Сюжет</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="labels">Интерфейс</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="extra">Дополнительно</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="epilogue">Эпилоги</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="remap">Замены</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="gdc-literal-fixes">Код</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="mainLayout" class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 transition-all duration-300">
+    
+    <!-- Quick Filter Chips & Batch Actions Row -->
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+      <div class="flex items-center gap-1.5 overflow-x-auto custom-scroll py-0.5">
+        <span class="text-gray-500 text-[11px] mr-1">Быстрый отбор:</span>
+        <button onclick="setSearchFilter('has:sugg')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-amber-400 border border-amber-500/20 text-[11px] transition">
+          💡 С предложениями
+        </button>
+        <button onclick="setSearchFilter('has:var')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-sky-400 border border-sky-500/20 text-[11px] transition">
+          { } С переменными
+        </button>
+        <button onclick="setSearchFilter('has:diff')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-emerald-400 border border-emerald-500/20 text-[11px] transition">
+          📜 С историей правок
+        </button>
+        <button onclick="setSearchFilter('!ru ')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] text-[11px] transition">
+          🇷🇺 В русском
+        </button>
+        <button onclick="setSearchFilter('!en ')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] text-[11px] transition">
+          🇬🇧 В английском
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="exportToCSV()" class="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] text-[11px] transition flex items-center gap-1" title="Выгрузить отфильтрованный список в CSV">
+          <span>📥 Экспорт CSV</span>
+        </button>
+        <button id="batchApproveBtn" onclick="batchApproveFiltered()" class="px-2.5 py-1 rounded bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 text-[11px] font-semibold transition flex items-center gap-1" title="Массово утвердить все показанные строки">
+          <span>✓ Одобрить все показанные</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Admin Banner Mode (Visible when Admin Role active) -->
+    <div id="adminBanner" class="mb-4 p-3 bg-amber-950/30 border border-amber-500/40 rounded-xl flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2.5">
+        <span class="text-xl">👑</span>
+        <div>
+          <span class="font-bold text-amber-300 text-sm">Режим Главного Редактора (Администратор)</span>
+          <p class="text-[11px] text-zen-muted">Вы можете в 1 клик утверждать проверенные людьми варианты перевода в официальный релиз или редактировать текст напрямую.</p>
+        </div>
+      </div>
+      <button onclick="switchToAdminQueue()" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg transition shadow text-xs whitespace-nowrap">
+        🔥 Открыть проверенные людьми
+      </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-10 h-10 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-base font-medium text-white">Загрузка базы переводов...</p>
+      <p class="text-xs text-zen-muted mt-1">Индексация 13 547 строк для мгновенного поиска</p>
+    </div>
+
+    <!-- Empty Results -->
+    <div id="emptyState" class="hidden text-center py-16 bg-[#161b22] border border-[#30363d] rounded-xl p-8 shadow-sm">
+      <svg class="w-10 h-10 mx-auto text-zen-muted/50 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <h3 class="text-base font-bold text-white mb-1">Ничего не найдено</h3>
+      <p class="text-xs text-zen-muted mb-4">Попробуйте изменить запрос или сбросить фильтры</p>
+      <button onclick="clearAllFilters()" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md text-xs font-medium transition">
+        Сбросить фильтры
+      </button>
+    </div>
+
+    <!-- Cards List Container -->
+    <div id="itemsContainer" class="space-y-3.5"></div>
+
+    <!-- Infinite Scroll Trigger -->
+    <div id="sentinel" class="py-8 text-center text-xs text-zen-muted flex items-center justify-center gap-2">
+      <span id="loadMoreText">Показано <span id="renderedCount" class="font-mono text-gray-300">0</span> из <span id="totalFiltered" class="font-mono text-gray-300">0</span></span>
+    </div>
+
+  </main>
+
+  <!-- Zen Focus Mode Fullscreen Modal -->
+  <div id="focusModal" class="fixed inset-0 z-50 bg-[#0d1117] hidden flex flex-col justify-between p-6 md:p-12 overflow-y-auto custom-scroll">
+    <div class="max-w-4xl w-full mx-auto flex items-center justify-between pb-4 border-b border-[#30363d]">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-brand-950 text-brand-400 border border-brand-500/30 text-xs font-bold uppercase">Zen Фокус</span>
+        <span id="focusCompName" class="text-xs font-mono text-gray-400"></span>
+        <span id="focusCounter" class="text-xs font-mono text-zen-muted">1 / 100</span>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <button onclick="closeFocusMode()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition font-medium">
+          Выйти (Esc)
+        </button>
+      </div>
+    </div>
+
+    <div class="max-w-4xl w-full mx-auto my-auto py-8 space-y-6">
+      <!-- Original English in Focus -->
+      <div class="p-4 bg-[#161b22] border border-[#30363d] rounded-xl text-zen-muted leading-relaxed text-base" id="focusEnText">
+        <!-- Injected -->
+      </div>
+      <!-- Russian Translation in Focus (Large) -->
+      <div class="p-6 bg-[#161b22] border-2 border-brand-500/50 rounded-2xl text-white leading-relaxed text-xl md:text-2xl font-normal shadow-2xl" id="focusRuText">
+        <!-- Injected -->
+      </div>
+    </div>
+
+    <div class="max-w-4xl w-full mx-auto pt-4 border-t border-[#30363d] flex flex-wrap items-center justify-between gap-3 text-xs text-zen-muted">
+      <div class="flex items-center gap-2">
+        <button onclick="prevFocusCard()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition flex items-center gap-1 font-mono">
+          ← Назад (K)
+        </button>
+        <button onclick="nextFocusCard()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition flex items-center gap-1 font-mono">
+          Вперёд (J) →
+        </button>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="focusApproveBtn" onclick="approveFocusCard()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2">
+          <span>✓ Одобрить и дальше</span>
+          <kbd class="px-1.5 py-0.5 bg-brand-800 text-white rounded text-[11px] font-mono">Space</kbd>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Event Context Modal -->
+  <div id="eventModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-950 text-brand-400 border border-brand-500/30">Сюжетное событие целиком</span>
+          <span id="modalEventId" class="font-mono text-xs text-gray-300"></span>
+        </div>
+        <button onclick="closeEventModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
+      </div>
+      <div id="modalEventBody" class="p-5 overflow-y-auto custom-scroll space-y-4 text-sm leading-relaxed">
+        <!-- Injected dynamically -->
+      </div>
+      <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end">
+        <button onclick="closeEventModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Diff & History Modal -->
+  <div id="diffModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-500/30">История изменений и Diff</span>
+          <span id="diffModalKey" class="font-mono text-[11px] text-gray-400 truncate max-w-xs"></span>
+        </div>
+        <button onclick="closeDiffModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
+      </div>
+      <div id="diffModalBody" class="p-5 overflow-y-auto custom-scroll space-y-4 text-xs">
+        <!-- Injected dynamically -->
+      </div>
+      <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end">
+        <button onclick="closeDiffModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lore Glossary Modal -->
+  <div id="glossaryModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-500/30">Канон терминологии и лора</span>
+        </div>
+        <button onclick="closeGlossaryModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
+      </div>
+      <div class="p-5 overflow-y-auto custom-scroll space-y-3 text-xs">
+        <p class="text-zen-muted mb-3">Нажмите на любой термин, чтобы мгновенно отфильтровать все строки игры с его участием:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="glossaryGrid">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+      <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end">
+        <button onclick="closeGlossaryModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Statistics Modal -->
+  <div id="statsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-xl w-full p-5 shadow-2xl space-y-4 text-xs">
+      <div class="flex items-center justify-between pb-2 border-b border-[#30363d]">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">Статистика вычитки проекта</h3>
+        <button onclick="closeStatsModal()" class="text-zen-muted hover:text-white font-bold">✕</button>
+      </div>
+      <div id="statsModalBody" class="space-y-3">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggestion / Proposal Form Modal (For proposing alternative translation) -->
+  <div id="suggestModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-xl w-full flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30">Предложить свой вариант перевода</span>
+          <span id="suggestModalKey" class="font-mono text-[11px] text-gray-400 truncate max-w-xs"></span>
+        </div>
+        <button onclick="closeSuggestModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
+      </div>
+      <div class="p-5 space-y-3.5 text-xs">
+        <div>
+          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]">Текущий вариант:</label>
+          <div id="suggestCurrentRu" class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg text-gray-300 leading-relaxed"></div>
+        </div>
+
+        <!-- Variable Chips for Suggestion Form -->
+        <div id="suggestVarChips" class="flex flex-wrap items-center gap-1.5 text-xs text-zen-muted"></div>
+
+        <div>
+          <label class="block text-amber-400 mb-1 font-semibold uppercase text-[10px]">Ваш улучшенный перевод:</label>
+          <textarea id="suggestInput" class="w-full p-3 bg-[#0d1117] border border-amber-500/70 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-amber-500 leading-relaxed text-sm" rows="3" placeholder="Введите ваш вариант перевода..."></textarea>
+        </div>
+        <div>
+          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]">Комментарий / аргументация (почему так лучше):</label>
+          <input id="suggestComment" type="text" class="w-full px-3 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-white placeholder-zen-muted text-xs focus:outline-none focus:border-amber-500" placeholder="Терминология лора, звучание фразы, точность..." />
+        </div>
+      </div>
+      <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end gap-2 text-xs">
+        <button onclick="closeSuggestModal()" class="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md transition">
+          Отмена
+        </button>
+        <button onclick="submitSuggestion()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md transition shadow-sm">
+          Отправить на голосование
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcutsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4 text-xs">
+      <div class="flex items-center justify-between pb-2 border-b border-[#30363d]">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">Горячие клавиши для скоростной вычитки</h3>
+        <button onclick="closeShortcutsModal()" class="text-zen-muted hover:text-white font-bold">✕</button>
+      </div>
+      <div class="space-y-2 text-zen-muted">
+        <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
+          <span>Одобрить / Утвердить и дальше</span>
+          <div class="flex gap-1"><kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold">Space</kbd> или <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold">V</kbd></div>
+        </div>
+        <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
+          <span>Следующая / предыдущая строка</span>
+          <div class="flex gap-1"><kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">J</kbd> / <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">K</kbd></div>
+        </div>
+        <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
+          <span>Полноэкранный Zen фокус режим</span>
+          <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">Z</kbd>
+        </div>
+        <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
+          <span>Переключить живой текст (Mock)</span>
+          <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">M</kbd>
+        </div>
+        <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
+          <span>Предложить вариант / Править</span>
+          <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">E</kbd>
+        </div>
+        <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
+          <span>Быстрый поиск</span>
+          <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">/</kbd>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Bottom Hotkeys Bar -->
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-[#161b22]/90 backdrop-blur-md border border-[#30363d] px-4 py-2 rounded-full shadow-2xl text-xs text-zen-muted flex items-center gap-3.5 z-30 hidden sm:flex cursor-pointer hover:border-brand-500/50 transition" onclick="openShortcutsModal()" title="Нажмите, чтобы открыть полный список клавиш">
+    <span class="text-gray-400 font-semibold flex items-center gap-1">⌨️</span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">Space</kbd> <span>Одобрить</span></span>
+    <span class="text-gray-600">·</span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono text-[11px]">J</kbd>/<kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono text-[11px]">K</kbd> <span>Листать</span></span>
+    <span class="text-gray-600">·</span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">Z</kbd> <span>Zen Фокус</span></span>
+    <span class="text-gray-600">·</span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">E</kbd> <span>Вариант</span></span>
+    <span class="text-gray-600">·</span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">/</kbd> <span>Поиск</span></span>
+  </div>
+
+  <!-- Floating Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 px-4 py-2.5 bg-[#161b22] text-white border border-brand-500/50 rounded-lg shadow-2xl text-xs font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none z-50">
+    <div class="w-4 h-4 rounded-full bg-brand-500 flex items-center justify-center text-black font-bold text-[10px]">✓</div>
+    <span id="toastMsg">Изменения сохранены</span>
+  </div>
+
+  <script>
+    // State
+    let allData = [];
+    let filteredData = [];
+    let activeStatus = 'all';
+    let activeComponent = 'all';
+    let searchQuery = '';
+    let showEnglish = false;
+    let mockMode = true;
+    let isSplitView = false;
+    let isAdmin = false;          // приходит с сервера при каждой загрузке /api/data
+    let currentNickname = null;   // приходит с сервера
+    let baseFontSize = 16;
+    let renderedLimit = 50;
+    let currentFocusedIndex = 0;
+    let activeSuggestId = null;
+
+    // Lore Glossary Terms
+    const GLOSSARY_TERMS = [
+      { ru: 'гермостекло', en: 'bulkhead glass', desc: 'Сверхпрочное стекло переборок и иллюминаторов' },
+      { ru: 'криоотсек', en: 'cryo bay', desc: 'Секция анабиоза и гибернации экипажа' },
+      { ru: 'анабиоз', en: 'cryosleep', desc: 'Состояние глубокого сна при перелёте' },
+      { ru: 'Совет', en: 'Council', desc: 'Правящий орган корабля' },
+      { ru: 'Основатели', en: 'Founders', desc: 'Первое поколение, заложившее директивы' },
+      { ru: 'Скиталец', en: 'Wanderer', desc: 'Корабль поколений' },
+      { ru: 'Элизиум', en: 'Elysium', desc: 'Целевая планета назначения' },
+      { ru: 'вахта', en: 'watch', desc: 'Период дежурства смены экипажа' },
+      { ru: 'старшина', en: 'steward', desc: 'Руководитель секции / отсека' },
+      { ru: 'капеллан', en: 'chaplain', desc: 'Духовный наставник собраний' },
+      { ru: 'жребий', en: 'lot', desc: 'Выбор вахтенного по жребию из журнала' },
+      { ru: 'устав', en: 'charter', desc: 'Свод законов и директив корабля' }
+    ];
+
+    // Mock Lore Dictionary
+    const MOCK_STRINGS = ['Капитан Восс', 'Скиталец', 'Элизиум', 'лучшие годы', 'паёк', 'гермостекло', 'инженер Чэнь', 'Елена', 'Совет', 'Отсек 11'];
+    const MOCK_NUMS = [14, 120, 2400, 72, 8, 350, 4, 18, 50];
+
+    // Elements
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearch');
+    const itemsContainer = document.getElementById('itemsContainer');
+    const mainLayout = document.getElementById('mainLayout');
+    const loadingEl = document.getElementById('loading');
+    const emptyStateEl = document.getElementById('emptyState');
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const adminBtnText = document.getElementById('adminBtnText');
+    const adminBtnIcon = document.getElementById('adminBtnIcon');
+    const adminBanner = document.getElementById('adminBanner');
+    const toggleEnBtn = document.getElementById('toggleEnBtn');
+    const enBtnText = document.getElementById('enBtnText');
+    const toggleMockBtn = document.getElementById('toggleMockBtn');
+    const mockBtnText = document.getElementById('mockBtnText');
+    const toggleLayoutBtn = document.getElementById('toggleLayoutBtn');
+    const layoutBtnText = document.getElementById('layoutBtnText');
+    const fontIncBtn = document.getElementById('fontIncBtn');
+    const fontDecBtn = document.getElementById('fontDecBtn');
+    const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+    const renderedCountEl = document.getElementById('renderedCount');
+    const totalFilteredEl = document.getElementById('totalFiltered');
+    const topProgressBar = document.getElementById('topProgressBar');
+    const topProgressText = document.getElementById('topProgressText');
+    const eventModal = document.getElementById('eventModal');
+    const modalEventId = document.getElementById('modalEventId');
+    const modalEventBody = document.getElementById('modalEventBody');
+    const diffModal = document.getElementById('diffModal');
+    const diffModalKey = document.getElementById('diffModalKey');
+    const diffModalBody = document.getElementById('diffModalBody');
+    const glossaryModal = document.getElementById('glossaryModal');
+    const glossaryGrid = document.getElementById('glossaryGrid');
+    const statsModal = document.getElementById('statsModal');
+    const statsModalBody = document.getElementById('statsModalBody');
+    const suggestModal = document.getElementById('suggestModal');
+    const suggestModalKey = document.getElementById('suggestModalKey');
+    const suggestCurrentRu = document.getElementById('suggestCurrentRu');
+    const suggestInput = document.getElementById('suggestInput');
+    const suggestComment = document.getElementById('suggestComment');
+    const suggestVarChips = document.getElementById('suggestVarChips');
+    const shortcutsModal = document.getElementById('shortcutsModal');
+    const focusModal = document.getElementById('focusModal');
+    const focusRuText = document.getElementById('focusRuText');
+    const focusEnText = document.getElementById('focusEnText');
+    const focusCompName = document.getElementById('focusCompName');
+    const focusCounter = document.getElementById('focusCounter');
+
+    // Init Data
+    async function init() {
+      try {
+        updateAdminUI();
+        const res = await fetch('/api/data');
+        const payload = await res.json();
+        allData = payload.items;
+        isAdmin = payload.identity.is_admin;
+        currentNickname = payload.identity.nickname;
+
+        updateStats();
+        loadingEl.classList.add('hidden');
+        renderGlossary();
+        applyFilter();
+      } catch (err) {
+        loadingEl.innerHTML = `<div class="text-red-400 font-medium text-xs">Ошибка загрузки: ${err.message}</div>`;
+      }
+    }
+
+    async function toggleAdminRole() {
+      if (isAdmin) {
+        await fetch('/api/admin_logout', { method: 'POST' });
+        isAdmin = false;
+        showToast('👥 Переключено в режим участника сообщества');
+        updateAdminUI();
+        applyFilter(true);
+        return;
+      }
+      const secret = prompt('Код администратора:');
+      if (!secret) return;
+      const res = await fetch('/api/admin_login', {
+        method: 'POST',
+        body: JSON.stringify({ secret }),
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        isAdmin = true;
+        showToast('👑 Режим администратора активирован');
+      } else {
+        alert(data.message || 'Неверный код');
+        return;
+      }
+      updateAdminUI();
+      applyFilter(true);
+    }
+
+    async function changeNickname() {
+      const nickname = prompt('Ваш ник (виден в истории правок):', currentNickname || '');
+      if (nickname === null) return;
+      const res = await fetch('/api/set_nickname', {
+        method: 'POST',
+        body: JSON.stringify({ nickname }),
+      });
+      const data = await res.json();
+      currentNickname = data.nickname;
+      showToast(currentNickname ? `Ник установлен: ${currentNickname}` : 'Ник сброшен');
+    }
+
+    function updateAdminUI() {
+      if (isAdmin) {
+        adminBtnIcon.innerText = '👑';
+        adminBtnText.innerText = 'Админ';
+        adminToggleBtn.className = 'px-2.5 py-1.5 rounded-md bg-amber-600 text-black border border-amber-400 transition flex items-center gap-1.5 font-bold shadow-md';
+        adminBanner.classList.remove('hidden');
+      } else {
+        adminBtnIcon.innerText = '👥';
+        adminBtnText.innerText = 'Участник';
+        adminToggleBtn.className = 'px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium shadow-sm';
+        adminBanner.classList.add('hidden');
+      }
+    }
+
+    function switchToAdminQueue() {
+      document.querySelectorAll('.status-btn').forEach(b => {
+        b.classList.remove('bg-brand-600', 'bg-amber-600', 'text-white', 'text-black', 'font-bold');
+        b.classList.add('bg-[#21262d]', 'text-zen-muted');
+      });
+      const qBtn = document.querySelector('.status-btn[data-status="admin_queue"]');
+      if (qBtn) {
+        qBtn.classList.remove('bg-[#21262d]', 'text-zen-muted');
+        qBtn.classList.add('bg-amber-600', 'text-black', 'font-bold');
+      }
+      activeStatus = 'admin_queue';
+      applyFilter();
+    }
+
+    function updateStats() {
+      const total = allData.length;
+      const adminApproved = allData.filter(d => d.status === 'admin_approved').length;
+      const hasSuggestions = allData.filter(d => d.suggestions && d.suggestions.length > 0).length;
+      const unvoted = allData.filter(d => d.status === 'pending' && (!d.suggestions || d.suggestions.length === 0) && d.up === 0 && d.down === 0).length;
+      
+      // Admin queue: items with community suggestions or votes that are NOT admin_approved
+      const adminQueueCount = allData.filter(d => d.status !== 'admin_approved' && ((d.suggestions && d.suggestions.length > 0) || d.up > 0 || d.score > 0)).length;
+
+      document.getElementById('stat-all').innerText = `(${total.toLocaleString()})`;
+      document.getElementById('stat-admin-queue').innerText = `(${adminQueueCount.toLocaleString()})`;
+      document.getElementById('stat-approved').innerText = `(${adminApproved.toLocaleString()})`;
+      document.getElementById('stat-suggestions').innerText = `(${hasSuggestions.toLocaleString()})`;
+      document.getElementById('stat-unvoted').innerText = `(${unvoted.toLocaleString()})`;
+
+      const pct = total > 0 ? ((adminApproved / total) * 100).toFixed(1) : 0;
+      topProgressBar.style.width = pct + '%';
+      topProgressText.innerText = `${pct}% (${adminApproved.toLocaleString()} / ${total.toLocaleString()} в релизе)`;
+    }
+
+    function renderGlossary() {
+      glossaryGrid.innerHTML = GLOSSARY_TERMS.map(t => `
+        <div class="p-3 bg-[#0d1117] border border-[#30363d] hover:border-purple-500/50 rounded-lg cursor-pointer transition flex flex-col justify-between group" onclick="searchGlossaryTerm('${t.ru}')">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-purple-400 group-hover:text-purple-300 transition">${t.ru}</span>
+            <span class="text-[11px] font-mono text-gray-500">${t.en}</span>
+          </div>
+          <p class="text-[11px] text-zen-muted mt-1 leading-normal">${t.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    function searchGlossaryTerm(term) {
+      closeGlossaryModal();
+      searchInput.value = term;
+      searchInput.dispatchEvent(new Event('input'));
+    }
+
+    function setSearchFilter(filterPrefix) {
+      searchInput.value = filterPrefix;
+      searchInput.focus();
+      searchInput.dispatchEvent(new Event('input'));
+    }
+
+    // Helper: Extract variables from text for variable chips
+    function extractVariables(text) {
+      if (!text) return [];
+      const pVars = text.match(/%[-+0-9.]*[a-zA-Z%]/g) || [];
+      const bVars = text.match(/\{[0-9a-zA-Z_]+\}/g) || [];
+      return [...new Set([...pVars.filter(v => v !== '%%'), ...bVars])];
+    }
+
+    function insertVarAtCursor(id, varText) {
+      const card = document.getElementById(`card-${id}`);
+      if (!card) return;
+      const ta = card.querySelector('.edit-textarea');
+      if (!ta) return;
+      const start = ta.selectionStart || 0;
+      const end = ta.selectionEnd || 0;
+      const val = ta.value;
+      ta.value = val.substring(0, start) + varText + val.substring(end);
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = start + varText.length;
+      ta.dispatchEvent(new Event('input'));
+    }
+
+    function insertVarInSuggest(varText) {
+      const ta = document.getElementById('suggestInput');
+      if (!ta) return;
+      const start = ta.selectionStart || 0;
+      const end = ta.selectionEnd || 0;
+      const val = ta.value;
+      ta.value = val.substring(0, start) + varText + val.substring(end);
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = start + varText.length;
+    }
+
+    // 100% Robust Tokenizer & Clean Renderer
+    function formatRichText(text, query, useMock = mockMode) {
+      if (!text) return '';
+
+      let processedText = text;
+      const openColorPrefix = processedText.match(/^\[color=(#[0-9a-fA-F]{3,8}|[a-zA-Z]+|#?%s)\]([^\[]*)$/i);
+      if (openColorPrefix) {
+        processedText = `[color=${openColorPrefix[1]}]${openColorPrefix[2]}[/color]`;
+      }
+
+      const TOKEN_REGEX = /(\[color=(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]+|#?%s)\][\s\S]*?\[\/color\]|\[bgcolor=(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]+)\][\s\S]*?\[\/bgcolor\]|\[img[^\]]*\][\s\S]*?\[\/img\]|\[(ESC|OK|TAB|ENTER|SPACE|\!|\!\!)\]|\[\/?(?:b|i|u|center|font_size|color|bgcolor)[^\]]*\]|\{[0-9a-zA-Z_]+\}|%[-+0-9.]*[a-zA-Z%])/gi;
+
+      function renderTokens(str) {
+        if (!str) return '';
+        let parts = [];
+        let lastIdx = 0;
+        let strIdx = 0;
+        let numIdx = 0;
+
+        let match;
+        TOKEN_REGEX.lastIndex = 0;
+
+        while ((match = TOKEN_REGEX.exec(str)) !== null) {
+          if (match.index > lastIdx) {
+            let plain = str.substring(lastIdx, match.index);
+            parts.push(plain.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+          }
+
+          let token = match[0];
+          let colMatch = token.match(/^\[color=(#[0-9a-fA-F]{3,8}|[a-zA-Z]+|#?%s)\]([\s\S]*?)\[\/color\]$/i);
+          let bgColMatch = token.match(/^\[bgcolor=(#[0-9a-fA-F]{3,8}|[a-zA-Z]+)\]([\s\S]*?)\[\/bgcolor\]$/i);
+          let imgMatch = token.match(/^\[img[^\]]*\]([\s\S]*?)\[\/img\]$/i);
+          let keycapMatch = token.match(/^\[(ESC|OK|TAB|ENTER|SPACE|\!|\!\!)\]$/i);
+
+          if (colMatch) {
+            let colVal = colMatch[1];
+            let innerVal = colMatch[2];
+            let renderedInner = renderTokens(innerVal);
+            let renderCol = colVal.includes('%s') ? '#38bdf8' : colVal;
+            parts.push(`<span style="color: ${renderCol}; font-weight: 500;">${renderedInner}</span>`);
+          } else if (bgColMatch) {
+            let bgVal = bgColMatch[1];
+            let innerVal = bgColMatch[2];
+            let renderedInner = renderTokens(innerVal);
+            parts.push(`<span class="px-1.5 py-0.5 rounded border border-white/10" style="background-color: ${bgVal}55; font-weight: 500;">${renderedInner}</span>`);
+          } else if (imgMatch) {
+            parts.push(`<span class="inline-block px-1 py-0.5 rounded bg-white/5 border border-white/10 text-xs text-amber-400 font-mono" title="${token.replace(/"/g, '&quot;')}">⏳</span>`);
+          } else if (keycapMatch) {
+            parts.push(`<kbd class="px-1.5 py-0.5 bg-[#21262d] border border-[#30363d] rounded text-gray-300 font-mono text-[11px] font-semibold">${keycapMatch[1].toUpperCase()}</kbd>`);
+          } else if (token.toLowerCase() === '[b]') {
+            parts.push('<strong>');
+          } else if (token.toLowerCase() === '[/b]') {
+            parts.push('</strong>');
+          } else if (token.toLowerCase() === '[i]') {
+            parts.push('<em>');
+          } else if (token.toLowerCase() === '[/i]') {
+            parts.push('</em>');
+          } else if (token.startsWith('{') && token.endsWith('}')) {
+            let varName = token.slice(1, -1);
+            if (useMock) {
+              let val = (varName === 'year') ? '14' : ((varName === 'ship_name') ? 'Скиталец' : varName);
+              parts.push(`<span class="mock-var-badge">${val}</span>`);
+            } else {
+              parts.push(`<span class="var-badge">${token}</span>`);
+            }
+          } else if (token.startsWith('%')) {
+            if (token === '%%') {
+              parts.push('%');
+            } else if (useMock) {
+              if (token === '%s' || token.endsWith('s')) {
+                let val = MOCK_STRINGS[strIdx % MOCK_STRINGS.length];
+                strIdx++;
+                parts.push(`<span class="mock-var-badge">${val}</span>`);
+              } else if (token.includes('d') || token.includes('f')) {
+                let val = MOCK_NUMS[numIdx % MOCK_NUMS.length];
+                numIdx++;
+                parts.push(`<span class="mock-var-badge">${val}</span>`);
+              } else {
+                parts.push(`<span class="mock-var-badge">${token}</span>`);
+              }
+            } else {
+              parts.push(`<span class="var-badge">${token}</span>`);
+            }
+          } else {
+            parts.push(token.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+          }
+
+          lastIdx = TOKEN_REGEX.lastIndex;
+        }
+
+        if (lastIdx < str.length) {
+          let plain = str.substring(lastIdx);
+          parts.push(plain.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+        }
+
+        return parts.join('');
+      }
+
+      let html = renderTokens(processedText);
+
+      // Safe search highlighting
+      let cleanQuery = query ? query.trim().replace(/^!(ru|en|key)\s+/i, '').replace(/has:[a-z]+/gi, '').trim() : '';
+      if (cleanQuery && cleanQuery.length > 1) {
+        const qEscaped = cleanQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${qEscaped})`, 'gi');
+        const tags = [];
+        let clean = html.replace(/<[^>]+>/g, (tag) => {
+          tags.push(tag);
+          return `\x01${tags.length - 1}\x02`;
+        });
+        clean = clean.replace(regex, '<mark class="highlight-match">$1</mark>');
+        html = clean.replace(/\x01(\d+)\x02/g, (m, idx) => tags[parseInt(idx)]);
+      }
+
+      html = html.replace(/\n\n/g, '<div class="my-2.5"></div>');
+      html = html.replace(/\n/g, '<br/>');
+
+      return html;
+    }
+
+    // Lightweight LCS Word Diff Algorithm
+    function computeWordDiff(oldText, newText) {
+      if (!oldText) oldText = '';
+      if (!newText) newText = '';
+      const oldWords = oldText.split(/(\s+|[.,!?;:«»"'\(\)\[\]])/);
+      const newWords = newText.split(/(\s+|[.,!?;:«»"'\(\)\[\]])/);
+      
+      const dp = Array(oldWords.length + 1).fill(0).map(() => Array(newWords.length + 1).fill(0));
+      for (let i = 0; i < oldWords.length; i++) {
+        for (let j = 0; j < newWords.length; j++) {
+          if (oldWords[i] === newWords[j]) {
+            dp[i + 1][j + 1] = dp[i][j] + 1;
+          } else {
+            dp[i + 1][j + 1] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+          }
+        }
+      }
+
+      let i = oldWords.length;
+      let j = newWords.length;
+      const result = [];
+
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && oldWords[i - 1] === newWords[j - 1]) {
+          result.unshift({ type: 'same', text: oldWords[i - 1] });
+          i--;
+          j--;
+        } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+          result.unshift({ type: 'add', text: newWords[j - 1] });
+          j--;
+        } else if (i > 0 && (j === 0 || dp[i][j - 1] < dp[i - 1][j])) {
+          result.unshift({ type: 'del', text: oldWords[i - 1] });
+          i--;
+        }
+      }
+
+      return result.map(part => {
+        const esc = part.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if (part.type === 'add') {
+          return `<ins class="bg-emerald-950/90 text-emerald-300 px-1 py-0.5 rounded no-underline border border-emerald-500/40 font-semibold">${esc}</ins>`;
+        } else if (part.type === 'del') {
+          return `<del class="bg-red-950/90 text-red-400 px-1 py-0.5 rounded line-through border border-red-500/40 opacity-70">${esc}</del>`;
+        }
+        return esc;
+      }).join('');
+    }
+
+    // Admin Priority Scoring: Items with community votes and proposals that are NOT yet admin-approved rank first!
+    function getAdminPriorityScore(item) {
+      const isApproved = item.status === 'admin_approved';
+      const suggCount = item.suggestions ? item.suggestions.length : 0;
+      const voteScore = item.score || 0;
+      const suggVotes = (item.suggestions || []).reduce((acc, s) => acc + (s.score || 0), 0);
+      
+      const activity = (suggCount * 25) + (voteScore * 5) + (suggVotes * 3) + (item.up * 4);
+      
+      const category = (!isApproved && activity > 0) ? 0 : (!isApproved ? 1 : 2);
+      return { category, activity };
+    }
+
+    // Power Search & Filter Logic
+    function applyFilter(preserveLimit = false) {
+      if (!preserveLimit) {
+        renderedLimit = 50;
+      }
+      const rawQ = searchQuery.toLowerCase().trim();
+
+      let targetField = 'all';
+      let hasVarFilter = false;
+      let hasColorFilter = false;
+      let hasSuggFilter = false;
+      let hasDiffFilter = false;
+      let cleanQ = rawQ;
+
+      if (cleanQ.startsWith('!ru ')) {
+        targetField = 'ru';
+        cleanQ = cleanQ.substring(4).trim();
+      } else if (cleanQ.startsWith('!en ')) {
+        targetField = 'en';
+        cleanQ = cleanQ.substring(4).trim();
+      } else if (cleanQ.startsWith('!key ')) {
+        targetField = 'key';
+        cleanQ = cleanQ.substring(5).trim();
+      }
+
+      if (cleanQ.includes('has:var')) {
+        hasVarFilter = true;
+        cleanQ = cleanQ.replace('has:var', '').trim();
+      }
+      if (cleanQ.includes('has:color')) {
+        hasColorFilter = true;
+        cleanQ = cleanQ.replace('has:color', '').trim();
+      }
+      if (cleanQ.includes('has:sugg')) {
+        hasSuggFilter = true;
+        cleanQ = cleanQ.replace('has:sugg', '').trim();
+      }
+      if (cleanQ.includes('has:diff')) {
+        hasDiffFilter = true;
+        cleanQ = cleanQ.replace('has:diff', '').trim();
+      }
+
+      filteredData = allData.filter(item => {
+        if (activeStatus === 'admin_queue') {
+          // Items with community activity waiting for Admin decision
+          const hasActivity = (item.suggestions && item.suggestions.length > 0) || item.score > 0 || item.up > 0;
+          if (item.status === 'admin_approved' || !hasActivity) return false;
+        } else if (activeStatus === 'admin_approved') {
+          if (item.status !== 'admin_approved') return false;
+        } else if (activeStatus === 'has_suggestions') {
+          if (!item.suggestions || item.suggestions.length === 0) return false;
+        } else if (activeStatus === 'unvoted') {
+          if (item.status !== 'pending' || (item.suggestions && item.suggestions.length > 0) || item.up > 0 || item.down > 0) return false;
+        }
+
+        if (activeComponent !== 'all' && item.comp !== activeComponent) return false;
+
+        if (hasVarFilter && !(item.ru.includes('%') || item.ru.includes('{'))) return false;
+        if (hasColorFilter && !item.color_tagged) return false;
+        if (hasSuggFilter && (!item.suggestions || item.suggestions.length === 0)) return false;
+        if (hasDiffFilter && (!item.history || item.history.length === 0)) return false;
+
+        if (!cleanQ) return true;
+
+        if (targetField === 'ru') return item.ru.toLowerCase().includes(cleanQ);
+        if (targetField === 'en') return item.en.toLowerCase().includes(cleanQ);
+        if (targetField === 'key') return item.key.toLowerCase().includes(cleanQ);
+
+        return (
+          item.ru.toLowerCase().includes(cleanQ) ||
+          item.en.toLowerCase().includes(cleanQ) ||
+          item.key.toLowerCase().includes(cleanQ) ||
+          (item.reviewed_by && item.reviewed_by.includes(cleanQ))
+        );
+      });
+
+      // Special sorting for Admin Queue
+      if (activeStatus === 'admin_queue') {
+        filteredData.sort((a, b) => {
+          const scoreA = getAdminPriorityScore(a);
+          const scoreB = getAdminPriorityScore(b);
+          if (scoreA.category !== scoreB.category) return scoreA.category - scoreB.category;
+          return scoreB.activity - scoreA.activity;
+        });
+      }
+
+      totalFilteredEl.innerText = filteredData.length.toLocaleString();
+
+      if (filteredData.length === 0) {
+        itemsContainer.innerHTML = '';
+        emptyStateEl.classList.remove('hidden');
+        renderedCountEl.innerText = '0';
+        return;
+      }
+
+      emptyStateEl.classList.add('hidden');
+      renderItems(0, renderedLimit);
+    }
+
+    function copyKey(keyText) {
+      navigator.clipboard.writeText(keyText).then(() => {
+        showToast('Ключ скопирован в буфер обмена');
+      });
+    }
+
+    // CSV Export of Current Filtered View
+    function exportToCSV() {
+      if (filteredData.length === 0) {
+        alert('Нет данных для выгрузки в текущем фильтре');
+        return;
+      }
+      const rows = [
+        ['Component', 'Status', 'Key', 'English', 'Russian', 'Score', 'Warnings']
+      ];
+      filteredData.forEach(item => {
+        rows.push([
+          item.comp_name,
+          item.status,
+          item.key,
+          item.en,
+          item.ru,
+          item.score || 0,
+          (item.qa_warnings || []).join('; ')
+        ]);
+      });
+      
+      const csvContent = rows.map(r => r.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
+      const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `DeadReckoning_Translation_${activeComponent}_${activeStatus}_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV файл успешно выгружен!');
+    }
+
+    // Batch Approve currently shown unreviewed items (Admin only)
+    async function batchApproveFiltered() {
+      if (!isAdmin) {
+        alert('Массовое утверждение в релиз доступно только в режиме Главного Редактора (Админа)');
+        return;
+      }
+      const unapproved = filteredData.filter(d => d.status !== 'admin_approved');
+      if (unapproved.length === 0) {
+        alert('Все показанные строки уже утверждены в релиз!');
+        return;
+      }
+      if (!confirm(`👑 Утвердить в релиз сразу ${unapproved.length.toLocaleString()} показанных строк?`)) {
+        return;
+      }
+      
+      for (const item of unapproved) {
+        await fetch('/api/admin_approve_line', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: item.uid })
+        });
+        item.status = 'admin_approved';
+      }
+      updateStats();
+      applyFilter(true);
+      showToast(`👑 Утверждено в релиз строк: ${unapproved.length}`);
+    }
+
+    // Toggle Split View Layout (2 Columns)
+    toggleLayoutBtn.onclick = () => {
+      isSplitView = !isSplitView;
+      layoutBtnText.innerText = isSplitView ? 'Карточки' : '2 Колонки';
+      if (isSplitView) {
+        mainLayout.classList.remove('max-w-5xl');
+        mainLayout.classList.add('max-w-7xl');
+      } else {
+        mainLayout.classList.remove('max-w-7xl');
+        mainLayout.classList.add('max-w-5xl');
+      }
+      applyFilter(true);
+      showToast(isSplitView ? 'Включен 2-колоночный вид (Оригинал слева, Перевод справа)' : 'Включен стандартный вид карточек');
+    };
+
+    function renderItems(start, limit) {
+      const chunk = filteredData.slice(start, limit);
+      let html = '';
+
+      chunk.forEach((item, idx) => {
+        const globalIdx = start + idx;
+        const isAdminApproved = item.status === 'admin_approved';
+        const isEdited = item.status === 'edited';
+
+        let statusBadge = '';
+        if (isAdminApproved) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/50 text-[10px] font-bold flex items-center gap-1 shadow-sm" title="Финально утверждено Главным Редактором в релиз">👑 В релизе</span>`;
+        } else if (item.up > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold flex items-center gap-1" title="Одобрено сообществом (+${item.up} голосов)">👍 Одобрено (+${item.up})</span>`;
+        } else if (isEdited) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-500/30 text-[10px] font-semibold flex items-center gap-1">✏️ Отредактировано</span>`;
+        } else {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-yellow-950/60 text-yellow-400/90 border border-yellow-500/20 text-[10px] font-medium">⏳ Ждёт проверки</span>`;
+        }
+
+        const clauseBadge = item.clause
+          ? `<span class="px-1.5 py-0.5 rounded bg-[#21262d] text-gray-400 border border-[#30363d] text-[10px] font-medium" title="Фрагмент составного предложения игры">🔗 Фрагмент</span>`
+          : '';
+
+        const suggCount = item.suggestions ? item.suggestions.length : 0;
+        const suggBadge = suggCount > 0
+          ? `<span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30 text-[10px] font-semibold flex items-center gap-1">💡 ${suggCount} вар.</span>`
+          : '';
+
+        const histCount = item.history ? item.history.length : 0;
+        const histBadge = histCount > 0
+          ? `<button onclick="openDiffModal(${item.id})" class="px-2 py-0.5 rounded bg-sky-950 hover:bg-sky-900 text-sky-300 border border-sky-500/40 text-[10px] font-medium transition flex items-center gap-1 shadow-sm" title="Посмотреть историю правок и визуальное сравнение версий">
+              <span>📜 История (${histCount})</span>
+            </button>`
+          : '';
+
+        const qaBadge = (item.qa_warnings && item.qa_warnings.length > 0)
+          ? `<span class="px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-500/40 text-[10px] font-bold" title="${item.qa_warnings.join('; ')}">⚠️ QA Ошибка</span>`
+          : '';
+
+        const eventBtn = item.event_id
+          ? `<button onclick="openEventModal(${item.id})" class="px-2 py-0.5 rounded bg-brand-950 hover:bg-brand-900 text-brand-400 border border-brand-500/40 text-[10px] font-medium transition flex items-center gap-1 shadow-sm" title="Открыть весь квест целиком со всеми выборами и исходами">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              <span>Событие</span>
+            </button>`
+          : '';
+
+        const upActiveClass = item.user_vote === 1 ? 'bg-emerald-600 text-white font-bold' : 'hover:bg-[#30363d] text-zen-muted';
+        const downActiveClass = item.user_vote === -1 ? 'bg-red-600 text-white font-bold' : 'hover:bg-[#30363d] text-zen-muted';
+
+        const itemVars = extractVariables(item.en);
+
+        html += `
+          <div class="zen-card bg-[#161b22] border ${isAdminApproved ? 'admin-approved-glow' : 'border-[#30363d]'} hover:border-[#484f58] rounded-xl p-4 md:p-5 transition-all shadow-sm relative group" id="card-${item.id}" data-id="${item.id}" data-idx="${globalIdx}" onclick="setFocusIndex(${globalIdx})">
+            
+            <!-- Card Header: Metadata & Actions -->
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-[#30363d]/50 text-xs text-zen-muted">
+              
+              <!-- Left: Badges & Key -->
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded bg-[#21262d] text-zen-muted text-[11px] font-medium border border-[#30363d]">
+                  ${item.comp_name}
+                </span>
+                ${statusBadge}
+                ${suggBadge}
+                ${histBadge}
+                ${clauseBadge}
+                ${qaBadge}
+                ${eventBtn}
+                <span class="font-mono text-gray-400 text-[11px] truncate max-w-xs md:max-w-sm ml-1 cursor-pointer hover:text-white transition flex items-center gap-1" title="Нажмите, чтобы скопировать ключ" onclick="copyKey('${item.key.replace(/'/g, "\\'")}')">
+                  ${item.key}
+                  <svg class="w-3 h-3 text-gray-500 hover:text-gray-300 inline opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </span>
+              </div>
+
+              <!-- Right: Community Evaluation & Admin Controls -->
+              <div class="flex items-center gap-2">
+                
+                <!-- Community Upvote / Downvote Widget (1 vote per person) -->
+                <div class="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg overflow-hidden text-xs shadow-inner">
+                  <button onclick="vote(${item.id}, 1)" class="px-2.5 py-1 ${upActiveClass} transition flex items-center gap-1.5" title="Одобряю текущий перевод (+1)">
+                    <span>👍</span>
+                    <span class="font-mono text-[11px]">${item.up || 0}</span>
+                  </button>
+                  <div class="w-[1px] h-4 bg-[#30363d]"></div>
+                  <button onclick="vote(${item.id}, -1)" class="px-2 py-1 ${downActiveClass} transition flex items-center gap-1" title="Не нравится / Требует доработки (-1)">
+                    <span>👎</span>
+                  </button>
+                </div>
+
+                <!-- Propose Alternative / Suggestion Button (Available to Everyone) -->
+                <button onclick="openSuggestModal(${item.id})" class="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-amber-300 hover:text-amber-200 rounded-lg text-[11px] font-medium transition border border-amber-500/30 flex items-center gap-1.5 shadow-sm" title="Предложить свой улучшенный вариант перевода">
+                  <span>💡</span>
+                  <span>Предложить вариант</span>
+                </button>
+
+                <!-- Admin Master Approve Button (Only Admin can lock into official release) -->
+                ${isAdmin ? `
+                  ${isAdminApproved ? `
+                    <button onclick="toggleReview(${item.id})" class="px-3 py-1 bg-amber-950/80 text-amber-300 border border-amber-500/50 hover:bg-amber-900 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm" title="Снять финальное утверждение в релиз">
+                      <span>👑 В релизе (Снять)</span>
+                    </button>
+                  ` : `
+                    <button onclick="toggleReview(${item.id})" class="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg text-[11px] transition flex items-center gap-1.5 shadow-md" title="Утвердить этот вариант как официальный финальный релиз">
+                      <span>👑</span>
+                      <span>Утвердить в релиз</span>
+                    </button>
+                  `}
+                  <button onclick="startEdit(${item.id})" class="px-2.5 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 hover:text-white rounded-lg text-[11px] transition border border-[#30363d] flex items-center gap-1" title="Отредактировать текст напрямую (Админ)">
+                    <span>✏️</span>
+                    <span>Править</span>
+                  </button>
+                ` : ''}
+
+              </div>
+
+            </div>
+
+            <!-- Content Body: Split-View vs Classic Card -->
+            ${isSplitView ? `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                <div class="p-3 bg-[#0d1117]/70 border border-[#30363d]/60 rounded-lg text-xs text-zen-muted leading-relaxed">
+                  <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">Оригинал (EN):</span>
+                  ${formatRichText(item.en, searchQuery, false)}
+                </div>
+                <div class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text" style="font-size: ${baseFontSize}px" onclick="${isAdmin ? `startEdit(${item.id})` : `openSuggestModal(${item.id})`}">
+                  ${formatRichText(item.ru, searchQuery)}
+                </div>
+              </div>
+            ` : `
+              <!-- Russian Main Text -->
+              <div 
+                class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text" 
+                style="font-size: ${baseFontSize}px"
+                onclick="${isAdmin ? `startEdit(${item.id})` : `openSuggestModal(${item.id})`}"
+                title="${isAdmin ? 'Нажмите для быстрого редактирования' : 'Нажмите, чтобы предложить свой вариант'}"
+              >
+                ${formatRichText(item.ru, searchQuery)}
+              </div>
+
+              <!-- Optional English Subtext -->
+              <div class="en-subtext mt-3 pt-2.5 border-t border-[#30363d]/40 text-xs text-zen-muted leading-relaxed ${showEnglish ? '' : 'hidden'}">
+                <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">Оригинал:</span>
+                ${formatRichText(item.en, searchQuery, false)}
+              </div>
+            `}
+
+            <!-- QA Warning Box if any -->
+            ${(item.qa_warnings && item.qa_warnings.length > 0) ? `
+              <div class="mt-2.5 p-2 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-300 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>${item.qa_warnings.join('. ')}</span>
+              </div>
+            ` : ''}
+
+            <!-- Community Suggestions / Variants List (if any) -->
+            ${(item.suggestions && item.suggestions.length > 0) ? `
+              <div class="mt-3.5 pt-3 border-t border-[#30363d]/60 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Предложенные варианты от сообщества (${item.suggestions.length}):</span>
+                  <span class="text-[10px] text-zen-muted">Голосуйте за лучший перевод</span>
+                </div>
+                ${item.suggestions.map(s => `
+                  <div class="p-3 bg-[#0d1117] border border-amber-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div class="flex-1 min-w-[220px]">
+                      <div class="text-white font-medium text-sm leading-relaxed">${formatRichText(s.text, '', false)}</div>
+                      ${s.comment ? `<div class="text-[11px] text-zen-muted mt-1 bg-[#161b22] px-2 py-0.5 rounded inline-block">💬 <i>${s.comment}</i></div>` : ''}
+                      <div class="text-[10px] text-gray-500 mt-1 font-mono">${s.ip} · ${s.created_at}</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button onclick="voteSuggestion(${item.id}, '${s.id}', 1)" class="px-2.5 py-1 ${s.user_vote === 1 ? 'bg-amber-600 text-black font-bold' : 'bg-[#21262d] text-zen-muted hover:text-white'} rounded-lg border border-[#30363d] font-mono text-xs flex items-center gap-1.5 transition" title="Поддержать этот вариант (+1)">
+                        <span>▲</span> <span>${s.score || 0}</span>
+                      </button>
+                      ${isAdmin ? `
+                        <button onclick="acceptSuggestion(${item.id}, '${s.id}')" class="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg text-[11px] transition shadow-md flex items-center gap-1" title="Утвердить этот вариант как официальный финальный релиз">
+                          <span>👑 Принять в канон</span>
+                        </button>
+                      ` : ''}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Inline Admin Direct Edit Form -->
+            ${isAdmin ? `
+              <div class="edit-form hidden mt-3 pt-3 border-t border-[#30363d]">
+                ${itemVars.length > 0 ? `
+                  <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-zen-muted">
+                    <span class="text-gray-500 text-[11px]">Вставить переменную:</span>
+                    ${itemVars.map(v => `
+                      <button type="button" onclick="insertVarAtCursor(${item.id}, '${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-brand-900 hover:text-brand-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm" title="Вставить переменную">
+                        + ${v}
+                      </button>
+                    `).join('')}
+                  </div>
+                ` : ''}
+                <textarea 
+                  class="edit-textarea w-full p-3 bg-[#0d1117] border border-brand-500/80 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-brand-500 leading-relaxed custom-scroll font-sans" 
+                  rows="4" 
+                  style="font-size: ${baseFontSize}px"
+                >${item.ru}</textarea>
+                <div class="flex items-center justify-between mt-2.5">
+                  <div class="flex items-center gap-2 text-xs text-zen-muted">
+                    <span class="edit-counter font-mono text-[11px]">Символов: ${item.ru.length}</span>
+                    <span>·</span>
+                    <kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-gray-300 font-mono text-[11px]">Ctrl+Enter</kbd> сохранить
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="cancelEdit(${item.id})" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md text-xs transition">
+                      Отмена
+                    </button>
+                    <button onclick="saveEdit(${item.id})" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md text-xs transition shadow-sm">
+                      👑 Сохранить и утвердить
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+
+          </div>
+        `;
+      });
+
+      if (start === 0) {
+        itemsContainer.innerHTML = html;
+      } else {
+        itemsContainer.insertAdjacentHTML('beforeend', html);
+      }
+
+      renderedCountEl.innerText = Math.min(limit, filteredData.length).toLocaleString();
+    }
+
+    function setFocusIndex(idx) {
+      currentFocusedIndex = idx;
+      document.querySelectorAll('.zen-card').forEach(c => c.classList.remove('active-focused-card'));
+      const item = filteredData[currentFocusedIndex];
+      if (item) {
+        const card = document.getElementById(`card-${item.id}`);
+        if (card) card.classList.add('active-focused-card');
+      }
+    }
+
+    // Zen Focus Mode Logic
+    function openFocusMode() {
+      if (filteredData.length === 0) return;
+      focusModal.classList.remove('hidden');
+      updateFocusCard();
+    }
+
+    function closeFocusMode() {
+      focusModal.classList.add('hidden');
+    }
+
+    function updateFocusCard() {
+      const item = filteredData[currentFocusedIndex];
+      if (!item) return;
+
+      focusCompName.innerText = item.comp_name;
+      focusCounter.innerText = `${currentFocusedIndex + 1} из ${filteredData.length.toLocaleString()}`;
+      focusEnText.innerHTML = `<span class="text-gray-500 font-semibold uppercase text-[11px] block mb-1">Оригинал:</span> ${formatRichText(item.en, '', false)}`;
+      focusRuText.innerHTML = formatRichText(item.ru, '');
+      
+      const approveBtn = document.getElementById('focusApproveBtn');
+      const isApproved = item.status === 'admin_approved';
+      
+      if (isApproved) {
+        approveBtn.className = 'px-5 py-2.5 bg-amber-950 text-amber-300 border border-amber-500/60 text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2';
+        approveBtn.innerHTML = '<span>👑 В релизе (Дальше)</span> <kbd class="px-1.5 py-0.5 bg-black/30 text-amber-200 rounded text-[11px] font-mono">Space</kbd>';
+      } else {
+        approveBtn.className = isAdmin 
+          ? 'px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-black text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2'
+          : 'px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2';
+        approveBtn.innerHTML = isAdmin 
+          ? '<span>👑 Утвердить в релиз</span> <kbd class="px-1.5 py-0.5 bg-black/20 text-black rounded text-[11px] font-mono">Space</kbd>'
+          : '<span>👍 Одобрить перевод</span> <kbd class="px-1.5 py-0.5 bg-brand-800 text-white rounded text-[11px] font-mono">Space</kbd>';
+      }
+    }
+
+    function nextFocusCard() {
+      if (currentFocusedIndex < filteredData.length - 1) {
+        currentFocusedIndex++;
+        updateFocusCard();
+        highlightFocusedCard();
+      }
+    }
+
+    function prevFocusCard() {
+      if (currentFocusedIndex > 0) {
+        currentFocusedIndex--;
+        updateFocusCard();
+        highlightFocusedCard();
+      }
+    }
+
+    async function approveFocusCard() {
+      const item = filteredData[currentFocusedIndex];
+      if (!item) return;
+      if (isAdmin) {
+        await toggleReview(item.id);
+      } else {
+        await vote(item.id, 1);
+      }
+      nextFocusCard();
+    }
+
+    // Visual Diff History Modal
+    function openDiffModal(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item || !item.history || item.history.length === 0) return;
+
+      diffModalKey.innerText = item.key;
+      diffModalBody.innerHTML = item.history.map((h, hIdx) => `
+        <div class="p-3.5 bg-[#0d1117] border border-[#30363d] rounded-lg space-y-2.5">
+          <div class="flex items-center justify-between text-[11px] text-zen-muted border-b border-[#30363d]/50 pb-1.5">
+            <span class="font-mono text-gray-400">Версия #${hIdx + 1} · ${h.date} (${h.actor})</span>
+          </div>
+          <div class="text-xs text-gray-200 leading-relaxed font-normal p-2 bg-[#161b22]/50 rounded border border-[#30363d]/40">
+            ${computeWordDiff(h.old, h.new)}
+          </div>
+        </div>
+      `).join('');
+
+      diffModal.classList.remove('hidden');
+    }
+
+    function closeDiffModal() {
+      diffModal.classList.add('hidden');
+    }
+
+    // Glossary Modal
+    function openGlossaryModal() {
+      glossaryModal.classList.remove('hidden');
+    }
+    function closeGlossaryModal() {
+      glossaryModal.classList.add('hidden');
+    }
+
+    // Stats Modal
+    function openStatsModal() {
+      const total = allData.length;
+      const comps = ['narrative', 'labels', 'extra', 'epilogue', 'remap', 'gdc-literal-fixes'];
+      const compNames = {
+        'narrative': 'Сюжет и события',
+        'labels': 'Интерфейс и метки',
+        'extra': 'Дополнительные строки',
+        'epilogue': 'Эпилоги и концовки',
+        'remap': 'Замены и нормализация',
+        'gdc-literal-fixes': 'Код и скрипты'
+      };
+
+      let html = `
+        <div class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg mb-3">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-white">Общий прогресс вычитки:</span>
+            <span class="font-mono text-brand-400 font-bold">${topProgressText.innerText}</span>
+          </div>
+          <div class="w-full bg-[#21262d] h-2 rounded-full overflow-hidden border border-[#30363d]">
+            <div class="bg-brand-500 h-full rounded-full" style="width: ${topProgressBar.style.width}"></div>
+          </div>
+        </div>
+        <div class="space-y-2">
+      `;
+
+      comps.forEach(c => {
+        const cItems = allData.filter(d => d.comp === c);
+        const cTotal = cItems.length;
+        const cApproved = cItems.filter(d => d.status === 'admin_approved').length;
+        const cPct = cTotal > 0 ? ((cApproved / cTotal) * 100).toFixed(1) : 0;
+
+        html += `
+          <div class="p-2.5 bg-[#0d1117] border border-[#30363d] rounded-lg">
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="font-medium text-gray-300">${compNames[c]}</span>
+              <span class="font-mono text-gray-400">${cPct}% (${cApproved.toLocaleString()} / ${cTotal.toLocaleString()} в релизе)</span>
+            </div>
+            <div class="w-full bg-[#21262d] h-1.5 rounded-full overflow-hidden">
+              <div class="bg-amber-500 h-full rounded-full" style="width: ${cPct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      statsModalBody.innerHTML = html;
+      statsModal.classList.remove('hidden');
+    }
+
+    function closeStatsModal() {
+      statsModal.classList.add('hidden');
+    }
+
+    // Toggle Mock vs Technical View
+    toggleMockBtn.onclick = () => {
+      mockMode = !mockMode;
+      mockBtnText.innerText = mockMode ? 'Живой текст' : 'Код (%s, %d)';
+      applyFilter(true);
+      showToast(mockMode ? 'Включен режим живого текста' : 'Включен технический вид (%s, %d)');
+    };
+
+    // Toggle Review Status (Admin Master Approval)
+    async function toggleReview(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+
+      const isCurrentlyApproved = item.status === 'admin_approved';
+      if (isCurrentlyApproved) {
+        return; // снятие одобрения не поддерживается на уровне строки --
+                 // статус живёт на предложениях, снимайте одобрение с
+                 // конкретного предложения через его карточку
+      }
+
+      try {
+        const res = await fetch('/api/admin_approve_line', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: item.uid })
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          item.status = 'admin_approved';
+        }
+
+        updateStats();
+        applyFilter(true);
+        if (item.status === 'admin_approved') {
+          showToast('👑 Строка утверждена в официальный релиз');
+        }
+      } catch (err) {
+        alert('Ошибка обновления статуса: ' + err.message);
+      }
+    }
+
+    // 1-IP Community Voting (Thumbs Up / Down)
+    async function vote(id, val) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+
+      try {
+        const res = await fetch('/api/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: item.uid, vote: val })
+        });
+        const data = await res.json();
+        
+        item.up = data.up;
+        item.down = data.down;
+        item.score = data.score;
+        item.user_vote = data.user_vote;
+
+        updateStats();
+        applyFilter(true);
+        if (data.user_vote === 1) {
+          showToast('👍 Вы одобрили этот перевод');
+        } else if (data.user_vote === -1) {
+          showToast('👎 Отмечено как требующее доработки');
+        } else {
+          showToast('Голос отменён');
+        }
+      } catch (err) {
+        alert('Ошибка при голосовании: ' + err.message);
+      }
+    }
+
+    // Suggestion Modal & Proposal Handling
+    function openSuggestModal(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      activeSuggestId = id;
+      suggestModalKey.innerText = item.key;
+      suggestCurrentRu.innerHTML = formatRichText(item.ru, '', false);
+      suggestInput.value = item.ru;
+      suggestComment.value = '';
+
+      const vars = extractVariables(item.en);
+      if (vars.length > 0) {
+        suggestVarChips.innerHTML = `
+          <span class="text-gray-500 text-[11px]">Вставить:</span>
+          ${vars.map(v => `
+            <button type="button" onclick="insertVarInSuggest('${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-amber-900 hover:text-amber-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm">
+              + ${v}
+            </button>
+          `).join('')}
+        `;
+      } else {
+        suggestVarChips.innerHTML = '';
+      }
+
+      suggestModal.classList.remove('hidden');
+      setTimeout(() => suggestInput.focus(), 50);
+    }
+
+    function closeSuggestModal() {
+      suggestModal.classList.add('hidden');
+    }
+
+    async function submitSuggestion() {
+      const item = allData.find(d => d.id === activeSuggestId);
+      if (!item) return;
+
+      const text = suggestInput.value.trim();
+      const comment = suggestComment.value.trim();
+      if (!text) return;
+
+      try {
+        await fetch('/api/suggest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            uid: item.uid,
+            text: text,
+            comment: comment
+          })
+        });
+
+        closeSuggestModal();
+        showToast('💡 Ваш вариант перевода опубликован для голосования!');
+        
+        const res = await fetch('/api/data');
+        allData = (await res.json()).items;
+        updateStats();
+        applyFilter(true);
+      } catch (err) {
+        alert('Ошибка отправки варианта: ' + err.message);
+      }
+    }
+
+    async function voteSuggestion(id, sugId, voteVal) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      try {
+        await fetch('/api/vote_suggestion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: item.uid, sug_id: sugId, vote: voteVal })
+        });
+        
+        const res = await fetch('/api/data');
+        allData = (await res.json()).items;
+        updateStats();
+        applyFilter(true);
+      } catch (err) {
+        alert('Ошибка голосования за вариант: ' + err.message);
+      }
+    }
+
+    async function acceptSuggestion(id, sugId) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      if (!confirm('👑 Принять этот вариант как официальный релизный перевод игры?')) return;
+      try {
+        await fetch('/api/accept_suggestion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: item.uid, sug_id: sugId })
+        });
+        showToast('👑 Вариант принят и утверждён в релиз!');
+        
+        const res = await fetch('/api/data');
+        allData = (await res.json()).items;
+        updateStats();
+        applyFilter(true);
+      } catch (err) {
+        alert('Ошибка принятия варианта: ' + err.message);
+      }
+    }
+
+    // Story Event Context Modal Logic
+    function openEventModal(id) {
+      const currentItem = allData.find(d => d.id === id);
+      if (!currentItem || !currentItem.event_id) return;
+
+      const eventId = currentItem.event_id;
+      modalEventId.innerText = eventId;
+      const eventItems = allData.filter(d => d.event_id === eventId || d.key.startsWith(eventId));
+      
+      const titleItem = eventItems.find(d => d.event_role === 'title' || d.key.endsWith('_title'));
+      const msgItem = eventItems.find(d => d.event_role === 'message' || d.key.endsWith('_message'));
+      const choices = {};
+
+      eventItems.forEach(d => {
+        const m = d.key.match(/choice_(\d+)_(label|log|fail)/);
+        if (m) {
+          const num = m[1];
+          const type = m[2];
+          choices[num] = choices[num] || {};
+          choices[num][type] = d;
+        }
+      });
+
+      let modalHtml = '';
+
+      if (titleItem) {
+        modalHtml += `
+          <div class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg">
+            <span class="text-[10px] text-brand-500 font-semibold uppercase tracking-wider block mb-1">Заголовок события</span>
+            <h3 class="text-base font-bold text-white">${formatRichText(titleItem.ru, '', false)}</h3>
+          </div>
+        `;
+      }
+
+      if (msgItem) {
+        modalHtml += `
+          <div class="p-4 bg-[#0d1117] border border-[#30363d] rounded-lg">
+            <span class="text-[10px] text-zen-muted font-semibold uppercase tracking-wider block mb-1.5">Сюжетная завязка</span>
+            <div class="text-sm text-gray-200 leading-relaxed">${formatRichText(msgItem.ru, '', false)}</div>
+          </div>
+        `;
+      }
+
+      modalHtml += `<div class="space-y-3 pt-2">
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Варианты решений и последствия</span>
+      `;
+
+      Object.keys(choices).sort().forEach(num => {
+        const ch = choices[num];
+        const isCurrent = (ch.log && ch.log.id === id) || (ch.label && ch.label.id === id);
+        
+        modalHtml += `
+          <div class="p-3.5 bg-[#0d1117] border ${isCurrent ? 'border-brand-500/80 bg-brand-950/20' : 'border-[#30363d]'} rounded-lg space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-brand-900/60 border border-brand-500/40 text-brand-400 text-xs flex items-center justify-center font-bold font-mono">${parseInt(num)+1}</span>
+              <span class="font-bold text-sm text-white">${ch.label ? formatRichText(ch.label.ru, '', false) : 'Решение #' + num}</span>
+              ${isCurrent ? '<span class="ml-auto text-[10px] px-2 py-0.5 rounded bg-brand-500 text-black font-bold">Текущая строка</span>' : ''}
+            </div>
+            ${ch.log ? `<div class="text-xs text-gray-300 pl-7 border-l-2 border-[#30363d] ml-2.5 py-0.5 leading-relaxed">${formatRichText(ch.log.ru, '', false)}</div>` : ''}
+          </div>
+        `;
+      });
+
+      modalHtml += `</div>`;
+      modalEventBody.innerHTML = modalHtml;
+      eventModal.classList.remove('hidden');
+    }
+
+    function closeEventModal() {
+      eventModal.classList.add('hidden');
+    }
+
+    function openShortcutsModal() {
+      shortcutsModal.classList.remove('hidden');
+    }
+    function closeShortcutsModal() {
+      shortcutsModal.classList.add('hidden');
+    }
+
+    // Direct Edit Functionality (Admin Only)
+    function startEdit(id) {
+      if (!isAdmin) {
+        openSuggestModal(id);
+        return;
+      }
+      const card = document.getElementById(`card-${id}`);
+      if (!card) return;
+      card.querySelector('.ru-text-display').classList.add('hidden');
+      const form = card.querySelector('.edit-form');
+      form.classList.remove('hidden');
+      const ta = form.querySelector('.edit-textarea');
+      const counter = form.querySelector('.edit-counter');
+      ta.focus();
+      
+      ta.style.height = 'auto';
+      ta.style.height = (ta.scrollHeight + 10) + 'px';
+
+      ta.oninput = () => {
+        if (counter) counter.innerText = `Символов: ${ta.value.length}`;
+      };
+
+      ta.onkeydown = (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          saveEdit(id);
+        } else if (e.key === 'Escape') {
+          cancelEdit(id);
+        }
+      };
+    }
+
+    function cancelEdit(id) {
+      const card = document.getElementById(`card-${id}`);
+      if (!card) return;
+      card.querySelector('.edit-form').classList.add('hidden');
+      card.querySelector('.ru-text-display').classList.remove('hidden');
+    }
+
+    async function saveEdit(id) {
+      const item = allData.find(d => d.id === id);
+      const card = document.getElementById(`card-${id}`);
+      if (!item || !card) return;
+
+      const ta = card.querySelector('.edit-textarea');
+      const newRu = ta.value.trim();
+
+      try {
+        const res = await fetch('/api/suggest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            uid: item.uid,
+            text: newRu,
+            comment: ''
+          })
+        });
+        const respData = await res.json();
+
+        updateStats();
+        applyFilter(true);
+
+        showToast('💡 Ваш вариант перевода отправлен на голосование сообщества');
+      } catch (err) {
+        alert('Ошибка при сохранении: ' + err.message);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    // Search events
+    let searchDebounce = null;
+    searchInput.oninput = (e) => {
+      searchQuery = e.target.value;
+      if (searchQuery) {
+        clearSearchBtn.classList.remove('hidden');
+      } else {
+        clearSearchBtn.classList.add('hidden');
+      }
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        applyFilter();
+      }, 50);
+    };
+
+    clearSearchBtn.onclick = () => {
+      clearSearchQuery();
+    };
+
+    function clearSearchQuery() {
+      searchInput.value = '';
+      searchQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      applyFilter();
+      searchInput.focus();
+    }
+
+    function clearAllFilters() {
+      activeStatus = 'all';
+      activeComponent = 'all';
+      clearSearchQuery();
+      document.querySelectorAll('.status-btn, .comp-btn').forEach(b => {
+        b.classList.remove('bg-brand-600', 'bg-amber-600', 'text-white', 'text-black', 'font-bold');
+        b.classList.add('bg-[#21262d]', 'text-zen-muted');
+      });
+      document.querySelector('.status-btn[data-status="all"]').classList.add('bg-brand-600', 'text-white');
+      document.querySelector('.comp-btn[data-comp="all"]').classList.add('bg-brand-600', 'text-white');
+      applyFilter();
+    }
+
+    // Status Filter buttons
+    document.querySelectorAll('.status-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.status-btn').forEach(b => {
+          b.classList.remove('bg-brand-600', 'bg-amber-600', 'text-white', 'text-black', 'font-bold');
+          b.classList.add('bg-[#21262d]', 'text-zen-muted');
+        });
+        if (btn.dataset.status === 'admin_queue') {
+          btn.classList.add('bg-amber-600', 'text-black', 'font-bold');
+        } else {
+          btn.classList.add('bg-brand-600', 'text-white');
+        }
+        btn.classList.remove('bg-[#21262d]', 'text-zen-muted');
+
+        activeStatus = btn.dataset.status;
+        applyFilter();
+      };
+    });
+
+    // Component Section buttons
+    document.querySelectorAll('.comp-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.comp-btn').forEach(b => {
+          b.classList.remove('bg-brand-600', 'text-white');
+          b.classList.add('bg-[#21262d]', 'text-zen-muted');
+        });
+        btn.classList.add('bg-brand-600', 'text-white');
+        btn.classList.remove('bg-[#21262d]', 'text-zen-muted');
+
+        activeComponent = btn.dataset.comp;
+        applyFilter();
+      };
+    });
+
+    // Toggle English Subtext
+    toggleEnBtn.onclick = () => {
+      showEnglish = !showEnglish;
+      enBtnText.innerText = showEnglish ? 'Скрыть оригинал' : 'Оригинал';
+      document.querySelectorAll('.en-subtext').forEach(el => {
+        if (showEnglish) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+    };
+
+    // Font size controls
+    fontIncBtn.onclick = () => {
+      if (baseFontSize < 24) {
+        baseFontSize += 2;
+        updateFontSize();
+      }
+    };
+    fontDecBtn.onclick = () => {
+      if (baseFontSize > 12) {
+        baseFontSize -= 2;
+        updateFontSize();
+      }
+    };
+    function updateFontSize() {
+      fontSizeDisplay.innerText = baseFontSize + 'px';
+      document.querySelectorAll('.ru-text-display, .edit-textarea').forEach(el => {
+        el.style.fontSize = baseFontSize + 'px';
+      });
+    }
+
+    // Infinite Scrolling
+    window.onscroll = () => {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+        if (renderedLimit < filteredData.length) {
+          const nextLimit = renderedLimit + 50;
+          renderItems(renderedLimit, nextLimit);
+          renderedLimit = nextLimit;
+        }
+      }
+    };
+
+    // Keyboard Hotkeys
+    window.addEventListener('keydown', (e) => {
+      const isInputActive = document.activeElement === searchInput || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT';
+      
+      if (e.key === '/' && !isInputActive) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+        return;
+      }
+      
+      if (e.key === 'Escape') {
+        if (!focusModal.classList.contains('hidden')) closeFocusMode();
+        if (!eventModal.classList.contains('hidden')) closeEventModal();
+        if (!diffModal.classList.contains('hidden')) closeDiffModal();
+        if (!glossaryModal.classList.contains('hidden')) closeGlossaryModal();
+        if (!statsModal.classList.contains('hidden')) closeStatsModal();
+        if (!suggestModal.classList.contains('hidden')) closeSuggestModal();
+        if (!shortcutsModal.classList.contains('hidden')) closeShortcutsModal();
+        return;
+      }
+
+      // Hotkeys in Zen Focus Mode
+      if (!focusModal.classList.contains('hidden') && !isInputActive) {
+        if (e.key === ' ' || e.key === 'v' || e.key === 'V') {
+          e.preventDefault();
+          approveFocusCard();
+        } else if (e.key === 'j' || e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          nextFocusCard();
+        } else if (e.key === 'k' || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          prevFocusCard();
+        }
+        return;
+      }
+
+      if (!isInputActive && filteredData.length > 0) {
+        if (e.key === 'z' || e.key === 'Z') {
+          openFocusMode();
+          return;
+        }
+
+        if (e.key === 'm' || e.key === 'M') {
+          toggleMockBtn.click();
+          return;
+        }
+
+        if (e.key === 'v' || e.key === 'V' || e.code === 'Space') {
+          e.preventDefault();
+          const item = filteredData[currentFocusedIndex];
+          if (item) {
+            if (isAdmin) {
+              toggleReview(item.id);
+            } else {
+              vote(item.id, 1);
+            }
+            if (currentFocusedIndex < filteredData.length - 1) {
+              currentFocusedIndex++;
+              highlightFocusedCard();
+            }
+          }
+        } else if (e.key === 'j' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (currentFocusedIndex < filteredData.length - 1) {
+            currentFocusedIndex++;
+            highlightFocusedCard();
+          }
+        } else if (e.key === 'k' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (currentFocusedIndex > 0) {
+            currentFocusedIndex--;
+            highlightFocusedCard();
+          }
+        } else if (e.key === 'e' || e.key === 'E') {
+          e.preventDefault();
+          const item = filteredData[currentFocusedIndex];
+          if (item) {
+            if (isAdmin) startEdit(item.id);
+            else openSuggestModal(item.id);
+          }
+        }
+      }
+    });
+
+    function highlightFocusedCard() {
+      document.querySelectorAll('.zen-card').forEach(c => c.classList.remove('active-focused-card'));
+      const item = filteredData[currentFocusedIndex];
+      if (item) {
+        const card = document.getElementById(`card-${item.id}`);
+        if (card) {
+          card.classList.add('active-focused-card');
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

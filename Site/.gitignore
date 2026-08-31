@@ -1,0 +1,10 @@
+# Секреты
+.env
+
+# Данные и состояние: не версионируем
+data/
+zen_review.db
+zen_state.json*
+
+__pycache__/
+*.pyc

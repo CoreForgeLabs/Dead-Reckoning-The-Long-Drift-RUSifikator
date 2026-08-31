@@ -99,7 +99,7 @@
       
       <!-- Brand & Progress Summary -->
       <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-brand-950/80 border border-brand-500/30 flex items-center justify-center text-brand-500 shadow-sm cursor-pointer hover:bg-brand-900 transition" onclick="openStatsModal()" title="Нажмите для подробной статистики по разделам">
+        <div class="w-8 h-8 rounded-lg bg-brand-950/80 border border-brand-500/30 flex items-center justify-center text-brand-500 shadow-sm cursor-pointer hover:bg-brand-900 transition" onclick="openStatsModal()" data-i18n-title="header.statsTitle">
           <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor" fill-opacity="0.15"/>
           </svg>
@@ -107,10 +107,10 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-sm font-bold text-white">Dead Reckoning</h1>
-            <span class="text-[10px] tracking-wider px-2 py-0.5 rounded bg-[#21262d] text-brand-500 border border-brand-500/20 font-semibold uppercase">Краудсорсинг Вычитки</span>
+            <span class="text-[10px] tracking-wider px-2 py-0.5 rounded bg-[#21262d] text-brand-500 border border-brand-500/20 font-semibold uppercase" data-i18n="brand.badge">Краудсорсинг Вычитки</span>
           </div>
           <!-- Tiny Live Progress Bar -->
-          <div class="flex items-center gap-2 mt-0.5 cursor-pointer" onclick="openStatsModal()" title="Открыть статистику">
+          <div class="flex items-center gap-2 mt-0.5 cursor-pointer" onclick="openStatsModal()" data-i18n-title="header.progressTitle">
             <div class="w-28 bg-[#21262d] h-1.5 rounded-full overflow-hidden border border-[#30363d]/60">
               <div id="topProgressBar" class="bg-brand-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
@@ -131,6 +131,7 @@
             type="text" 
             id="searchInput"
             placeholder="Поиск по тексту, переменным или авторам... (нажмите /)"
+            data-i18n-placeholder="search.placeholder"
             class="w-full pl-9 pr-9 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-lg text-xs text-white placeholder-zen-muted focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-inner"
             autocomplete="off"
           />
@@ -146,48 +147,53 @@
       <!-- Header Action Buttons -->
       <div class="flex items-center gap-2 text-xs">
         
-        <!-- Admin Role Toggle -->
-        <button id="adminToggleBtn" onclick="toggleAdminRole()" class="px-2.5 py-1.5 rounded-md bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 font-bold shadow-sm" title="Переключить между режимом Главного Редактора (Админа) и Участника">
-          <span id="adminBtnIcon">👑</span>
-          <span id="adminBtnText">Админ</span>
+        <!-- Interface Language Toggle -->
+        <button onclick="setLang(lang === 'ru' ? 'en' : 'ru')" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1 font-mono font-bold text-xs" data-i18n-title="lang.title">
+          🌐 <span id="langBtnText">EN</span>
         </button>
 
-        <button onclick="changeNickname()" class="text-xs px-2 py-1 rounded hover:bg-white/10" title="Задать ник, видимый в истории правок">
-          ✏️ Ник
+        <!-- Admin Role Toggle -->
+        <button id="adminToggleBtn" onclick="toggleAdminRole()" class="px-2.5 py-1.5 rounded-md bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 font-bold shadow-sm" data-i18n-title="admin.toggleTitle">
+          <span id="adminBtnIcon">👑</span>
+          <span id="adminBtnText" data-i18n="admin.btn">Админ</span>
+        </button>
+
+        <button onclick="changeNickname()" class="text-xs px-2 py-1 rounded hover:bg-white/10" data-i18n-title="nickname.title">
+          ✏️ <span data-i18n="nickname.btn">Ник</span>
         </button>
 
         <!-- Zen Fullscreen Focus Mode -->
-        <button onclick="openFocusMode()" class="px-2.5 py-1.5 rounded-md bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 transition flex items-center gap-1.5 font-medium shadow-sm" title="Полноэкранный режим скоростной вычитки одной кнопкой (Z)">
-          <span>⚡ Zen Фокус</span>
+        <button onclick="openFocusMode()" class="px-2.5 py-1.5 rounded-md bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 transition flex items-center gap-1.5 font-medium shadow-sm" data-i18n-title="focus.title">
+          <span>⚡ <span data-i18n="focus.btn">Zen Фокус</span></span>
         </button>
 
         <!-- View Layout Toggle: Cards vs Split-View -->
-        <button id="toggleLayoutBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" title="Переключить между обычными карточками и двухколоночным режимом">
+        <button id="toggleLayoutBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" data-i18n-title="layout.title">
           <span id="layoutBtnIcon">📑</span>
-          <span id="layoutBtnText">2 Колонки</span>
+          <span id="layoutBtnText" data-i18n="layout.btnColumns">2 Колонки</span>
         </button>
 
         <!-- Lore Glossary Modal -->
-        <button onclick="openGlossaryModal()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" title="Глоссарий терминов лора и каноничных названий">
-          <span>📖 Глоссарий</span>
+        <button onclick="openGlossaryModal()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" data-i18n-title="glossary.title">
+          <span>📖 <span data-i18n="glossary.btn">Глоссарий</span></span>
         </button>
 
         <!-- Live Mock Preview Toggle -->
-        <button id="toggleMockBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" title="Подставлять имена и числа вместо %s и %d (M)">
+        <button id="toggleMockBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium" data-i18n-title="mock.title">
           <svg class="w-3.5 h-3.5 text-zen-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-          <span id="mockBtnText">Живой текст</span>
+          <span id="mockBtnText" data-i18n="mock.btnLive">Живой текст</span>
         </button>
 
         <!-- Toggle English Subtitle -->
         <button id="toggleEnBtn" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
-          <span id="enBtnText">Оригинал</span>
+          <span id="enBtnText" data-i18n="original.btnShow">Оригинал</span>
         </button>
 
         <!-- Shortcuts Modal Button -->
-        <button onclick="openShortcutsModal()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1 font-medium text-xs shadow-sm" title="Открыть список горячих клавиш">
+        <button onclick="openShortcutsModal()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1 font-medium text-xs shadow-sm" data-i18n-title="shortcuts.title">
           <span>⌨️</span>
-          <span class="hidden md:inline">Клавиши</span>
+          <span class="hidden md:inline" data-i18n="shortcuts.btn">Клавиши</span>
         </button>
 
         <!-- Font Size Adjuster -->
@@ -198,9 +204,9 @@
         </div>
 
         <!-- ZIP Backup -->
-        <a href="/api/backup" download class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1" title="Скачать полный ZIP бэкап перевода">
+        <a href="/api/backup" download class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1" data-i18n-title="backup.title">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span class="hidden sm:inline">Бэкап</span>
+          <span class="hidden sm:inline" data-i18n="backup.btn">Бэкап</span>
         </a>
       </div>
 
@@ -212,38 +218,38 @@
       <!-- Primary Status & Queue Filters -->
       <div class="flex items-center gap-1 overflow-x-auto custom-scroll pb-0.5">
         <button class="status-btn px-2.5 py-1 rounded-md bg-brand-600 text-white font-medium transition flex items-center gap-1" data-status="all">
-          <span>Все</span> <span class="opacity-75 font-mono" id="stat-all">(0)</span>
+          <span data-i18n="status.all">Все</span> <span class="opacity-75 font-mono" id="stat-all">(0)</span>
         </button>
 
         <!-- Admin Priority Queue Tab -->
-        <button class="status-btn px-2.5 py-1 rounded-md bg-amber-950/70 text-amber-300 hover:bg-amber-900 border border-amber-500/40 transition flex items-center gap-1 font-semibold" data-status="admin_queue" title="Строки с голосами и предложениями сообщества, ожидающие утверждения админом">
-          <span>🔥 Очередь на утверждение</span> <span class="opacity-90 font-mono" id="stat-admin-queue">(0)</span>
+        <button class="status-btn px-2.5 py-1 rounded-md bg-amber-950/70 text-amber-300 hover:bg-amber-900 border border-amber-500/40 transition flex items-center gap-1 font-semibold" data-status="admin_queue" data-i18n-title="status.adminQueueTitle">
+          <span data-i18n="status.adminQueue">🔥 Очередь на утверждение</span> <span class="opacity-90 font-mono" id="stat-admin-queue">(0)</span>
         </button>
 
-        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-amber-400 hover:text-amber-300 transition flex items-center gap-1 border border-amber-500/20" data-status="admin_approved" title="Окончательно утверждено Главным Редактором">
-          <span>👑 В релизе</span> <span class="opacity-75 font-mono" id="stat-approved">(0)</span>
+        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-amber-400 hover:text-amber-300 transition flex items-center gap-1 border border-amber-500/20" data-status="admin_approved" data-i18n-title="status.approvedTitle">
+          <span data-i18n="status.approved">👑 В релизе</span> <span class="opacity-75 font-mono" id="stat-approved">(0)</span>
         </button>
 
-        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-zen-muted hover:text-white transition flex items-center gap-1" data-status="has_suggestions" title="Строки с предложенными вариантами перевода">
-          <span>💡 С вариантами</span> <span class="opacity-75 font-mono" id="stat-suggestions">(0)</span>
+        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-zen-muted hover:text-white transition flex items-center gap-1" data-status="has_suggestions" data-i18n-title="status.suggestionsTitle">
+          <span data-i18n="status.suggestions">💡 С вариантами</span> <span class="opacity-75 font-mono" id="stat-suggestions">(0)</span>
         </button>
 
-        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-zen-muted hover:text-white transition flex items-center gap-1" data-status="unvoted" title="Строки, которые ещё никто не проверял и не оценивал">
+        <button class="status-btn px-2.5 py-1 rounded-md bg-[#21262d] text-zen-muted hover:text-white transition flex items-center gap-1" data-status="unvoted" data-i18n-title="status.unvotedTitle">
           <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-          <span>Без оценок</span> <span class="opacity-75 font-mono" id="stat-unvoted">(0)</span>
+          <span data-i18n="status.unvoted">Без оценок</span> <span class="opacity-75 font-mono" id="stat-unvoted">(0)</span>
         </button>
       </div>
 
       <!-- Component Section Tabs -->
       <div class="flex items-center gap-1 text-[11px] text-zen-muted overflow-x-auto custom-scroll">
-        <span class="text-gray-500 mr-1">Раздел:</span>
-        <button class="comp-btn px-2 py-0.5 rounded bg-brand-600 text-white font-medium transition" data-comp="all">Все</button>
-        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="narrative">Сюжет</button>
-        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="labels">Интерфейс</button>
-        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="extra">Дополнительно</button>
-        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="epilogue">Эпилоги</button>
-        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="remap">Замены</button>
-        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="gdc-literal-fixes">Код</button>
+        <span class="text-gray-500 mr-1" data-i18n="section.label">Раздел:</span>
+        <button class="comp-btn px-2 py-0.5 rounded bg-brand-600 text-white font-medium transition" data-comp="all" data-i18n="section.all">Все</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="narrative" data-i18n="section.narrative">Сюжет</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="labels" data-i18n="section.labels">Интерфейс</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="extra" data-i18n="section.extra">Дополнительно</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="epilogue" data-i18n="section.epilogue">Эпилоги</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="remap" data-i18n="section.remap">Замены</button>
+        <button class="comp-btn px-2 py-0.5 rounded bg-[#21262d] hover:text-white transition" data-comp="gdc-literal-fixes" data-i18n="section.gdc">Код</button>
       </div>
 
     </div>
@@ -255,30 +261,30 @@
     <!-- Quick Filter Chips & Batch Actions Row -->
     <div class="mb-4 flex flex-wrap items-center justify-between gap-2.5 text-xs">
       <div class="flex items-center gap-1.5 overflow-x-auto custom-scroll py-0.5">
-        <span class="text-gray-500 text-[11px] mr-1">Быстрый отбор:</span>
-        <button onclick="setSearchFilter('has:sugg')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-amber-400 border border-amber-500/20 text-[11px] transition">
+        <span class="text-gray-500 text-[11px] mr-1" data-i18n="quick.label">Быстрый отбор:</span>
+        <button onclick="setSearchFilter('has:sugg')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-amber-400 border border-amber-500/20 text-[11px] transition" data-i18n="quick.suggestions">
           💡 С предложениями
         </button>
-        <button onclick="setSearchFilter('has:var')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-sky-400 border border-sky-500/20 text-[11px] transition">
+        <button onclick="setSearchFilter('has:var')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-sky-400 border border-sky-500/20 text-[11px] transition" data-i18n="quick.variables">
           { } С переменными
         </button>
-        <button onclick="setSearchFilter('has:diff')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-emerald-400 border border-emerald-500/20 text-[11px] transition">
+        <button onclick="setSearchFilter('has:diff')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-emerald-400 border border-emerald-500/20 text-[11px] transition" data-i18n="quick.history">
           📜 С историей правок
         </button>
-        <button onclick="setSearchFilter('!ru ')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] text-[11px] transition">
+        <button onclick="setSearchFilter('!ru ')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] text-[11px] transition" data-i18n="quick.ru">
           🇷🇺 В русском
         </button>
-        <button onclick="setSearchFilter('!en ')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] text-[11px] transition">
+        <button onclick="setSearchFilter('!en ')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] text-[11px] transition" data-i18n="quick.en">
           🇬🇧 В английском
         </button>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="exportToCSV()" class="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] text-[11px] transition flex items-center gap-1" title="Выгрузить отфильтрованный список в CSV">
-          <span>📥 Экспорт CSV</span>
+        <button onclick="exportToCSV()" class="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] text-[11px] transition flex items-center gap-1" data-i18n-title="export.csvTitle">
+          <span data-i18n="export.csv">📥 Экспорт CSV</span>
         </button>
-        <button id="batchApproveBtn" onclick="batchApproveFiltered()" class="px-2.5 py-1 rounded bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 text-[11px] font-semibold transition flex items-center gap-1" title="Массово утвердить все показанные строки">
-          <span>✓ Одобрить все показанные</span>
+        <button id="batchApproveBtn" onclick="batchApproveFiltered()" class="px-2.5 py-1 rounded bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 text-[11px] font-semibold transition flex items-center gap-1" data-i18n-title="batch.approveTitle">
+          <span data-i18n="batch.approve">✓ Одобрить все показанные</span>
         </button>
       </div>
     </div>
@@ -288,11 +294,11 @@
       <div class="flex items-center gap-2.5">
         <span class="text-xl">👑</span>
         <div>
-          <span class="font-bold text-amber-300 text-sm">Режим Главного Редактора (Администратор)</span>
-          <p class="text-[11px] text-zen-muted">Вы можете в 1 клик утверждать проверенные людьми варианты перевода в официальный релиз или редактировать текст напрямую.</p>
+          <span class="font-bold text-amber-300 text-sm" data-i18n="adminBanner.title">Режим Главного Редактора (Администратор)</span>
+          <p class="text-[11px] text-zen-muted" data-i18n="adminBanner.desc">Вы можете в 1 клик утверждать проверенные людьми варианты перевода в официальный релиз или редактировать текст напрямую.</p>
         </div>
       </div>
-      <button onclick="switchToAdminQueue()" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg transition shadow text-xs whitespace-nowrap">
+      <button onclick="switchToAdminQueue()" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg transition shadow text-xs whitespace-nowrap" data-i18n="adminBanner.btn">
         🔥 Открыть проверенные людьми
       </button>
     </div>
@@ -300,8 +306,8 @@
     <!-- Loading Spinner -->
     <div id="loading" class="flex flex-col items-center justify-center py-20 text-center">
       <div class="w-10 h-10 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-      <p class="text-base font-medium text-white">Загрузка базы переводов...</p>
-      <p class="text-xs text-zen-muted mt-1">Индексация 13 547 строк для мгновенного поиска</p>
+      <p class="text-base font-medium text-white" data-i18n="loading.title">Загрузка базы переводов...</p>
+      <p class="text-xs text-zen-muted mt-1" data-i18n="loading.subtitle">Индексация строк для мгновенного поиска</p>
     </div>
 
     <!-- Empty Results -->
@@ -309,9 +315,9 @@
       <svg class="w-10 h-10 mx-auto text-zen-muted/50 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
       </svg>
-      <h3 class="text-base font-bold text-white mb-1">Ничего не найдено</h3>
-      <p class="text-xs text-zen-muted mb-4">Попробуйте изменить запрос или сбросить фильтры</p>
-      <button onclick="clearAllFilters()" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md text-xs font-medium transition">
+      <h3 class="text-base font-bold text-white mb-1" data-i18n="empty.title">Ничего не найдено</h3>
+      <p class="text-xs text-zen-muted mb-4" data-i18n="empty.desc">Попробуйте изменить запрос или сбросить фильтры</p>
+      <button onclick="clearAllFilters()" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md text-xs font-medium transition" data-i18n="empty.reset">
         Сбросить фильтры
       </button>
     </div>
@@ -321,7 +327,7 @@
 
     <!-- Infinite Scroll Trigger -->
     <div id="sentinel" class="py-8 text-center text-xs text-zen-muted flex items-center justify-center gap-2">
-      <span id="loadMoreText">Показано <span id="renderedCount" class="font-mono text-gray-300">0</span> из <span id="totalFiltered" class="font-mono text-gray-300">0</span></span>
+      <span id="loadMoreText"><span id="renderedCount" class="font-mono text-gray-300">0</span> / <span id="totalFiltered" class="font-mono text-gray-300">0</span></span>
     </div>
 
   </main>
@@ -330,12 +336,12 @@
   <div id="focusModal" class="fixed inset-0 z-50 bg-[#0d1117] hidden flex flex-col justify-between p-6 md:p-12 overflow-y-auto custom-scroll">
     <div class="max-w-4xl w-full mx-auto flex items-center justify-between pb-4 border-b border-[#30363d]">
       <div class="flex items-center gap-3">
-        <span class="px-2.5 py-1 rounded bg-brand-950 text-brand-400 border border-brand-500/30 text-xs font-bold uppercase">Zen Фокус</span>
+        <span class="px-2.5 py-1 rounded bg-brand-950 text-brand-400 border border-brand-500/30 text-xs font-bold uppercase" data-i18n="focus.badge">Zen Фокус</span>
         <span id="focusCompName" class="text-xs font-mono text-gray-400"></span>
         <span id="focusCounter" class="text-xs font-mono text-zen-muted">1 / 100</span>
       </div>
       <div class="flex items-center gap-3 text-xs">
-        <button onclick="closeFocusMode()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition font-medium">
+        <button onclick="closeFocusMode()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition font-medium" data-i18n="focus.exit">
           Выйти (Esc)
         </button>
       </div>
@@ -354,10 +360,10 @@
 
     <div class="max-w-4xl w-full mx-auto pt-4 border-t border-[#30363d] flex flex-wrap items-center justify-between gap-3 text-xs text-zen-muted">
       <div class="flex items-center gap-2">
-        <button onclick="prevFocusCard()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition flex items-center gap-1 font-mono">
+        <button onclick="prevFocusCard()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition flex items-center gap-1 font-mono" data-i18n="focus.back">
           ← Назад (K)
         </button>
-        <button onclick="nextFocusCard()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition flex items-center gap-1 font-mono">
+        <button onclick="nextFocusCard()" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md transition flex items-center gap-1 font-mono" data-i18n="focus.forward">
           Вперёд (J) →
         </button>
       </div>
@@ -375,7 +381,7 @@
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-950 text-brand-400 border border-brand-500/30">Сюжетное событие целиком</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-950 text-brand-400 border border-brand-500/30" data-i18n="event.badge">Сюжетное событие целиком</span>
           <span id="modalEventId" class="font-mono text-xs text-gray-300"></span>
         </div>
         <button onclick="closeEventModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
@@ -384,7 +390,7 @@
         <!-- Injected dynamically -->
       </div>
       <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end">
-        <button onclick="closeEventModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition">
+        <button onclick="closeEventModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition" data-i18n="event.close">
           Закрыть
         </button>
       </div>
@@ -396,7 +402,7 @@
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-500/30">История изменений и Diff</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-500/30" data-i18n="diff.badge">История изменений и Diff</span>
           <span id="diffModalKey" class="font-mono text-[11px] text-gray-400 truncate max-w-xs"></span>
         </div>
         <button onclick="closeDiffModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
@@ -405,7 +411,7 @@
         <!-- Injected dynamically -->
       </div>
       <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end">
-        <button onclick="closeDiffModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition">
+        <button onclick="closeDiffModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition" data-i18n="diff.close">
           Закрыть
         </button>
       </div>
@@ -417,18 +423,18 @@
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-500/30">Канон терминологии и лора</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-500/30" data-i18n="glossary.badge">Канон терминологии и лора</span>
         </div>
         <button onclick="closeGlossaryModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
       </div>
       <div class="p-5 overflow-y-auto custom-scroll space-y-3 text-xs">
-        <p class="text-zen-muted mb-3">Нажмите на любой термин, чтобы мгновенно отфильтровать все строки игры с его участием:</p>
+        <p class="text-zen-muted mb-3" data-i18n="glossary.hint">Нажмите на любой термин, чтобы мгновенно отфильтровать все строки игры с его участием:</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="glossaryGrid">
           <!-- Injected dynamically -->
         </div>
       </div>
       <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end">
-        <button onclick="closeGlossaryModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition">
+        <button onclick="closeGlossaryModal()" class="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-white rounded-md text-xs font-medium transition" data-i18n="glossary.close">
           Закрыть
         </button>
       </div>
@@ -439,7 +445,7 @@
   <div id="statsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-xl w-full p-5 shadow-2xl space-y-4 text-xs">
       <div class="flex items-center justify-between pb-2 border-b border-[#30363d]">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">Статистика вычитки проекта</h3>
+        <h3 class="text-sm font-bold text-white flex items-center gap-2" data-i18n="stats.title">Статистика вычитки проекта</h3>
         <button onclick="closeStatsModal()" class="text-zen-muted hover:text-white font-bold">✕</button>
       </div>
       <div id="statsModalBody" class="space-y-3">
@@ -453,14 +459,14 @@
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-xl w-full flex flex-col shadow-2xl overflow-hidden">
       <div class="px-5 py-3.5 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30">Предложить свой вариант перевода</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30" data-i18n="suggest.badge">Предложить свой вариант перевода</span>
           <span id="suggestModalKey" class="font-mono text-[11px] text-gray-400 truncate max-w-xs"></span>
         </div>
         <button onclick="closeSuggestModal()" class="text-zen-muted hover:text-white font-bold text-sm px-2 py-1 rounded">✕</button>
       </div>
       <div class="p-5 space-y-3.5 text-xs">
         <div>
-          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]">Текущий вариант:</label>
+          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]" data-i18n="suggest.currentLabel">Текущий вариант:</label>
           <div id="suggestCurrentRu" class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg text-gray-300 leading-relaxed"></div>
         </div>
 
@@ -468,19 +474,19 @@
         <div id="suggestVarChips" class="flex flex-wrap items-center gap-1.5 text-xs text-zen-muted"></div>
 
         <div>
-          <label class="block text-amber-400 mb-1 font-semibold uppercase text-[10px]">Ваш улучшенный перевод:</label>
-          <textarea id="suggestInput" class="w-full p-3 bg-[#0d1117] border border-amber-500/70 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-amber-500 leading-relaxed text-sm" rows="3" placeholder="Введите ваш вариант перевода..."></textarea>
+          <label class="block text-amber-400 mb-1 font-semibold uppercase text-[10px]" data-i18n="suggest.newLabel">Ваш улучшенный перевод:</label>
+          <textarea id="suggestInput" class="w-full p-3 bg-[#0d1117] border border-amber-500/70 rounded-lg text-white font-normal focus:outline-none focus:ring-1 focus:ring-amber-500 leading-relaxed text-sm" rows="3" placeholder="Введите ваш вариант перевода..." data-i18n-placeholder="suggest.inputPlaceholder"></textarea>
         </div>
         <div>
-          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]">Комментарий / аргументация (почему так лучше):</label>
-          <input id="suggestComment" type="text" class="w-full px-3 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-white placeholder-zen-muted text-xs focus:outline-none focus:border-amber-500" placeholder="Терминология лора, звучание фразы, точность..." />
+          <label class="block text-zen-muted mb-1 font-semibold uppercase text-[10px]" data-i18n="suggest.commentLabel">Комментарий / аргументация (почему так лучше):</label>
+          <input id="suggestComment" type="text" class="w-full px-3 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-white placeholder-zen-muted text-xs focus:outline-none focus:border-amber-500" placeholder="Терминология лора, звучание фразы, точность..." data-i18n-placeholder="suggest.commentPlaceholder" />
         </div>
       </div>
       <div class="px-5 py-3 border-t border-[#30363d] bg-[#1c2128] flex justify-end gap-2 text-xs">
-        <button onclick="closeSuggestModal()" class="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md transition">
+        <button onclick="closeSuggestModal()" class="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md transition" data-i18n="suggest.cancel">
           Отмена
         </button>
-        <button onclick="submitSuggestion()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md transition shadow-sm">
+        <button onclick="submitSuggestion()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md transition shadow-sm" data-i18n="suggest.submit">
           Отправить на голосование
         </button>
       </div>
@@ -491,32 +497,32 @@
   <div id="shortcutsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4 text-xs">
       <div class="flex items-center justify-between pb-2 border-b border-[#30363d]">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">Горячие клавиши для скоростной вычитки</h3>
+        <h3 class="text-sm font-bold text-white flex items-center gap-2" data-i18n="shortcuts.modalTitle">Горячие клавиши для скоростной вычитки</h3>
         <button onclick="closeShortcutsModal()" class="text-zen-muted hover:text-white font-bold">✕</button>
       </div>
       <div class="space-y-2 text-zen-muted">
         <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
-          <span>Одобрить / Утвердить и дальше</span>
-          <div class="flex gap-1"><kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold">Space</kbd> или <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold">V</kbd></div>
+          <span data-i18n="shortcuts.approve">Одобрить / Утвердить и дальше</span>
+          <div class="flex gap-1"><kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold">Space</kbd> <span data-i18n="shortcuts.or">или</span> <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold">V</kbd></div>
         </div>
         <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
-          <span>Следующая / предыдущая строка</span>
+          <span data-i18n="shortcuts.nav">Следующая / предыдущая строка</span>
           <div class="flex gap-1"><kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">J</kbd> / <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">K</kbd></div>
         </div>
         <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
-          <span>Полноэкранный Zen фокус режим</span>
+          <span data-i18n="shortcuts.zen">Полноэкранный Zen фокус режим</span>
           <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">Z</kbd>
         </div>
         <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
-          <span>Переключить живой текст (Mock)</span>
+          <span data-i18n="shortcuts.mock">Переключить живой текст (Mock)</span>
           <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">M</kbd>
         </div>
         <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
-          <span>Предложить вариант / Править</span>
+          <span data-i18n="shortcuts.suggest">Предложить вариант / Править</span>
           <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">E</kbd>
         </div>
         <div class="flex items-center justify-between p-1.5 bg-[#0d1117] rounded border border-[#30363d]">
-          <span>Быстрый поиск</span>
+          <span data-i18n="shortcuts.search">Быстрый поиск</span>
           <kbd class="px-2 py-0.5 bg-[#21262d] rounded text-white font-mono">/</kbd>
         </div>
       </div>
@@ -524,23 +530,23 @@
   </div>
 
   <!-- Floating Bottom Hotkeys Bar -->
-  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-[#161b22]/90 backdrop-blur-md border border-[#30363d] px-4 py-2 rounded-full shadow-2xl text-xs text-zen-muted flex items-center gap-3.5 z-30 hidden sm:flex cursor-pointer hover:border-brand-500/50 transition" onclick="openShortcutsModal()" title="Нажмите, чтобы открыть полный список клавиш">
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-[#161b22]/90 backdrop-blur-md border border-[#30363d] px-4 py-2 rounded-full shadow-2xl text-xs text-zen-muted flex items-center gap-3.5 z-30 hidden sm:flex cursor-pointer hover:border-brand-500/50 transition" onclick="openShortcutsModal()" data-i18n-title="hotkeys.hintTitle">
     <span class="text-gray-400 font-semibold flex items-center gap-1">⌨️</span>
-    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">Space</kbd> <span>Одобрить</span></span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">Space</kbd> <span data-i18n="hotkeys.approve">Одобрить</span></span>
     <span class="text-gray-600">·</span>
-    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono text-[11px]">J</kbd>/<kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono text-[11px]">K</kbd> <span>Листать</span></span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono text-[11px]">J</kbd>/<kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono text-[11px]">K</kbd> <span data-i18n="hotkeys.nav">Листать</span></span>
     <span class="text-gray-600">·</span>
-    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">Z</kbd> <span>Zen Фокус</span></span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">Z</kbd> <span data-i18n="hotkeys.zen">Zen Фокус</span></span>
     <span class="text-gray-600">·</span>
-    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">E</kbd> <span>Вариант</span></span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">E</kbd> <span data-i18n="hotkeys.suggest">Вариант</span></span>
     <span class="text-gray-600">·</span>
-    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">/</kbd> <span>Поиск</span></span>
+    <span class="flex items-center gap-1.5"><kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-white font-mono font-bold text-[11px]">/</kbd> <span data-i18n="hotkeys.search">Поиск</span></span>
   </div>
 
   <!-- Floating Toast -->
   <div id="toast" class="fixed bottom-6 right-6 px-4 py-2.5 bg-[#161b22] text-white border border-brand-500/50 rounded-lg shadow-2xl text-xs font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none z-50">
     <div class="w-4 h-4 rounded-full bg-brand-500 flex items-center justify-center text-black font-bold text-[10px]">✓</div>
-    <span id="toastMsg">Изменения сохранены</span>
+    <span id="toastMsg" data-i18n="toast.default">Изменения сохранены</span>
   </div>
 
   <script>
@@ -559,6 +565,416 @@
     let renderedLimit = 50;
     let currentFocusedIndex = 0;
     let activeSuggestId = null;
+
+    // Interface Language (RU/EN) -- this toggles the SITE's own chrome
+    // (buttons, labels, toasts), NOT the translated game text itself.
+    const I18N = {
+      ru: {
+        'brand.badge': 'Краудсорсинг Вычитки',
+        'header.statsTitle': 'Нажмите для подробной статистики по разделам',
+        'header.progressTitle': 'Открыть статистику',
+        'search.placeholder': 'Поиск по тексту, переменным или авторам... (нажмите /)',
+        'admin.toggleTitle': 'Переключить между режимом Главного Редактора (Админа) и Участника',
+        'admin.btn': 'Админ',
+        'admin.btnParticipant': 'Участник',
+        'nickname.title': 'Задать ник, видимый в истории правок',
+        'nickname.btn': 'Ник',
+        'lang.title': 'Переключить язык интерфейса сайта',
+        'focus.title': 'Полноэкранный режим скоростной вычитки одной кнопкой (Z)',
+        'focus.btn': 'Zen Фокус',
+        'layout.title': 'Переключить между обычными карточками и двухколоночным режимом',
+        'layout.btnColumns': '2 Колонки',
+        'layout.btnCards': 'Карточки',
+        'glossary.title': 'Глоссарий терминов лора и каноничных названий',
+        'glossary.btn': 'Глоссарий',
+        'mock.title': 'Подставлять имена и числа вместо %s и %d (M)',
+        'mock.btnLive': 'Живой текст',
+        'mock.btnCode': 'Код (%s, %d)',
+        'original.btnShow': 'Оригинал',
+        'original.btnHide': 'Скрыть оригинал',
+        'shortcuts.title': 'Открыть список горячих клавиш',
+        'shortcuts.btn': 'Клавиши',
+        'backup.title': 'Скачать полный ZIP бэкап перевода',
+        'backup.btn': 'Бэкап',
+        'status.all': 'Все',
+        'status.adminQueueTitle': 'Строки с голосами и предложениями сообщества, ожидающие утверждения админом',
+        'status.adminQueue': '🔥 Очередь на утверждение',
+        'status.approvedTitle': 'Окончательно утверждено Главным Редактором',
+        'status.approved': '👑 В релизе',
+        'status.suggestionsTitle': 'Строки с предложенными вариантами перевода',
+        'status.suggestions': '💡 С вариантами',
+        'status.unvotedTitle': 'Строки, которые ещё никто не проверял и не оценивал',
+        'status.unvoted': 'Без оценок',
+        'section.label': 'Раздел:',
+        'section.all': 'Все',
+        'section.narrative': 'Сюжет',
+        'section.labels': 'Интерфейс',
+        'section.extra': 'Дополнительно',
+        'section.epilogue': 'Эпилоги',
+        'section.remap': 'Замены',
+        'section.gdc': 'Код',
+        'quick.label': 'Быстрый отбор:',
+        'quick.suggestions': '💡 С предложениями',
+        'quick.variables': '{ } С переменными',
+        'quick.history': '📜 С историей правок',
+        'quick.ru': '🇷🇺 В русском',
+        'quick.en': '🇬🇧 В английском',
+        'export.csvTitle': 'Выгрузить отфильтрованный список в CSV',
+        'export.csv': '📥 Экспорт CSV',
+        'export.noData': 'Нет данных для выгрузки в текущем фильтре',
+        'batch.approveTitle': 'Массово утвердить все показанные строки',
+        'batch.approve': '✓ Одобрить все показанные',
+        'batch.adminOnly': 'Массовое утверждение в релиз доступно только в режиме Главного Редактора (Админа)',
+        'batch.allApproved': 'Все показанные строки уже утверждены в релиз!',
+        'batch.confirm': 'Утвердить в релиз сразу {n} показанных строк?',
+        'adminBanner.title': 'Режим Главного Редактора (Администратор)',
+        'adminBanner.desc': 'Вы можете в 1 клик утверждать проверенные людьми варианты перевода в официальный релиз или редактировать текст напрямую.',
+        'adminBanner.btn': '🔥 Открыть проверенные людьми',
+        'loading.title': 'Загрузка базы переводов...',
+        'loading.subtitle': 'Индексация строк для мгновенного поиска',
+        'empty.title': 'Ничего не найдено',
+        'empty.desc': 'Попробуйте изменить запрос или сбросить фильтры',
+        'empty.reset': 'Сбросить фильтры',
+        'sentinel.shown': 'Показано {n} из {m}',
+        'focus.badge': 'Zen Фокус',
+        'focus.back': '← Назад (K)',
+        'focus.forward': 'Вперёд (J) →',
+        'focus.exit': 'Выйти (Esc)',
+        'focus.approveDefault': '✓ Одобрить и дальше',
+        'focus.approveReleased': '👑 В релизе (Дальше)',
+        'focus.approveToRelease': '👑 Утвердить в релиз',
+        'focus.approveVote': '👍 Одобрить перевод',
+        'focus.of': '{i} из {n}',
+        'focus.original': 'Оригинал:',
+        'event.badge': 'Сюжетное событие целиком',
+        'event.title': 'Событие',
+        'event.btnTitle': 'Открыть весь квест целиком со всеми выборами и исходами',
+        'event.close': 'Закрыть',
+        'event.eventTitleLabel': 'Заголовок события',
+        'event.setupLabel': 'Сюжетная завязка',
+        'event.choicesLabel': 'Варианты решений и последствия',
+        'event.currentLine': 'Текущая строка',
+        'event.decision': 'Решение #',
+        'diff.badge': 'История изменений и Diff',
+        'diff.close': 'Закрыть',
+        'diff.version': 'Версия #{n}',
+        'diff.history': '📜 История ({n})',
+        'diff.historyTitle': 'Посмотреть историю правок и визуальное сравнение версий',
+        'glossary.badge': 'Канон терминологии и лора',
+        'glossary.hint': 'Нажмите на любой термин, чтобы мгновенно отфильтровать все строки игры с его участием:',
+        'glossary.close': 'Закрыть',
+        'stats.title': 'Статистика вычитки проекта',
+        'stats.overall': 'Общий прогресс вычитки:',
+        'stats.inRelease': 'в релизе',
+        'suggest.badge': 'Предложить свой вариант перевода',
+        'suggest.currentLabel': 'Текущий вариант:',
+        'suggest.newLabel': 'Ваш улучшенный перевод:',
+        'suggest.inputPlaceholder': 'Введите ваш вариант перевода...',
+        'suggest.commentLabel': 'Комментарий / аргументация (почему так лучше):',
+        'suggest.commentPlaceholder': 'Терминология лора, звучание фразы, точность...',
+        'suggest.cancel': 'Отмена',
+        'suggest.submit': 'Отправить на голосование',
+        'shortcuts.modalTitle': 'Горячие клавиши для скоростной вычитки',
+        'shortcuts.approve': 'Одобрить / Утвердить и дальше',
+        'shortcuts.or': 'или',
+        'shortcuts.nav': 'Следующая / предыдущая строка',
+        'shortcuts.zen': 'Полноэкранный Zen фокус режим',
+        'shortcuts.mock': 'Переключить живой текст (Mock)',
+        'shortcuts.suggest': 'Предложить вариант / Править',
+        'shortcuts.search': 'Быстрый поиск',
+        'hotkeys.hintTitle': 'Нажмите, чтобы открыть полный список клавиш',
+        'hotkeys.approve': 'Одобрить',
+        'hotkeys.nav': 'Листать',
+        'hotkeys.zen': 'Zen Фокус',
+        'hotkeys.suggest': 'Вариант',
+        'hotkeys.search': 'Поиск',
+        'toast.default': 'Изменения сохранены',
+        'toast.switchedToCommunity': '👥 Переключено в режим участника сообщества',
+        'toast.adminActivated': '👑 Режим администратора активирован',
+        'toast.keyCopied': 'Ключ скопирован в буфер обмена',
+        'toast.csvExported': 'CSV файл успешно выгружен!',
+        'toast.lineApproved': '👑 Строка утверждена в официальный релиз',
+        'toast.voteUp': '👍 Вы одобрили этот перевод',
+        'toast.voteDown': '👎 Отмечено как требующее доработки',
+        'toast.voteCancelled': 'Голос отменён',
+        'toast.suggestionPublished': '💡 Ваш вариант перевода опубликован для голосования!',
+        'toast.suggestionAccepted': '👑 Вариант принят и утверждён в релиз!',
+        'toast.suggestionSentFromCard': '💡 Ваш вариант перевода отправлен на голосование сообщества',
+        'toast.nicknameSet': 'Ник установлен: {n}',
+        'toast.nicknameReset': 'Ник сброшен',
+        'toast.splitViewOn': 'Включен 2-колоночный вид (Оригинал слева, Перевод справа)',
+        'toast.splitViewOff': 'Включен стандартный вид карточек',
+        'toast.batchApproved': '👑 Утверждено в релиз строк: {n}',
+        'nickname.prompt': 'Ваш ник (виден в истории правок):',
+        'admin.prompt': 'Код администратора:',
+        'admin.wrongCode': 'Неверный код',
+        'card.original': 'Оригинал:',
+        'card.originalEn': 'Оригинал (EN):',
+        'card.editTitle': 'Нажмите для быстрого редактирования',
+        'card.suggestTitle': 'Нажмите, чтобы предложить свой вариант',
+        'card.copyKeyTitle': 'Нажмите, чтобы скопировать ключ',
+        'card.approvedTitle': 'Финально утверждено Главным Редактором в релиз',
+        'card.approved': '👑 В релизе',
+        'card.communityApprovedTitle': 'Одобрено сообществом (+{n} голосов)',
+        'card.communityApproved': '👍 Одобрено (+{n})',
+        'card.edited': '✏️ Отредактировано',
+        'card.pending': '⏳ Ждёт проверки',
+        'card.fragmentTitle': 'Фрагмент составного предложения игры',
+        'card.fragment': '🔗 Фрагмент',
+        'card.variants': '💡 {n} вар.',
+        'card.qaError': '⚠️ QA Ошибка',
+        'card.voteUpTitle': 'Одобряю текущий перевод (+1)',
+        'card.voteDownTitle': 'Не нравится / Требует доработки (-1)',
+        'card.suggestBtnTitle': 'Предложить свой улучшенный вариант перевода',
+        'card.suggestBtn': 'Предложить вариант',
+        'card.unapproveTitle': 'Снять финальное утверждение в релиз',
+        'card.unapprove': '👑 В релизе (Снять)',
+        'card.approveTitle': 'Утвердить этот вариант как официальный финальный релиз',
+        'card.approve': '👑',
+        'card.approveToRelease': 'Утвердить в релиз',
+        'card.editTitleBtn': 'Отредактировать текст напрямую (Админ)',
+        'card.edit': 'Править',
+        'card.suggestionsFrom': 'Предложенные варианты от сообщества ({n}):',
+        'card.voteForBest': 'Голосуйте за лучший перевод',
+        'card.supportTitle': 'Поддержать этот вариант (+1)',
+        'card.acceptTitle': 'Утвердить этот вариант как официальный финальный релиз',
+        'card.acceptCanon': '👑 Принять в канон',
+        'suggest.insertVar': 'Вставить:',
+        'error.vote': 'Ошибка при голосовании: ',
+        'error.suggest': 'Ошибка отправки варианта: ',
+        'error.voteSuggestion': 'Ошибка голосования за вариант: ',
+        'error.accept': 'Ошибка принятия варианта: ',
+        'error.save': 'Ошибка при сохранении: ',
+        'suggest.acceptConfirm': 'Принять этот вариант как официальный релизный перевод игры?',
+        'comp.narrative': 'Сюжет и события',
+        'comp.labels': 'Интерфейс и метки',
+        'comp.extra': 'Дополнительные строки',
+        'comp.epilogue': 'Эпилоги и концовки',
+        'comp.remap': 'Замены и нормализация',
+        'comp.gdc-literal-fixes': 'Код и скрипты',
+        'toast.mockOn': 'Включен режим живого текста',
+        'toast.mockOff': 'Включен технический вид (%s, %d)',
+        'toast.enShown': 'Показан оригинал',
+        'toast.enHidden': 'Оригинал скрыт',
+        'edit.charCount': 'Символов: {n}',
+        'error.status': 'Ошибка обновления статуса: ',
+        'card.insertVarTitle': 'Вставить переменную',
+      },
+      en: {
+        'brand.badge': 'Community Proofreading',
+        'header.statsTitle': 'Click for detailed statistics by section',
+        'header.progressTitle': 'Open statistics',
+        'search.placeholder': 'Search text, variables or authors... (press /)',
+        'admin.toggleTitle': 'Switch between Editor-in-Chief (Admin) and Contributor mode',
+        'admin.btn': 'Admin',
+        'admin.btnParticipant': 'Contributor',
+        'nickname.title': 'Set a nickname, shown in the edit history',
+        'nickname.btn': 'Nickname',
+        'lang.title': 'Switch site interface language',
+        'focus.title': 'Fullscreen one-key speed-review mode (Z)',
+        'focus.btn': 'Zen Focus',
+        'layout.title': 'Switch between card view and two-column layout',
+        'layout.btnColumns': '2 Columns',
+        'layout.btnCards': 'Cards',
+        'glossary.title': 'Glossary of lore terms and canonical names',
+        'glossary.btn': 'Glossary',
+        'mock.title': 'Substitute names and numbers for %s and %d (M)',
+        'mock.btnLive': 'Live text',
+        'mock.btnCode': 'Code (%s, %d)',
+        'original.btnShow': 'Original',
+        'original.btnHide': 'Hide original',
+        'shortcuts.title': 'Open the list of keyboard shortcuts',
+        'shortcuts.btn': 'Keys',
+        'backup.title': 'Download a full ZIP backup of the translation',
+        'backup.btn': 'Backup',
+        'status.all': 'All',
+        'status.adminQueueTitle': 'Lines with community votes and suggestions awaiting admin approval',
+        'status.adminQueue': '🔥 Approval queue',
+        'status.approvedTitle': 'Finally approved by the Editor-in-Chief',
+        'status.approved': '👑 In release',
+        'status.suggestionsTitle': 'Lines with proposed translation variants',
+        'status.suggestions': '💡 With variants',
+        'status.unvotedTitle': "Lines nobody has reviewed or voted on yet",
+        'status.unvoted': 'Unrated',
+        'section.label': 'Section:',
+        'section.all': 'All',
+        'section.narrative': 'Story',
+        'section.labels': 'Interface',
+        'section.extra': 'Extra',
+        'section.epilogue': 'Epilogues',
+        'section.remap': 'Remaps',
+        'section.gdc': 'Code',
+        'quick.label': 'Quick filter:',
+        'quick.suggestions': '💡 With suggestions',
+        'quick.variables': '{ } With variables',
+        'quick.history': '📜 With edit history',
+        'quick.ru': '🇷🇺 In Russian',
+        'quick.en': '🇬🇧 In English',
+        'export.csvTitle': 'Export the filtered list to CSV',
+        'export.csv': '📥 Export CSV',
+        'export.noData': 'No data to export in the current filter',
+        'batch.approveTitle': 'Bulk-approve all shown lines',
+        'batch.approve': '✓ Approve all shown',
+        'batch.adminOnly': 'Bulk approval into the release is only available in Editor-in-Chief (Admin) mode',
+        'batch.allApproved': 'All shown lines are already approved into the release!',
+        'batch.confirm': 'Approve {n} shown lines into the release right now?',
+        'adminBanner.title': 'Editor-in-Chief Mode (Admin)',
+        'adminBanner.desc': 'You can approve community-reviewed translation variants into the official release with one click, or edit the text directly.',
+        'adminBanner.btn': '🔥 Open community-reviewed',
+        'loading.title': 'Loading the translation database...',
+        'loading.subtitle': 'Indexing lines for instant search',
+        'empty.title': 'Nothing found',
+        'empty.desc': 'Try changing your query or resetting the filters',
+        'empty.reset': 'Reset filters',
+        'sentinel.shown': 'Showing {n} of {m}',
+        'focus.badge': 'Zen Focus',
+        'focus.back': '← Back (K)',
+        'focus.forward': 'Forward (J) →',
+        'focus.exit': 'Exit (Esc)',
+        'focus.approveDefault': '✓ Approve and continue',
+        'focus.approveReleased': '👑 In release (Next)',
+        'focus.approveToRelease': '👑 Approve into release',
+        'focus.approveVote': '👍 Approve translation',
+        'focus.of': '{i} of {n}',
+        'focus.original': 'Original:',
+        'event.badge': 'Full story event',
+        'event.title': 'Event',
+        'event.btnTitle': 'Open the whole quest with all choices and outcomes',
+        'event.close': 'Close',
+        'event.eventTitleLabel': 'Event title',
+        'event.setupLabel': 'Story setup',
+        'event.choicesLabel': 'Choices and consequences',
+        'event.currentLine': 'Current line',
+        'event.decision': 'Decision #',
+        'diff.badge': 'Change history & diff',
+        'diff.close': 'Close',
+        'diff.version': 'Version #{n}',
+        'diff.history': '📜 History ({n})',
+        'diff.historyTitle': 'View edit history and a visual diff of versions',
+        'glossary.badge': 'Terminology & lore canon',
+        'glossary.hint': 'Click any term to instantly filter every game line that uses it:',
+        'glossary.close': 'Close',
+        'stats.title': 'Project proofreading statistics',
+        'stats.overall': 'Overall proofreading progress:',
+        'stats.inRelease': 'in release',
+        'suggest.badge': 'Propose your own translation',
+        'suggest.currentLabel': 'Current variant:',
+        'suggest.newLabel': 'Your improved translation:',
+        'suggest.inputPlaceholder': 'Enter your translation variant...',
+        'suggest.commentLabel': "Comment / rationale (why it's better):",
+        'suggest.commentPlaceholder': 'Lore terminology, phrasing, accuracy...',
+        'suggest.cancel': 'Cancel',
+        'suggest.submit': 'Submit for voting',
+        'shortcuts.modalTitle': 'Keyboard shortcuts for speed review',
+        'shortcuts.approve': 'Approve / confirm and continue',
+        'shortcuts.or': 'or',
+        'shortcuts.nav': 'Next / previous line',
+        'shortcuts.zen': 'Fullscreen Zen focus mode',
+        'shortcuts.mock': 'Toggle live text (Mock)',
+        'shortcuts.suggest': 'Suggest a variant / Edit',
+        'shortcuts.search': 'Quick search',
+        'hotkeys.hintTitle': 'Click to open the full shortcut list',
+        'hotkeys.approve': 'Approve',
+        'hotkeys.nav': 'Browse',
+        'hotkeys.zen': 'Zen Focus',
+        'hotkeys.suggest': 'Variant',
+        'hotkeys.search': 'Search',
+        'toast.default': 'Changes saved',
+        'toast.switchedToCommunity': '👥 Switched to community contributor mode',
+        'toast.adminActivated': '👑 Admin mode activated',
+        'toast.keyCopied': 'Key copied to clipboard',
+        'toast.csvExported': 'CSV file exported successfully!',
+        'toast.lineApproved': '👑 Line approved into the official release',
+        'toast.voteUp': '👍 You approved this translation',
+        'toast.voteDown': '👎 Marked as needing work',
+        'toast.voteCancelled': 'Vote cancelled',
+        'toast.suggestionPublished': '💡 Your translation variant was published for voting!',
+        'toast.suggestionAccepted': '👑 Variant accepted into the release!',
+        'toast.suggestionSentFromCard': '💡 Your translation variant was sent to the community for voting',
+        'toast.nicknameSet': 'Nickname set: {n}',
+        'toast.nicknameReset': 'Nickname reset',
+        'toast.splitViewOn': 'Two-column view enabled (Original left, Translation right)',
+        'toast.splitViewOff': 'Standard card view enabled',
+        'toast.batchApproved': '👑 Approved into release: {n} lines',
+        'nickname.prompt': 'Your nickname (shown in edit history):',
+        'admin.prompt': 'Administrator code:',
+        'admin.wrongCode': 'Wrong code',
+        'card.original': 'Original:',
+        'card.originalEn': 'Original (EN):',
+        'card.editTitle': 'Click to edit quickly',
+        'card.suggestTitle': 'Click to propose your own variant',
+        'card.copyKeyTitle': 'Click to copy the key',
+        'card.approvedTitle': 'Finally approved into the release by the Editor-in-Chief',
+        'card.approved': '👑 In release',
+        'card.communityApprovedTitle': 'Approved by the community (+{n} votes)',
+        'card.communityApproved': '👍 Approved (+{n})',
+        'card.edited': '✏️ Edited',
+        'card.pending': '⏳ Awaiting review',
+        'card.fragmentTitle': 'Fragment of a compound in-game sentence',
+        'card.fragment': '🔗 Fragment',
+        'card.variants': '💡 {n} var.',
+        'card.qaError': '⚠️ QA issue',
+        'card.voteUpTitle': 'I approve of the current translation (+1)',
+        'card.voteDownTitle': "Don't like it / needs work (-1)",
+        'card.suggestBtnTitle': 'Propose your own improved translation',
+        'card.suggestBtn': 'Suggest a variant',
+        'card.unapproveTitle': 'Revoke final approval into the release',
+        'card.unapprove': '👑 In release (Revoke)',
+        'card.approveTitle': 'Approve this variant as the official final release',
+        'card.approve': '👑',
+        'card.approveToRelease': 'Approve into release',
+        'card.editTitleBtn': 'Edit the text directly (Admin)',
+        'card.edit': 'Edit',
+        'card.suggestionsFrom': 'Community-proposed variants ({n}):',
+        'card.voteForBest': 'Vote for the best translation',
+        'card.supportTitle': 'Support this variant (+1)',
+        'card.acceptTitle': 'Approve this variant as the official final release',
+        'card.acceptCanon': '👑 Accept into canon',
+        'suggest.insertVar': 'Insert:',
+        'error.vote': 'Voting error: ',
+        'error.suggest': 'Error sending your variant: ',
+        'error.voteSuggestion': 'Error voting for the variant: ',
+        'error.accept': 'Error accepting the variant: ',
+        'error.save': 'Error saving: ',
+        'suggest.acceptConfirm': 'Accept this variant as the official release translation?',
+        'comp.narrative': 'Story and events',
+        'comp.labels': 'Interface and labels',
+        'comp.extra': 'Extra strings',
+        'comp.epilogue': 'Epilogues and endings',
+        'comp.remap': 'Remaps and normalization',
+        'comp.gdc-literal-fixes': 'Code and scripts',
+        'toast.mockOn': 'Live text mode enabled',
+        'toast.mockOff': 'Technical view enabled (%s, %d)',
+        'toast.enShown': 'Original shown',
+        'toast.enHidden': 'Original hidden',
+        'edit.charCount': 'Characters: {n}',
+        'error.status': 'Error updating status: ',
+        'card.insertVarTitle': 'Insert variable',
+      },
+    };
+    let lang = localStorage.getItem('zen_lang') || 'ru';
+    function t(key, vars) {
+      let s = (I18N[lang] && I18N[lang][key]) || I18N.ru[key] || key;
+      if (vars) {
+        for (const k in vars) s = s.replace(`{${k}}`, vars[k]);
+      }
+      return s;
+    }
+    function applyStaticI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+      document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+      const langBtnText = document.getElementById('langBtnText');
+      if (langBtnText) langBtnText.innerText = lang === 'ru' ? 'EN' : 'RU';
+      document.documentElement.lang = lang;
+    }
+    function setLang(l) {
+      lang = l;
+      localStorage.setItem('zen_lang', l);
+      applyStaticI18n();
+      updateAdminUI();
+      if (typeof applyFilter === 'function' && allData.length) applyFilter(true);
+    }
 
     // Lore Glossary Terms
     const GLOSSARY_TERMS = [
@@ -630,6 +1046,7 @@
     // Init Data
     async function init() {
       try {
+        applyStaticI18n();
         updateAdminUI();
         const res = await fetch('/api/data');
         const payload = await res.json();
@@ -640,6 +1057,7 @@
         isAdmin = payload.identity.is_admin;
         currentNickname = payload.identity.nickname;
 
+        updateAdminUI();
         updateStats();
         loadingEl.classList.add('hidden');
         renderGlossary();
@@ -653,12 +1071,12 @@
       if (isAdmin) {
         await fetch('/api/admin_logout', { method: 'POST' });
         isAdmin = false;
-        showToast('👥 Переключено в режим участника сообщества');
+        showToast(t('toast.switchedToCommunity'));
         updateAdminUI();
         applyFilter(true);
         return;
       }
-      const secret = prompt('Код администратора:');
+      const secret = prompt(t('admin.prompt'));
       if (!secret) return;
       const res = await fetch('/api/admin_login', {
         method: 'POST',
@@ -667,9 +1085,9 @@
       const data = await res.json();
       if (data.status === 'ok') {
         isAdmin = true;
-        showToast('👑 Режим администратора активирован');
+        showToast(t('toast.adminActivated'));
       } else {
-        alert(data.message || 'Неверный код');
+        alert(data.message || t('admin.wrongCode'));
         return;
       }
       updateAdminUI();
@@ -677,7 +1095,7 @@
     }
 
     async function changeNickname() {
-      const nickname = prompt('Ваш ник (виден в истории правок):', currentNickname || '');
+      const nickname = prompt(t('nickname.prompt'), currentNickname || '');
       if (nickname === null) return;
       const res = await fetch('/api/set_nickname', {
         method: 'POST',
@@ -685,18 +1103,18 @@
       });
       const data = await res.json();
       currentNickname = data.nickname;
-      showToast(currentNickname ? `Ник установлен: ${currentNickname}` : 'Ник сброшен');
+      showToast(currentNickname ? t('toast.nicknameSet', { n: currentNickname }) : t('toast.nicknameReset'));
     }
 
     function updateAdminUI() {
       if (isAdmin) {
         adminBtnIcon.innerText = '👑';
-        adminBtnText.innerText = 'Админ';
+        adminBtnText.innerText = t('admin.btn');
         adminToggleBtn.className = 'px-2.5 py-1.5 rounded-md bg-amber-600 text-black border border-amber-400 transition flex items-center gap-1.5 font-bold shadow-md';
         adminBanner.classList.remove('hidden');
       } else {
         adminBtnIcon.innerText = '👥';
-        adminBtnText.innerText = 'Участник';
+        adminBtnText.innerText = t('admin.btnParticipant');
         adminToggleBtn.className = 'px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium shadow-sm';
         adminBanner.classList.add('hidden');
       }
@@ -733,17 +1151,17 @@
 
       const pct = total > 0 ? ((adminApproved / total) * 100).toFixed(1) : 0;
       topProgressBar.style.width = pct + '%';
-      topProgressText.innerText = `${pct}% (${adminApproved.toLocaleString()} / ${total.toLocaleString()} в релизе)`;
+      topProgressText.innerText = `${pct}% (${adminApproved.toLocaleString()} / ${total.toLocaleString()} ${t('stats.inRelease')})`;
     }
 
     function renderGlossary() {
-      glossaryGrid.innerHTML = GLOSSARY_TERMS.map(t => `
-        <div class="p-3 bg-[#0d1117] border border-[#30363d] hover:border-purple-500/50 rounded-lg cursor-pointer transition flex flex-col justify-between group" onclick="searchGlossaryTerm('${t.ru}')">
+      glossaryGrid.innerHTML = GLOSSARY_TERMS.map(term => `
+        <div class="p-3 bg-[#0d1117] border border-[#30363d] hover:border-purple-500/50 rounded-lg cursor-pointer transition flex flex-col justify-between group" onclick="searchGlossaryTerm('${term.ru}')">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-purple-400 group-hover:text-purple-300 transition">${t.ru}</span>
-            <span class="text-[11px] font-mono text-gray-500">${t.en}</span>
+            <span class="font-bold text-sm text-purple-400 group-hover:text-purple-300 transition">${term.ru}</span>
+            <span class="text-[11px] font-mono text-gray-500">${term.en}</span>
           </div>
-          <p class="text-[11px] text-zen-muted mt-1 leading-normal">${t.desc}</p>
+          <p class="text-[11px] text-zen-muted mt-1 leading-normal">${term.desc}</p>
         </div>
       `).join('');
     }
@@ -1074,14 +1492,14 @@
 
     function copyKey(keyText) {
       navigator.clipboard.writeText(keyText).then(() => {
-        showToast('Ключ скопирован в буфер обмена');
+        showToast(t('toast.keyCopied'));
       });
     }
 
     // CSV Export of Current Filtered View
     function exportToCSV() {
       if (filteredData.length === 0) {
-        alert('Нет данных для выгрузки в текущем фильтре');
+        alert(t('export.noData'));
         return;
       }
       const rows = [
@@ -1107,24 +1525,24 @@
       a.download = `DeadReckoning_Translation_${activeComponent}_${activeStatus}_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('CSV файл успешно выгружен!');
+      showToast(t('toast.csvExported'));
     }
 
     // Batch Approve currently shown unreviewed items (Admin only)
     async function batchApproveFiltered() {
       if (!isAdmin) {
-        alert('Массовое утверждение в релиз доступно только в режиме Главного Редактора (Админа)');
+        alert(t('batch.adminOnly'));
         return;
       }
       const unapproved = filteredData.filter(d => d.status !== 'admin_approved');
       if (unapproved.length === 0) {
-        alert('Все показанные строки уже утверждены в релиз!');
+        alert(t('batch.allApproved'));
         return;
       }
-      if (!confirm(`👑 Утвердить в релиз сразу ${unapproved.length.toLocaleString()} показанных строк?`)) {
+      if (!confirm('👑 ' + t('batch.confirm', { n: unapproved.length.toLocaleString() }))) {
         return;
       }
-      
+
       for (const item of unapproved) {
         await fetch('/api/admin_approve_line', {
           method: 'POST',
@@ -1135,13 +1553,13 @@
       }
       updateStats();
       applyFilter(true);
-      showToast(`👑 Утверждено в релиз строк: ${unapproved.length}`);
+      showToast(t('toast.batchApproved', { n: unapproved.length }));
     }
 
     // Toggle Split View Layout (2 Columns)
     toggleLayoutBtn.onclick = () => {
       isSplitView = !isSplitView;
-      layoutBtnText.innerText = isSplitView ? 'Карточки' : '2 Колонки';
+      layoutBtnText.innerText = isSplitView ? t('layout.btnCards') : t('layout.btnColumns');
       if (isSplitView) {
         mainLayout.classList.remove('max-w-5xl');
         mainLayout.classList.add('max-w-7xl');
@@ -1150,7 +1568,7 @@
         mainLayout.classList.add('max-w-5xl');
       }
       applyFilter(true);
-      showToast(isSplitView ? 'Включен 2-колоночный вид (Оригинал слева, Перевод справа)' : 'Включен стандартный вид карточек');
+      showToast(isSplitView ? t('toast.splitViewOn') : t('toast.splitViewOff'));
     };
 
     function renderItems(start, limit) {
@@ -1164,39 +1582,39 @@
 
         let statusBadge = '';
         if (isAdminApproved) {
-          statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/50 text-[10px] font-bold flex items-center gap-1 shadow-sm" title="Финально утверждено Главным Редактором в релиз">👑 В релизе</span>`;
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/50 text-[10px] font-bold flex items-center gap-1 shadow-sm" title="${t('card.approvedTitle')}">${t('card.approved')}</span>`;
         } else if (item.up > 0) {
-          statusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold flex items-center gap-1" title="Одобрено сообществом (+${item.up} голосов)">👍 Одобрено (+${item.up})</span>`;
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold flex items-center gap-1" title="${t('card.communityApprovedTitle', { n: item.up })}">${t('card.communityApproved', { n: item.up })}</span>`;
         } else if (isEdited) {
-          statusBadge = `<span class="px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-500/30 text-[10px] font-semibold flex items-center gap-1">✏️ Отредактировано</span>`;
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-500/30 text-[10px] font-semibold flex items-center gap-1">${t('card.edited')}</span>`;
         } else {
-          statusBadge = `<span class="px-2 py-0.5 rounded bg-yellow-950/60 text-yellow-400/90 border border-yellow-500/20 text-[10px] font-medium">⏳ Ждёт проверки</span>`;
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-yellow-950/60 text-yellow-400/90 border border-yellow-500/20 text-[10px] font-medium">${t('card.pending')}</span>`;
         }
 
         const clauseBadge = item.clause
-          ? `<span class="px-1.5 py-0.5 rounded bg-[#21262d] text-gray-400 border border-[#30363d] text-[10px] font-medium" title="Фрагмент составного предложения игры">🔗 Фрагмент</span>`
+          ? `<span class="px-1.5 py-0.5 rounded bg-[#21262d] text-gray-400 border border-[#30363d] text-[10px] font-medium" title="${t('card.fragmentTitle')}">${t('card.fragment')}</span>`
           : '';
 
         const suggCount = item.suggestions ? item.suggestions.length : 0;
         const suggBadge = suggCount > 0
-          ? `<span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30 text-[10px] font-semibold flex items-center gap-1">💡 ${suggCount} вар.</span>`
+          ? `<span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30 text-[10px] font-semibold flex items-center gap-1">${t('card.variants', { n: suggCount })}</span>`
           : '';
 
         const histCount = item.history ? item.history.length : 0;
         const histBadge = histCount > 0
-          ? `<button onclick="openDiffModal(${item.id})" class="px-2 py-0.5 rounded bg-sky-950 hover:bg-sky-900 text-sky-300 border border-sky-500/40 text-[10px] font-medium transition flex items-center gap-1 shadow-sm" title="Посмотреть историю правок и визуальное сравнение версий">
-              <span>📜 История (${histCount})</span>
+          ? `<button onclick="openDiffModal(${item.id})" class="px-2 py-0.5 rounded bg-sky-950 hover:bg-sky-900 text-sky-300 border border-sky-500/40 text-[10px] font-medium transition flex items-center gap-1 shadow-sm" title="${t('diff.historyTitle')}">
+              <span>${t('diff.history', { n: histCount })}</span>
             </button>`
           : '';
 
         const qaBadge = (item.qa_warnings && item.qa_warnings.length > 0)
-          ? `<span class="px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-500/40 text-[10px] font-bold" title="${item.qa_warnings.join('; ')}">⚠️ QA Ошибка</span>`
+          ? `<span class="px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-500/40 text-[10px] font-bold" title="${item.qa_warnings.join('; ')}">${t('card.qaError')}</span>`
           : '';
 
         const eventBtn = item.event_id
-          ? `<button onclick="openEventModal(${item.id})" class="px-2 py-0.5 rounded bg-brand-950 hover:bg-brand-900 text-brand-400 border border-brand-500/40 text-[10px] font-medium transition flex items-center gap-1 shadow-sm" title="Открыть весь квест целиком со всеми выборами и исходами">
+          ? `<button onclick="openEventModal(${item.id})" class="px-2 py-0.5 rounded bg-brand-950 hover:bg-brand-900 text-brand-400 border border-brand-500/40 text-[10px] font-medium transition flex items-center gap-1 shadow-sm" title="${t('event.btnTitle')}">
               <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-              <span>Событие</span>
+              <span>${t('event.title')}</span>
             </button>`
           : '';
 
@@ -1222,7 +1640,7 @@
                 ${clauseBadge}
                 ${qaBadge}
                 ${eventBtn}
-                <span class="font-mono text-gray-400 text-[11px] truncate max-w-xs md:max-w-sm ml-1 cursor-pointer hover:text-white transition flex items-center gap-1" title="Нажмите, чтобы скопировать ключ" onclick="copyKey('${item.key.replace(/'/g, "\\'")}')">
+                <span class="font-mono text-gray-400 text-[11px] truncate max-w-xs md:max-w-sm ml-1 cursor-pointer hover:text-white transition flex items-center gap-1" title="${t('card.copyKeyTitle')}" onclick="copyKey('${item.key.replace(/'/g, "\\'")}')">
                   ${item.key}
                   <svg class="w-3 h-3 text-gray-500 hover:text-gray-300 inline opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </span>
@@ -1233,37 +1651,37 @@
                 
                 <!-- Community Upvote / Downvote Widget (1 vote per person) -->
                 <div class="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg overflow-hidden text-xs shadow-inner">
-                  <button onclick="vote(${item.id}, 1)" class="px-2.5 py-1 ${upActiveClass} transition flex items-center gap-1.5" title="Одобряю текущий перевод (+1)">
+                  <button onclick="vote(${item.id}, 1)" class="px-2.5 py-1 ${upActiveClass} transition flex items-center gap-1.5" title="${t('card.voteUpTitle')}">
                     <span>👍</span>
                     <span class="font-mono text-[11px]">${item.up || 0}</span>
                   </button>
                   <div class="w-[1px] h-4 bg-[#30363d]"></div>
-                  <button onclick="vote(${item.id}, -1)" class="px-2 py-1 ${downActiveClass} transition flex items-center gap-1" title="Не нравится / Требует доработки (-1)">
+                  <button onclick="vote(${item.id}, -1)" class="px-2 py-1 ${downActiveClass} transition flex items-center gap-1" title="${t('card.voteDownTitle')}">
                     <span>👎</span>
                   </button>
                 </div>
 
                 <!-- Propose Alternative / Suggestion Button (Available to Everyone) -->
-                <button onclick="openSuggestModal(${item.id})" class="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-amber-300 hover:text-amber-200 rounded-lg text-[11px] font-medium transition border border-amber-500/30 flex items-center gap-1.5 shadow-sm" title="Предложить свой улучшенный вариант перевода">
+                <button onclick="openSuggestModal(${item.id})" class="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-amber-300 hover:text-amber-200 rounded-lg text-[11px] font-medium transition border border-amber-500/30 flex items-center gap-1.5 shadow-sm" title="${t('card.suggestBtnTitle')}">
                   <span>💡</span>
-                  <span>Предложить вариант</span>
+                  <span>${t('card.suggestBtn')}</span>
                 </button>
 
                 <!-- Admin Master Approve Button (Only Admin can lock into official release) -->
                 ${isAdmin ? `
                   ${isAdminApproved ? `
-                    <button onclick="toggleReview(${item.id})" class="px-3 py-1 bg-amber-950/80 text-amber-300 border border-amber-500/50 hover:bg-amber-900 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm" title="Снять финальное утверждение в релиз">
-                      <span>👑 В релизе (Снять)</span>
+                    <button onclick="toggleReview(${item.id})" class="px-3 py-1 bg-amber-950/80 text-amber-300 border border-amber-500/50 hover:bg-amber-900 rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm" title="${t('card.unapproveTitle')}">
+                      <span>${t('card.unapprove')}</span>
                     </button>
                   ` : `
-                    <button onclick="toggleReview(${item.id})" class="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg text-[11px] transition flex items-center gap-1.5 shadow-md" title="Утвердить этот вариант как официальный финальный релиз">
-                      <span>👑</span>
-                      <span>Утвердить в релиз</span>
+                    <button onclick="toggleReview(${item.id})" class="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg text-[11px] transition flex items-center gap-1.5 shadow-md" title="${t('card.approveTitle')}">
+                      <span>${t('card.approve')}</span>
+                      <span>${t('card.approveToRelease')}</span>
                     </button>
                   `}
-                  <button onclick="startEdit(${item.id})" class="px-2.5 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 hover:text-white rounded-lg text-[11px] transition border border-[#30363d] flex items-center gap-1" title="Отредактировать текст напрямую (Админ)">
+                  <button onclick="startEdit(${item.id})" class="px-2.5 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 hover:text-white rounded-lg text-[11px] transition border border-[#30363d] flex items-center gap-1" title="${t('card.editTitleBtn')}">
                     <span>✏️</span>
-                    <span>Править</span>
+                    <span>${t('card.edit')}</span>
                   </button>
                 ` : ''}
 
@@ -1275,7 +1693,7 @@
             ${isSplitView ? `
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                 <div class="p-3 bg-[#0d1117]/70 border border-[#30363d]/60 rounded-lg text-xs text-zen-muted leading-relaxed">
-                  <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">Оригинал (EN):</span>
+                  <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">${t('card.originalEn')}</span>
                   ${formatRichText(item.en, searchQuery, false)}
                 </div>
                 <div class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text" style="font-size: ${baseFontSize}px" onclick="${isAdmin ? `startEdit(${item.id})` : `openSuggestModal(${item.id})`}">
@@ -1284,18 +1702,18 @@
               </div>
             ` : `
               <!-- Russian Main Text -->
-              <div 
-                class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text" 
+              <div
+                class="ru-text-display leading-relaxed text-white font-normal cursor-pointer select-text"
                 style="font-size: ${baseFontSize}px"
                 onclick="${isAdmin ? `startEdit(${item.id})` : `openSuggestModal(${item.id})`}"
-                title="${isAdmin ? 'Нажмите для быстрого редактирования' : 'Нажмите, чтобы предложить свой вариант'}"
+                title="${isAdmin ? t('card.editTitle') : t('card.suggestTitle')}"
               >
                 ${formatRichText(item.ru, searchQuery)}
               </div>
 
               <!-- Optional English Subtext -->
               <div class="en-subtext mt-3 pt-2.5 border-t border-[#30363d]/40 text-xs text-zen-muted leading-relaxed ${showEnglish ? '' : 'hidden'}">
-                <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">Оригинал:</span>
+                <span class="text-gray-500 font-semibold uppercase text-[10px] block mb-1">${t('card.original')}</span>
                 ${formatRichText(item.en, searchQuery, false)}
               </div>
             `}
@@ -1312,23 +1730,23 @@
             ${(item.suggestions && item.suggestions.length > 0) ? `
               <div class="mt-3.5 pt-3 border-t border-[#30363d]/60 space-y-2">
                 <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Предложенные варианты от сообщества (${item.suggestions.length}):</span>
-                  <span class="text-[10px] text-zen-muted">Голосуйте за лучший перевод</span>
+                  <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">${t('card.suggestionsFrom', { n: item.suggestions.length })}</span>
+                  <span class="text-[10px] text-zen-muted">${t('card.voteForBest')}</span>
                 </div>
                 ${item.suggestions.map(s => `
                   <div class="p-3 bg-[#0d1117] border border-amber-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div class="flex-1 min-w-[220px]">
                       <div class="text-white font-medium text-sm leading-relaxed">${formatRichText(s.text, '', false)}</div>
                       ${s.comment ? `<div class="text-[11px] text-zen-muted mt-1 bg-[#161b22] px-2 py-0.5 rounded inline-block">💬 <i>${s.comment}</i></div>` : ''}
-                      <div class="text-[10px] text-gray-500 mt-1 font-mono">${s.ip} · ${s.created_at}</div>
+                      <div class="text-[10px] text-gray-500 mt-1 font-mono">${s.author} · ${s.created_at}</div>
                     </div>
                     <div class="flex items-center gap-2">
-                      <button onclick="voteSuggestion(${item.id}, '${s.id}', 1)" class="px-2.5 py-1 ${s.user_vote === 1 ? 'bg-amber-600 text-black font-bold' : 'bg-[#21262d] text-zen-muted hover:text-white'} rounded-lg border border-[#30363d] font-mono text-xs flex items-center gap-1.5 transition" title="Поддержать этот вариант (+1)">
+                      <button onclick="voteSuggestion(${item.id}, '${s.id}', 1)" class="px-2.5 py-1 ${s.user_vote === 1 ? 'bg-amber-600 text-black font-bold' : 'bg-[#21262d] text-zen-muted hover:text-white'} rounded-lg border border-[#30363d] font-mono text-xs flex items-center gap-1.5 transition" title="${t('card.supportTitle')}">
                         <span>▲</span> <span>${s.score || 0}</span>
                       </button>
                       ${isAdmin ? `
-                        <button onclick="acceptSuggestion(${item.id}, '${s.id}')" class="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg text-[11px] transition shadow-md flex items-center gap-1" title="Утвердить этот вариант как официальный финальный релиз">
-                          <span>👑 Принять в канон</span>
+                        <button onclick="acceptSuggestion(${item.id}, '${s.id}')" class="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg text-[11px] transition shadow-md flex items-center gap-1" title="${t('card.acceptTitle')}">
+                          <span>${t('card.acceptCanon')}</span>
                         </button>
                       ` : ''}
                     </div>
@@ -1344,7 +1762,7 @@
                   <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-zen-muted">
                     <span class="text-gray-500 text-[11px]">Вставить переменную:</span>
                     ${itemVars.map(v => `
-                      <button type="button" onclick="insertVarAtCursor(${item.id}, '${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-brand-900 hover:text-brand-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm" title="Вставить переменную">
+                      <button type="button" onclick="insertVarAtCursor(${item.id}, '${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-brand-900 hover:text-brand-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm" title="${t('card.insertVarTitle')}">
                         + ${v}
                       </button>
                     `).join('')}
@@ -1412,23 +1830,23 @@
       if (!item) return;
 
       focusCompName.innerText = item.comp_name;
-      focusCounter.innerText = `${currentFocusedIndex + 1} из ${filteredData.length.toLocaleString()}`;
-      focusEnText.innerHTML = `<span class="text-gray-500 font-semibold uppercase text-[11px] block mb-1">Оригинал:</span> ${formatRichText(item.en, '', false)}`;
+      focusCounter.innerText = t('focus.of', { i: currentFocusedIndex + 1, n: filteredData.length.toLocaleString() });
+      focusEnText.innerHTML = `<span class="text-gray-500 font-semibold uppercase text-[11px] block mb-1">${t('focus.original')}</span> ${formatRichText(item.en, '', false)}`;
       focusRuText.innerHTML = formatRichText(item.ru, '');
-      
+
       const approveBtn = document.getElementById('focusApproveBtn');
       const isApproved = item.status === 'admin_approved';
-      
+
       if (isApproved) {
         approveBtn.className = 'px-5 py-2.5 bg-amber-950 text-amber-300 border border-amber-500/60 text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2';
-        approveBtn.innerHTML = '<span>👑 В релизе (Дальше)</span> <kbd class="px-1.5 py-0.5 bg-black/30 text-amber-200 rounded text-[11px] font-mono">Space</kbd>';
+        approveBtn.innerHTML = `<span>${t('focus.approveReleased')}</span> <kbd class="px-1.5 py-0.5 bg-black/30 text-amber-200 rounded text-[11px] font-mono">Space</kbd>`;
       } else {
-        approveBtn.className = isAdmin 
+        approveBtn.className = isAdmin
           ? 'px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-black text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2'
           : 'px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition shadow-lg flex items-center gap-2';
-        approveBtn.innerHTML = isAdmin 
-          ? '<span>👑 Утвердить в релиз</span> <kbd class="px-1.5 py-0.5 bg-black/20 text-black rounded text-[11px] font-mono">Space</kbd>'
-          : '<span>👍 Одобрить перевод</span> <kbd class="px-1.5 py-0.5 bg-brand-800 text-white rounded text-[11px] font-mono">Space</kbd>';
+        approveBtn.innerHTML = isAdmin
+          ? `<span>${t('focus.approveToRelease')}</span> <kbd class="px-1.5 py-0.5 bg-black/20 text-black rounded text-[11px] font-mono">Space</kbd>`
+          : `<span>${t('focus.approveVote')}</span> <kbd class="px-1.5 py-0.5 bg-brand-800 text-white rounded text-[11px] font-mono">Space</kbd>`;
       }
     }
 
@@ -1468,7 +1886,7 @@
       diffModalBody.innerHTML = item.history.map((h, hIdx) => `
         <div class="p-3.5 bg-[#0d1117] border border-[#30363d] rounded-lg space-y-2.5">
           <div class="flex items-center justify-between text-[11px] text-zen-muted border-b border-[#30363d]/50 pb-1.5">
-            <span class="font-mono text-gray-400">Версия #${hIdx + 1} · ${h.date} (${h.actor})</span>
+            <span class="font-mono text-gray-400">${t('diff.version', { n: hIdx + 1 })} · ${h.date} (${h.actor})</span>
           </div>
           <div class="text-xs text-gray-200 leading-relaxed font-normal p-2 bg-[#161b22]/50 rounded border border-[#30363d]/40">
             ${computeWordDiff(h.old, h.new)}
@@ -1495,19 +1913,11 @@
     function openStatsModal() {
       const total = allData.length;
       const comps = ['narrative', 'labels', 'extra', 'epilogue', 'remap', 'gdc-literal-fixes'];
-      const compNames = {
-        'narrative': 'Сюжет и события',
-        'labels': 'Интерфейс и метки',
-        'extra': 'Дополнительные строки',
-        'epilogue': 'Эпилоги и концовки',
-        'remap': 'Замены и нормализация',
-        'gdc-literal-fixes': 'Код и скрипты'
-      };
 
       let html = `
         <div class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg mb-3">
           <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-white">Общий прогресс вычитки:</span>
+            <span class="font-bold text-white">${t('stats.overall')}</span>
             <span class="font-mono text-brand-400 font-bold">${topProgressText.innerText}</span>
           </div>
           <div class="w-full bg-[#21262d] h-2 rounded-full overflow-hidden border border-[#30363d]">
@@ -1526,8 +1936,8 @@
         html += `
           <div class="p-2.5 bg-[#0d1117] border border-[#30363d] rounded-lg">
             <div class="flex justify-between items-center text-xs mb-1">
-              <span class="font-medium text-gray-300">${compNames[c]}</span>
-              <span class="font-mono text-gray-400">${cPct}% (${cApproved.toLocaleString()} / ${cTotal.toLocaleString()} в релизе)</span>
+              <span class="font-medium text-gray-300">${t('comp.' + c)}</span>
+              <span class="font-mono text-gray-400">${cPct}% (${cApproved.toLocaleString()} / ${cTotal.toLocaleString()} ${t('stats.inRelease')})</span>
             </div>
             <div class="w-full bg-[#21262d] h-1.5 rounded-full overflow-hidden">
               <div class="bg-amber-500 h-full rounded-full" style="width: ${cPct}%"></div>
@@ -1548,9 +1958,9 @@
     // Toggle Mock vs Technical View
     toggleMockBtn.onclick = () => {
       mockMode = !mockMode;
-      mockBtnText.innerText = mockMode ? 'Живой текст' : 'Код (%s, %d)';
+      mockBtnText.innerText = mockMode ? t('mock.btnLive') : t('mock.btnCode');
       applyFilter(true);
-      showToast(mockMode ? 'Включен режим живого текста' : 'Включен технический вид (%s, %d)');
+      showToast(mockMode ? t('toast.mockOn') : t('toast.mockOff'));
     };
 
     // Toggle Review Status (Admin Master Approval)
@@ -1579,10 +1989,10 @@
         updateStats();
         applyFilter(true);
         if (item.status === 'admin_approved') {
-          showToast('👑 Строка утверждена в официальный релиз');
+          showToast(t('toast.lineApproved'));
         }
       } catch (err) {
-        alert('Ошибка обновления статуса: ' + err.message);
+        alert(t('error.status') + err.message);
       }
     }
 
@@ -1607,14 +2017,14 @@
         updateStats();
         applyFilter(true);
         if (data.user_vote === 1) {
-          showToast('👍 Вы одобрили этот перевод');
+          showToast(t('toast.voteUp'));
         } else if (data.user_vote === -1) {
-          showToast('👎 Отмечено как требующее доработки');
+          showToast(t('toast.voteDown'));
         } else {
-          showToast('Голос отменён');
+          showToast(t('toast.voteCancelled'));
         }
       } catch (err) {
-        alert('Ошибка при голосовании: ' + err.message);
+        alert(t('error.vote') + err.message);
       }
     }
 
@@ -1631,7 +2041,7 @@
       const vars = extractVariables(item.en);
       if (vars.length > 0) {
         suggestVarChips.innerHTML = `
-          <span class="text-gray-500 text-[11px]">Вставить:</span>
+          <span class="text-gray-500 text-[11px]">${t('suggest.insertVar')}</span>
           ${vars.map(v => `
             <button type="button" onclick="insertVarInSuggest('${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-amber-900 hover:text-amber-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm">
               + ${v}
@@ -1670,14 +2080,14 @@
         });
 
         closeSuggestModal();
-        showToast('💡 Ваш вариант перевода опубликован для голосования!');
-        
+        showToast(t('toast.suggestionPublished'));
+
         const res = await fetch('/api/data');
         allData = (await res.json()).items;
         updateStats();
         applyFilter(true);
       } catch (err) {
-        alert('Ошибка отправки варианта: ' + err.message);
+        alert(t('error.suggest') + err.message);
       }
     }
 
@@ -1690,34 +2100,34 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ uid: item.uid, sug_id: sugId, vote: voteVal })
         });
-        
+
         const res = await fetch('/api/data');
         allData = (await res.json()).items;
         updateStats();
         applyFilter(true);
       } catch (err) {
-        alert('Ошибка голосования за вариант: ' + err.message);
+        alert(t('error.voteSuggestion') + err.message);
       }
     }
 
     async function acceptSuggestion(id, sugId) {
       const item = allData.find(d => d.id === id);
       if (!item) return;
-      if (!confirm('👑 Принять этот вариант как официальный релизный перевод игры?')) return;
+      if (!confirm('👑 ' + t('suggest.acceptConfirm'))) return;
       try {
         await fetch('/api/accept_suggestion', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ uid: item.uid, sug_id: sugId })
         });
-        showToast('👑 Вариант принят и утверждён в релиз!');
-        
+        showToast(t('toast.suggestionAccepted'));
+
         const res = await fetch('/api/data');
         allData = (await res.json()).items;
         updateStats();
         applyFilter(true);
       } catch (err) {
-        alert('Ошибка принятия варианта: ' + err.message);
+        alert(t('error.accept') + err.message);
       }
     }
 
@@ -1749,7 +2159,7 @@
       if (titleItem) {
         modalHtml += `
           <div class="p-3 bg-[#0d1117] border border-[#30363d] rounded-lg">
-            <span class="text-[10px] text-brand-500 font-semibold uppercase tracking-wider block mb-1">Заголовок события</span>
+            <span class="text-[10px] text-brand-500 font-semibold uppercase tracking-wider block mb-1">${t('event.eventTitleLabel')}</span>
             <h3 class="text-base font-bold text-white">${formatRichText(titleItem.ru, '', false)}</h3>
           </div>
         `;
@@ -1758,26 +2168,26 @@
       if (msgItem) {
         modalHtml += `
           <div class="p-4 bg-[#0d1117] border border-[#30363d] rounded-lg">
-            <span class="text-[10px] text-zen-muted font-semibold uppercase tracking-wider block mb-1.5">Сюжетная завязка</span>
+            <span class="text-[10px] text-zen-muted font-semibold uppercase tracking-wider block mb-1.5">${t('event.setupLabel')}</span>
             <div class="text-sm text-gray-200 leading-relaxed">${formatRichText(msgItem.ru, '', false)}</div>
           </div>
         `;
       }
 
       modalHtml += `<div class="space-y-3 pt-2">
-        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Варианты решений и последствия</span>
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">${t('event.choicesLabel')}</span>
       `;
 
       Object.keys(choices).sort().forEach(num => {
         const ch = choices[num];
         const isCurrent = (ch.log && ch.log.id === id) || (ch.label && ch.label.id === id);
-        
+
         modalHtml += `
           <div class="p-3.5 bg-[#0d1117] border ${isCurrent ? 'border-brand-500/80 bg-brand-950/20' : 'border-[#30363d]'} rounded-lg space-y-2">
             <div class="flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-brand-900/60 border border-brand-500/40 text-brand-400 text-xs flex items-center justify-center font-bold font-mono">${parseInt(num)+1}</span>
-              <span class="font-bold text-sm text-white">${ch.label ? formatRichText(ch.label.ru, '', false) : 'Решение #' + num}</span>
-              ${isCurrent ? '<span class="ml-auto text-[10px] px-2 py-0.5 rounded bg-brand-500 text-black font-bold">Текущая строка</span>' : ''}
+              <span class="font-bold text-sm text-white">${ch.label ? formatRichText(ch.label.ru, '', false) : t('event.decision') + num}</span>
+              ${isCurrent ? `<span class="ml-auto text-[10px] px-2 py-0.5 rounded bg-brand-500 text-black font-bold">${t('event.currentLine')}</span>` : ''}
             </div>
             ${ch.log ? `<div class="text-xs text-gray-300 pl-7 border-l-2 border-[#30363d] ml-2.5 py-0.5 leading-relaxed">${formatRichText(ch.log.ru, '', false)}</div>` : ''}
           </div>
@@ -1819,7 +2229,7 @@
       ta.style.height = (ta.scrollHeight + 10) + 'px';
 
       ta.oninput = () => {
-        if (counter) counter.innerText = `Символов: ${ta.value.length}`;
+        if (counter) counter.innerText = t('edit.charCount', { n: ta.value.length });
       };
 
       ta.onkeydown = (e) => {
@@ -1861,9 +2271,9 @@
         updateStats();
         applyFilter(true);
 
-        showToast('💡 Ваш вариант перевода отправлен на голосование сообщества');
+        showToast(t('toast.suggestionSentFromCard'));
       } catch (err) {
-        alert('Ошибка при сохранении: ' + err.message);
+        alert(t('error.save') + err.message);
       }
     }
 
@@ -1953,7 +2363,7 @@
     // Toggle English Subtext
     toggleEnBtn.onclick = () => {
       showEnglish = !showEnglish;
-      enBtnText.innerText = showEnglish ? 'Скрыть оригинал' : 'Оригинал';
+      enBtnText.innerText = showEnglish ? t('original.btnHide') : t('original.btnShow');
       document.querySelectorAll('.en-subtext').forEach(el => {
         if (showEnglish) {
           el.classList.remove('hidden');

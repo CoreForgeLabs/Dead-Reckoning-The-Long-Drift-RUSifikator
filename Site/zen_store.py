@@ -83,8 +83,11 @@ def _row_to_identity(row):
 def get_or_create_identity(con, token, ip):
     """Вернуть личность по токену, создать при отсутствии.
 
-    token=None -- новый посетитель без cookie: создаёт новый токен, если с
-    этого IP ещё не было регистраций, иначе возвращает None (отказ).
+    token=None -- новый посетитель без cookie. Если с этого IP уже есть
+    личность, возвращаем ЕЁ (переиздаём тот же cookie) -- потеря cookie
+    (очистка, другой браузер, приватный режим) не должна означать вечную
+    блокировку с этого IP. Лимит "1 IP -> 1 личность" всё ещё в силе: это
+    восстановление существующей личности, а не создание второй.
     token задан, но не найден в базе -- клиент принёс cookie от сброшенной
     базы; создаём личность заново С ЭТИМ ЖЕ токеном без проверки лимита по
     IP (cookie сам по себе уже доказательство существовавшей регистрации)."""
@@ -100,9 +103,10 @@ def get_or_create_identity(con, token, ip):
         return get_or_create_identity(con, token, ip)
 
     existing = con.execute(
-        "SELECT COUNT(*) FROM identities WHERE created_ip=?", (ip,)).fetchone()[0]
-    if existing > 0:
-        return None
+        "SELECT * FROM identities WHERE created_ip=? ORDER BY created_at LIMIT 1",
+        (ip,)).fetchone()
+    if existing:
+        return _row_to_identity(existing)
 
     new_token = secrets.token_hex(16)
     con.execute(
@@ -239,7 +243,7 @@ def get_line_data(con, uid, viewer_token):
         summary = _suggestion_vote_summary(con, s["id"], viewer_token)
         suggestions.append({
             "id": s["id"], "text": s["text"], "comment": s["comment"],
-            "author": s["author"], "created_at": s["created_at"],
+            "author": _display_name(con, s["author"]), "created_at": s["created_at"],
             "status": s["status"],
             "up": summary["up"], "down": summary["down"],
             "score": summary["score"], "user_vote": summary["user_vote"],

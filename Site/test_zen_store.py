@@ -43,11 +43,20 @@ class TestIdentity(unittest.TestCase):
         # повторный визит с другого IP не переписывает created_ip
         self.assertEqual(again["created_ip"], "1.2.3.4")
 
-    def test_second_registration_from_same_ip_is_refused(self):
+    def test_second_registration_from_same_ip_recovers_existing_identity(self):
+        # Потеря cookie (очистка, смена браузера, приватный режим) не должна
+        # означать вечную блокировку с этого IP -- вернуть ту же личность,
+        # а не отказ и не вторую отдельную личность.
         first = zen_store.get_or_create_identity(self.con, None, "1.2.3.4")
-        self.assertIsNotNone(first)
         second = zen_store.get_or_create_identity(self.con, None, "1.2.3.4")
-        self.assertIsNone(second)
+        self.assertIsNotNone(second)
+        self.assertEqual(second["token"], first["token"])
+
+    def test_recovered_identity_keeps_nickname(self):
+        first = zen_store.get_or_create_identity(self.con, None, "1.2.3.4")
+        zen_store.set_nickname(self.con, first["token"], "Вася")
+        second = zen_store.get_or_create_identity(self.con, None, "1.2.3.4")
+        self.assertEqual(second["nickname"], "Вася")
 
     def test_different_ip_can_register(self):
         first = zen_store.get_or_create_identity(self.con, None, "1.2.3.4")
@@ -72,7 +81,7 @@ class TestAdmin(unittest.TestCase):
 
     def test_load_admin_tokens_empty_when_unset(self):
         os.environ.pop("ZEN_ADMIN_TOKENS", None)
-        self.assertEqual(zen_store.load_admin_tokens(), set())
+        self.assertEqual(zen_store.load_admin_tokens("/no/such/.env"), set())
 
     def test_is_admin(self):
         tokens = {"secret1", "secret2"}
@@ -219,6 +228,15 @@ class TestLineData(unittest.TestCase):
         self.assertEqual(data["suggestions"][0]["score"], 1)
         self.assertEqual(data["suggestions"][0]["user_vote"], 0)
         self.assertEqual(data["suggestions"][0]["status"], "open")
+
+    def test_suggestion_author_is_display_name_not_raw_token(self):
+        # zen_index.html показывает автора предложения в карточке (было --
+        # IP, теперь -- ник/"Аноним", как и в истории правок).
+        zen_store.get_or_create_identity(self.con, "tok2", "1.2.3.4")
+        zen_store.set_nickname(self.con, "tok2", "Вася")
+        zen_store.add_suggestion(self.con, "narrative::x", "tok2", "т", "к")
+        data = zen_store.get_line_data(self.con, "narrative::x", "tok1")
+        self.assertEqual(data["suggestions"][0]["author"], "Вася")
 
     def test_history_shape_matches_frontend_diff_modal(self):
         # zen_index.html:1438-1449 читает h.old, h.new, h.date, h.ip (ключ

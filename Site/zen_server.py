@@ -168,33 +168,18 @@ class ZenHandler(http.server.SimpleHTTPRequestHandler):
 
     def resolve_identity(self):
         """Вызывается в начале do_GET/do_POST. Устанавливает self.identity и
-        self.is_admin_request. Возвращает False (и уже отправляет 429), если
-        новому посетителю отказано в регистрации по лимиту IP."""
+        self.is_admin_request. Всегда возвращает True -- IP без cookie
+        получает СВОЮ существующую личность обратно (см.
+        zen_store.get_or_create_identity), а не отказ."""
         con = zen_store.connect(DB_PATH)
         token = self.get_cookie_token()
         ip = self.get_client_ip()
         identity = zen_store.get_or_create_identity(con, token, ip)
         con.close()
-        if identity is None:
-            body = json.dumps({
-                "status": "error",
-                "message": "С этого адреса уже зарегистрирован участник. "
-                           "Если это ваш браузер без cookie -- проверьте, не "
-                           "заблокированы ли cookies.",
-            }).encode("utf-8")
-            self.send_response(429)
-            self.send_header("Content-Type", "application/json; charset=utf-8")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
-            return False
 
         self.identity = identity
         self.is_admin_request = zen_store.is_admin(identity["token"], ADMIN_TOKENS)
-        if token != identity["token"]:
-            self._new_cookie = identity["token"]
-        else:
-            self._new_cookie = None
+        self._new_cookie = identity["token"] if token != identity["token"] else None
         return True
 
     def send_identity_cookie_if_new(self):

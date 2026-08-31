@@ -10,6 +10,8 @@ import os
 import subprocess
 import sys
 
+import zen_store
+
 REMOTE_URL = "https://github.com/CoreForgeLabs/Dead-Reckoning-The-Long-Drift-RUSifikator.git"
 SRC_EN_ENRICHED = ("narrative", "labels", "epilogue")   # берут EN из src_en/
 SRC_EN_SELF_KEYED = ("extra", "remap_by_en")             # EN == ключ
@@ -88,11 +90,15 @@ def build_baseline(repo_data_dir, src_en_dir, out_dir):
     return counts
 
 
+DEFAULT_SRC_EN_DIR = r"F:\DEV2\research_game\Dead Reckoning Russifier\src_en"
+
+
 def main():
+    zen_store.load_dotenv()
     base_dir = os.path.dirname(os.path.abspath(__file__))
     repo_dir = os.path.join(base_dir, "repos", "dead-reckoning")
     repo_data_dir = os.path.join(repo_dir, "rusifikator", "data")
-    src_en_dir = r"F:\DEV2\research_game\Dead Reckoning Russifier\src_en"
+    src_en_dir = os.environ.get("SRC_EN_DIR", DEFAULT_SRC_EN_DIR)
     out_dir = os.path.join(base_dir, "data", "source_baseline")
 
     ensure_remote(repo_dir)

@@ -259,5 +259,46 @@ class TestLineData(unittest.TestCase):
         self.assertEqual(data["history"][0]["actor"], "Вася")
 
 
+class TestBulkLineData(unittest.TestCase):
+    """get_bulk_line_data должна отдавать РОВНО то же самое, что
+    get_line_data по каждому uid отдельно -- но одним проходом по таблицам,
+    а не N мелкими запросами (важно на 13k+ строк на каждой /api/data)."""
+
+    def setUp(self):
+        self.con = sqlite3.connect(":memory:")
+        self.con.row_factory = sqlite3.Row
+        zen_store.init_schema(self.con)
+
+    def test_matches_get_line_data_for_untouched_uid(self):
+        bulk = zen_store.get_bulk_line_data(self.con, "tok1")
+        single = zen_store.get_line_data(self.con, "narrative::untouched", "tok1")
+        self.assertEqual(bulk.get("narrative::untouched", zen_store.EMPTY_LINE_DATA), single)
+
+    def test_matches_get_line_data_with_votes_suggestions_history(self):
+        zen_store.cast_vote(self.con, "narrative::x", "tok1", 1)
+        zen_store.cast_vote(self.con, "narrative::x", "tok2", -1)
+        sid = zen_store.add_suggestion(self.con, "narrative::x", "tok2", "т", "к")
+        zen_store.cast_suggestion_vote(self.con, sid, "tok3", 1)
+        zen_store.set_nickname(self.con, "tok2", "Вася")
+        zen_store.set_suggestion_status(self.con, sid, "admin_approved", "tok2", "admin_approved")
+
+        bulk = zen_store.get_bulk_line_data(self.con, "tok1")
+        single = zen_store.get_line_data(self.con, "narrative::x", "tok1")
+        self.assertEqual(bulk["narrative::x"], single)
+
+    def test_viewer_specific_user_vote_differs_per_viewer(self):
+        zen_store.cast_vote(self.con, "narrative::x", "tok1", 1)
+        bulk1 = zen_store.get_bulk_line_data(self.con, "tok1")
+        bulk2 = zen_store.get_bulk_line_data(self.con, "tok2")
+        self.assertEqual(bulk1["narrative::x"]["user_vote"], 1)
+        self.assertEqual(bulk2["narrative::x"]["user_vote"], 0)
+
+    def test_missing_uid_returns_empty_shape(self):
+        bulk = zen_store.get_bulk_line_data(self.con, "tok1")
+        self.assertEqual(
+            bulk.get("no::such::uid", zen_store.EMPTY_LINE_DATA),
+            {"up": 0, "down": 0, "score": 0, "user_vote": 0, "suggestions": [], "history": []})
+
+
 if __name__ == "__main__":
     unittest.main()

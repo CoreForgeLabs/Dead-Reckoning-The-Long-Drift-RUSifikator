@@ -260,6 +260,83 @@ def get_line_data(con, uid, viewer_token):
     return {**vote_summary, "suggestions": suggestions, "history": history}
 
 
+EMPTY_LINE_DATA = {
+    "up": 0, "down": 0, "score": 0, "user_vote": 0,
+    "suggestions": [], "history": [],
+}
+
+
+def get_bulk_line_data(con, viewer_token):
+    """То же самое, что get_line_data(con, uid, viewer_token) для КАЖДОЙ uid
+    в базе -- но за 5 запросов по всей таблице вместо N мелких запросов на
+    каждую uid. На 13k+ строк построчный вызов get_line_data превращается в
+    тысячи маленьких SQL-запросов и секунды задержки на каждой /api/data;
+    здесь же votes/suggestions/suggestion_votes/history читаются целиком и
+    группируются в Python.
+
+    Возвращает dict[uid] -> те же поля, что и get_line_data. uid без единой
+    записи в таблицах в словаре не появится -- вызывающий код сам решает,
+    что использовать вместо (EMPTY_LINE_DATA)."""
+    identities = {r["token"]: r["nickname"]
+                  for r in con.execute("SELECT token, nickname FROM identities")}
+
+    def display_name(token):
+        nickname = identities.get(token)
+        return nickname if nickname else "Аноним"
+
+    def vote_summary(rows):
+        up = sum(1 for r in rows if r["value"] == 1)
+        down = sum(1 for r in rows if r["value"] == -1)
+        user_vote = next((r["value"] for r in rows if r["token"] == viewer_token), 0)
+        return {"up": up, "down": down, "score": up - down, "user_vote": user_vote}
+
+    votes_by_uid = {}
+    for r in con.execute("SELECT uid, token, value FROM votes"):
+        votes_by_uid.setdefault(r["uid"], []).append(r)
+
+    suggestion_votes_by_sid = {}
+    for r in con.execute("SELECT suggestion_id, token, value FROM suggestion_votes"):
+        suggestion_votes_by_sid.setdefault(r["suggestion_id"], []).append(r)
+
+    suggestions_by_uid = {}
+    for r in con.execute("SELECT * FROM suggestions ORDER BY id"):
+        suggestions_by_uid.setdefault(r["uid"], []).append(r)
+
+    history_by_uid = {}
+    for r in con.execute("SELECT * FROM history ORDER BY ts"):
+        history_by_uid.setdefault(r["uid"], []).append(r)
+
+    all_uids = set(votes_by_uid) | set(suggestions_by_uid) | set(history_by_uid)
+    result = {}
+    for uid in all_uids:
+        line = dict(vote_summary(votes_by_uid.get(uid, [])))
+
+        suggestions = []
+        for s in suggestions_by_uid.get(uid, []):
+            summary = vote_summary(suggestion_votes_by_sid.get(s["id"], []))
+            suggestions.append({
+                "id": s["id"], "text": s["text"], "comment": s["comment"],
+                "author": display_name(s["author"]), "created_at": s["created_at"],
+                "status": s["status"],
+                "up": summary["up"], "down": summary["down"],
+                "score": summary["score"], "user_vote": summary["user_vote"],
+            })
+
+        history = []
+        for r in history_by_uid.get(uid, []):
+            history.append({
+                "old": r["old_text"], "new": r["new_text"],
+                "date": r["ts"][:16].replace("T", " "),
+                "actor": display_name(r["actor"]),
+            })
+
+        line["suggestions"] = suggestions
+        line["history"] = history
+        result[uid] = line
+
+    return result
+
+
 def _display_name(con, token):
     """zen_index.html показывает автора правки в истории (было -- IP,
     теперь -- ник или подпись 'Аноним'; личность больше не IP-строка)."""

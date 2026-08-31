@@ -283,7 +283,7 @@
         <button onclick="exportToCSV()" class="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] text-[11px] transition flex items-center gap-1" data-i18n-title="export.csvTitle">
           <span data-i18n="export.csv">📥 Экспорт CSV</span>
         </button>
-        <button id="batchApproveBtn" onclick="batchApproveFiltered()" class="px-2.5 py-1 rounded bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 text-[11px] font-semibold transition flex items-center gap-1" data-i18n-title="batch.approveTitle">
+        <button id="batchApproveBtn" onclick="batchApproveFiltered()" class="hidden px-2.5 py-1 rounded bg-brand-950/70 hover:bg-brand-900 text-brand-400 border border-brand-500/30 text-[11px] font-semibold transition flex items-center gap-1" data-i18n-title="batch.approveTitle">
           <span data-i18n="batch.approve">✓ Одобрить все показанные</span>
         </button>
       </div>
@@ -1085,6 +1085,15 @@
         adminToggleBtn.className = 'px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1.5 font-medium shadow-sm';
         adminBanner.classList.add('hidden');
       }
+      updateBatchApproveVisibility();
+    }
+
+    // Только админ и только на небольших отфильтрованных списках -- на "Все"
+    // это тысячи строк, массовое утверждение там не имеет смысла и не нужно
+    // никому, кроме админа.
+    function updateBatchApproveVisibility() {
+      const show = isAdmin && activeStatus !== 'all';
+      document.getElementById('batchApproveBtn').classList.toggle('hidden', !show);
     }
 
     function switchToAdminQueue() {
@@ -1434,6 +1443,7 @@
       }
 
       totalFilteredEl.innerText = filteredData.length.toLocaleString();
+      updateBatchApproveVisibility();
 
       if (filteredData.length === 0) {
         itemsContainer.innerHTML = '';

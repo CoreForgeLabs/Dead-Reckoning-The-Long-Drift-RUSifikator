@@ -90,6 +90,10 @@ def parse_event_info(key):
 
 def load_all_data(viewer_token):
     con = zen_store.connect(DB_PATH)
+    # Один проход по votes/suggestions/history вместо запроса на каждую из
+    # 13k+ строк -- иначе load_all_data занимала больше секунды на каждый
+    # /api/data.
+    bulk = zen_store.get_bulk_line_data(con, viewer_token)
     all_items = []
     item_id = 1
     for comp in COMPONENTS_META:
@@ -107,7 +111,7 @@ def load_all_data(viewer_token):
         for k, ru_val in ru_data.items():
             en_val = en_data.get(k, k)
             uid = f"{comp['slug']}::{k}"
-            line = zen_store.get_line_data(con, uid, viewer_token)
+            line = bulk.get(uid, zen_store.EMPTY_LINE_DATA)
 
             truncated = is_likely_truncated(k, en_val, ru_val)
             clause = is_generator_clause(k, en_val)

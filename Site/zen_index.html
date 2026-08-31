@@ -512,8 +512,15 @@
 
   <script>
     // State
-    let allData = [];
-    let filteredData = [];
+    // currentItems -- НЕ весь датасет: только то, что реально загружено и
+    // отрендерено для текущего фильтра (страница за страницей через
+    // /api/data?offset=...). Раньше здесь был allData на все 13k+ строк
+    // сразу -- вкладка браузера падала по памяти при переключении разделов.
+    let currentItems = [];
+    let currentOffset = 0;
+    let currentTotal = 0;
+    let loadingPage = false;
+    const PAGE_SIZE = 50;
     let activeStatus = 'all';
     let activeComponent = 'all';
     let searchQuery = '';
@@ -523,7 +530,6 @@
     let isAdmin = false;          // приходит с сервера при каждой загрузке /api/data
     let currentNickname = null;   // приходит с сервера
     let baseFontSize = 16;
-    let renderedLimit = 50;
     let currentFocusedIndex = 0;
 
     // Interface Language (RU/EN) -- this toggles the SITE's own chrome
@@ -939,10 +945,8 @@
       localStorage.setItem('zen_lang', l);
       applyStaticI18n();
       updateAdminUI();
-      if (allData.length) {
-        updateStats();
-        applyFilter(true);
-      }
+      updateStats();
+      if (currentItems.length) renderCurrentItems(true);
     }
 
     function toggleLang() {
@@ -1015,23 +1019,68 @@
       try {
         applyStaticI18n();
         updateAdminUI();
-        const res = await fetch('/api/data');
+        await loadPage(true);
+        loadingEl.classList.add('hidden');
+        renderGlossary();
+      } catch (err) {
+        loadingEl.innerHTML = `<div class="text-red-400 font-medium text-xs">Ошибка загрузки: ${err.message}</div>`;
+      }
+    }
+
+    // Запросить страницу строк с сервера (с учётом текущих activeStatus /
+    // activeComponent / searchQuery) -- сервер сам фильтрует и режет на
+    // страницы (см. query_items() в zen_server.py), клиент никогда не
+    // держит весь датасет разом.
+    // reset=true -- новый фильтр/поиск/язык, начинаем с начала списка.
+    // reset=false -- подгрузка следующей страницы при скролле.
+    async function loadPage(reset) {
+      if (loadingPage) return;
+      loadingPage = true;
+      try {
+        if (reset) {
+          currentOffset = 0;
+          currentItems = [];
+        }
+        const params = new URLSearchParams({
+          comp: activeComponent, status: activeStatus, q: searchQuery,
+          offset: currentOffset, limit: PAGE_SIZE,
+        });
+        const res = await fetch('/api/data?' + params.toString());
         const payload = await res.json();
         if (!res.ok || payload.status === 'error') {
           throw new Error(payload.message || `HTTP ${res.status}`);
         }
-        allData = payload.items;
+
         isAdmin = payload.identity.is_admin;
         currentNickname = payload.identity.nickname;
+        currentTotal = payload.total;
+        currentItems = reset ? payload.items : currentItems.concat(payload.items);
+        currentOffset += payload.items.length;
 
         updateAdminUI();
-        updateStats();
-        loadingEl.classList.add('hidden');
-        renderGlossary();
-        applyFilter();
-      } catch (err) {
-        loadingEl.innerHTML = `<div class="text-red-400 font-medium text-xs">Ошибка загрузки: ${err.message}</div>`;
+        updateStats(payload.stats);
+        totalFilteredEl.innerText = currentTotal.toLocaleString();
+        updateBatchApproveVisibility();
+
+        if (currentItems.length === 0) {
+          itemsContainer.innerHTML = '';
+          emptyStateEl.classList.remove('hidden');
+          renderedCountEl.innerText = '0';
+        } else {
+          emptyStateEl.classList.add('hidden');
+          const startIndex = reset ? 0 : currentItems.length - payload.items.length;
+          renderItems(payload.items, startIndex, reset);
+        }
+      } finally {
+        loadingPage = false;
       }
+    }
+
+    // Перерисовать все загруженные карточки заново -- смена языка интерфейса
+    // не требует нового запроса к серверу, только перерисовку currentItems.
+    function renderCurrentItems(fromScratch) {
+      if (currentItems.length === 0) return;
+      renderItems(currentItems, 0, true);
     }
 
     async function toggleAdminRole() {
@@ -1040,7 +1089,7 @@
         isAdmin = false;
         showToast(t('toast.switchedToCommunity'));
         updateAdminUI();
-        applyFilter(true);
+        renderCurrentItems(true);
         return;
       }
       const secret = prompt(t('admin.prompt'));
@@ -1058,7 +1107,7 @@
         return;
       }
       updateAdminUI();
-      applyFilter(true);
+      renderCurrentItems(true);
     }
 
     async function changeNickname() {
@@ -1107,17 +1156,20 @@
         qBtn.classList.add('bg-amber-600', 'text-black', 'font-bold');
       }
       activeStatus = 'admin_queue';
-      applyFilter();
+      loadPage(true);
     }
 
-    function updateStats() {
-      const total = allData.length;
-      const adminApproved = allData.filter(d => d.status === 'admin_approved').length;
-      const hasSuggestions = allData.filter(d => d.suggestions && d.suggestions.length > 0).length;
-      const unvoted = allData.filter(d => d.status === 'pending' && (!d.suggestions || d.suggestions.length === 0) && d.up === 0 && d.down === 0).length;
-      
-      // Admin queue: items with community suggestions or votes that are NOT admin_approved
-      const adminQueueCount = allData.filter(d => d.status !== 'admin_approved' && ((d.suggestions && d.suggestions.length > 0) || d.up > 0 || d.score > 0)).length;
+    // Статистика (счётчики вкладок, прогресс-бар) считается сервером по
+    // ВСЕМ строкам сразу (см. query_items() в zen_server.py) и приходит с
+    // каждым /api/data -- клиент больше не хранит полный датасет, чтобы
+    // считать это самостоятельно.
+    let lastStats = null;
+
+    function updateStats(stats) {
+      if (stats) lastStats = stats;
+      if (!lastStats) return;
+      const { all: total, admin_approved: adminApproved, has_suggestions: hasSuggestions,
+              unvoted, admin_queue: adminQueueCount } = lastStats;
 
       document.getElementById('stat-all').innerText = `(${total.toLocaleString()})`;
       document.getElementById('stat-admin-queue').innerText = `(${adminQueueCount.toLocaleString()})`;
@@ -1177,6 +1229,22 @@
     }
 
     // 100% Robust Tokenizer & Clean Renderer
+    // Игровые ключи (особенно в labels.json) иногда сами являются целым
+    // предложением с переносами строк, кавычками, длинным тире и т.п.
+    // Раньше такой ключ подставлялся почти без экранирования прямо в
+    // onclick="...('...')" -- перевод строки/кавычка внутри ломала разметку
+    // атрибута и корёжила DOM карточки (и всех соседей после неё).
+    function escapeHtmlAttr(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\n/g, '&#10;')
+        .replace(/\r/g, '&#13;');
+    }
+
     function formatRichText(text, query, useMock = mockMode) {
       if (!text) return '';
 
@@ -1186,7 +1254,16 @@
         processedText = `[color=${openColorPrefix[1]}]${openColorPrefix[2]}[/color]`;
       }
 
-      const TOKEN_REGEX = /(\[color=(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]+|#?%s)\][\s\S]*?\[\/color\]|\[bgcolor=(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]+)\][\s\S]*?\[\/bgcolor\]|\[img[^\]]*\][\s\S]*?\[\/img\]|\[(ESC|OK|TAB|ENTER|SPACE|\!|\!\!)\]|\[\/?(?:b|i|u|center|font_size|color|bgcolor)[^\]]*\]|\{[0-9a-zA-Z_]+\}|%[-+0-9.]*[a-zA-Z%])/gi;
+      // Строка паттерна, а не скомпилированный регэксп -- renderTokens()
+      // рекурсивен (для вложенных [color=...][/color]), а регэксп с флагом
+      // /g хранит позицию сканирования в lastIndex. Один общий объект,
+      // используемый и внешним, и вложенным вызовом одновременно, портит
+      // lastIndex друг у друга -- внешний цикл после возврата из рекурсии
+      // продолжает с чужой (обычно куда меньшей) позиции и переразбирает
+      // тот же кусок текста заново, иногда бесконечно. Отсюда и падал
+      // браузер именно на разделе "Интерфейс" -- там много [color=...]
+      // строк с показателями колонии, в отличие от прозы "Сюжета".
+      const TOKEN_REGEX_SRC = '(\\[color=(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]+|#?%s)\\][\\s\\S]*?\\[\\/color\\]|\\[bgcolor=(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]+)\\][\\s\\S]*?\\[\\/bgcolor\\]|\\[img[^\\]]*\\][\\s\\S]*?\\[\\/img\\]|\\[(ESC|OK|TAB|ENTER|SPACE|\\!|\\!\\!)\\]|\\[\\/?(?:b|i|u|center|font_size|color|bgcolor)[^\\]]*\\]|\\{[0-9a-zA-Z_]+\\}|%[-+0-9.]*[a-zA-Z%])';
 
       function renderTokens(str) {
         if (!str) return '';
@@ -1196,7 +1273,7 @@
         let numIdx = 0;
 
         let match;
-        TOKEN_REGEX.lastIndex = 0;
+        const TOKEN_REGEX = new RegExp(TOKEN_REGEX_SRC, 'gi');
 
         while ((match = TOKEN_REGEX.exec(str)) !== null) {
           if (match.index > lastIdx) {
@@ -1343,118 +1420,10 @@
       }).join('');
     }
 
-    // Admin Priority Scoring: Items with community votes and proposals that are NOT yet admin-approved rank first!
-    function getAdminPriorityScore(item) {
-      const isApproved = item.status === 'admin_approved';
-      const suggCount = item.suggestions ? item.suggestions.length : 0;
-      const voteScore = item.score || 0;
-      const suggVotes = (item.suggestions || []).reduce((acc, s) => acc + (s.score || 0), 0);
-      
-      const activity = (suggCount * 25) + (voteScore * 5) + (suggVotes * 3) + (item.up * 4);
-      
-      const category = (!isApproved && activity > 0) ? 0 : (!isApproved ? 1 : 2);
-      return { category, activity };
-    }
-
-    // Power Search & Filter Logic
-    function applyFilter(preserveLimit = false) {
-      if (!preserveLimit) {
-        renderedLimit = 50;
-      }
-      const rawQ = searchQuery.toLowerCase().trim();
-
-      let targetField = 'all';
-      let hasVarFilter = false;
-      let hasColorFilter = false;
-      let hasSuggFilter = false;
-      let hasDiffFilter = false;
-      let cleanQ = rawQ;
-
-      if (cleanQ.startsWith('!ru ')) {
-        targetField = 'ru';
-        cleanQ = cleanQ.substring(4).trim();
-      } else if (cleanQ.startsWith('!en ')) {
-        targetField = 'en';
-        cleanQ = cleanQ.substring(4).trim();
-      } else if (cleanQ.startsWith('!key ')) {
-        targetField = 'key';
-        cleanQ = cleanQ.substring(5).trim();
-      }
-
-      if (cleanQ.includes('has:var')) {
-        hasVarFilter = true;
-        cleanQ = cleanQ.replace('has:var', '').trim();
-      }
-      if (cleanQ.includes('has:color')) {
-        hasColorFilter = true;
-        cleanQ = cleanQ.replace('has:color', '').trim();
-      }
-      if (cleanQ.includes('has:sugg')) {
-        hasSuggFilter = true;
-        cleanQ = cleanQ.replace('has:sugg', '').trim();
-      }
-      if (cleanQ.includes('has:diff')) {
-        hasDiffFilter = true;
-        cleanQ = cleanQ.replace('has:diff', '').trim();
-      }
-
-      filteredData = allData.filter(item => {
-        if (activeStatus === 'admin_queue') {
-          // Items with community activity waiting for Admin decision
-          const hasActivity = (item.suggestions && item.suggestions.length > 0) || item.score > 0 || item.up > 0;
-          if (item.status === 'admin_approved' || !hasActivity) return false;
-        } else if (activeStatus === 'admin_approved') {
-          if (item.status !== 'admin_approved') return false;
-        } else if (activeStatus === 'has_suggestions') {
-          if (!item.suggestions || item.suggestions.length === 0) return false;
-        } else if (activeStatus === 'unvoted') {
-          if (item.status !== 'pending' || (item.suggestions && item.suggestions.length > 0) || item.up > 0 || item.down > 0) return false;
-        }
-
-        if (activeComponent !== 'all' && item.comp !== activeComponent) return false;
-
-        if (hasVarFilter && !(item.ru.includes('%') || item.ru.includes('{'))) return false;
-        if (hasColorFilter && !item.color_tagged) return false;
-        if (hasSuggFilter && (!item.suggestions || item.suggestions.length === 0)) return false;
-        if (hasDiffFilter && (!item.history || item.history.length === 0)) return false;
-
-        if (!cleanQ) return true;
-
-        if (targetField === 'ru') return item.ru.toLowerCase().includes(cleanQ);
-        if (targetField === 'en') return item.en.toLowerCase().includes(cleanQ);
-        if (targetField === 'key') return item.key.toLowerCase().includes(cleanQ);
-
-        return (
-          item.ru.toLowerCase().includes(cleanQ) ||
-          item.en.toLowerCase().includes(cleanQ) ||
-          item.key.toLowerCase().includes(cleanQ) ||
-          (item.reviewed_by && item.reviewed_by.includes(cleanQ))
-        );
-      });
-
-      // Special sorting for Admin Queue
-      if (activeStatus === 'admin_queue') {
-        filteredData.sort((a, b) => {
-          const scoreA = getAdminPriorityScore(a);
-          const scoreB = getAdminPriorityScore(b);
-          if (scoreA.category !== scoreB.category) return scoreA.category - scoreB.category;
-          return scoreB.activity - scoreA.activity;
-        });
-      }
-
-      totalFilteredEl.innerText = filteredData.length.toLocaleString();
-      updateBatchApproveVisibility();
-
-      if (filteredData.length === 0) {
-        itemsContainer.innerHTML = '';
-        emptyStateEl.classList.remove('hidden');
-        renderedCountEl.innerText = '0';
-        return;
-      }
-
-      emptyStateEl.classList.add('hidden');
-      renderItems(0, renderedLimit);
-    }
+    // Фильтрация, сортировка "Очереди на утверждение" и пагинация теперь
+    // считаются сервером (см. query_items() в zen_server.py) -- клиент
+    // просто просит нужную страницу через loadPage(true) при смене
+    // раздела/статуса/поиска.
 
     function copyKey(keyText) {
       navigator.clipboard.writeText(keyText).then(() => {
@@ -1462,35 +1431,19 @@
       });
     }
 
-    // CSV Export of Current Filtered View
+    // CSV Export -- \u0441\u0435\u0440\u0432\u0435\u0440 \u0441\u0430\u043c \u0441\u043e\u0431\u0438\u0440\u0430\u0435\u0442 \u0438 \u043e\u0442\u0434\u0430\u0451\u0442 \u0444\u0430\u0439\u043b \u043f\u043e \u0442\u0435\u043a\u0443\u0449\u0438\u043c
+    // comp/status/q (\u0441\u043c. /api/export_csv \u0432 zen_server.py); \u043a\u043b\u0438\u0435\u043d\u0442 \u0431\u043e\u043b\u044c\u0448\u0435
+    // \u043d\u0435 \u0441\u0442\u0440\u043e\u0438\u0442 CSV \u0438\u0437 \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e \u043d\u0430\u043a\u043e\u043f\u043b\u0435\u043d\u043d\u044b\u0445 \u0441\u0442\u0440\u043e\u043a -- \u0438\u0445 \u0442\u0430\u043c \u043f\u0440\u043e\u0441\u0442\u043e \u043d\u0435\u0442,
+    // \u043d\u0430 \u043a\u043b\u0438\u0435\u043d\u0442\u0435 \u0442\u043e\u043b\u044c\u043a\u043e \u0437\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u0430\u044f \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430, \u0430 \u043d\u0435 \u0432\u0435\u0441\u044c \u0444\u0438\u043b\u044c\u0442\u0440 \u0446\u0435\u043b\u0438\u043a\u043e\u043c.
     function exportToCSV() {
-      if (filteredData.length === 0) {
+      if (currentTotal === 0) {
         alert(t('export.noData'));
         return;
       }
-      const rows = [
-        ['Component', 'Status', 'Key', 'English', 'Russian', 'Score', 'Warnings']
-      ];
-      filteredData.forEach(item => {
-        rows.push([
-          item.comp_name,
-          item.status,
-          item.key,
-          item.en,
-          item.ru,
-          item.score || 0,
-          (item.qa_warnings || []).join('; ')
-        ]);
+      const params = new URLSearchParams({
+        comp: activeComponent, status: activeStatus, q: searchQuery,
       });
-      
-      const csvContent = rows.map(r => r.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
-      const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `DeadReckoning_Translation_${activeComponent}_${activeStatus}_${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
+      window.location.href = '/api/export_csv?' + params.toString();
       showToast(t('toast.csvExported'));
     }
 
@@ -1500,7 +1453,7 @@
         alert(t('batch.adminOnly'));
         return;
       }
-      const unapproved = filteredData.filter(d => d.status !== 'admin_approved');
+      const unapproved = currentItems.filter(d => d.status !== 'admin_approved');
       if (unapproved.length === 0) {
         alert(t('batch.allApproved'));
         return;
@@ -1517,8 +1470,7 @@
         });
         item.status = 'admin_approved';
       }
-      updateStats();
-      applyFilter(true);
+      await loadPage(true);
       showToast(t('toast.batchApproved', { n: unapproved.length }));
     }
 
@@ -1533,16 +1485,15 @@
         mainLayout.classList.remove('max-w-7xl');
         mainLayout.classList.add('max-w-5xl');
       }
-      applyFilter(true);
+      renderCurrentItems(true);
       showToast(isSplitView ? t('toast.splitViewOn') : t('toast.splitViewOff'));
     };
 
-    function renderItems(start, limit) {
-      const chunk = filteredData.slice(start, limit);
+    function renderItems(chunk, startIndex, replace) {
       let html = '';
 
       chunk.forEach((item, idx) => {
-        const globalIdx = start + idx;
+        const globalIdx = startIndex + idx;
         const isAdminApproved = item.status === 'admin_approved';
         const isEdited = item.status === 'edited';
 
@@ -1606,8 +1557,8 @@
                 ${clauseBadge}
                 ${qaBadge}
                 ${eventBtn}
-                <span class="font-mono text-gray-400 text-[11px] truncate max-w-xs md:max-w-sm ml-1 cursor-pointer hover:text-white transition flex items-center gap-1" title="${t('card.copyKeyTitle')}" onclick="copyKey('${item.key.replace(/'/g, "\\'")}')">
-                  ${item.key}
+                <span class="font-mono text-gray-400 text-[11px] truncate max-w-xs md:max-w-sm ml-1 cursor-pointer hover:text-white transition flex items-center gap-1" title="${t('card.copyKeyTitle')}" onclick="copyKey(this.dataset.key)" data-key="${escapeHtmlAttr(item.key)}">
+                  ${escapeHtmlAttr(item.key)}
                   <svg class="w-3 h-3 text-gray-500 hover:text-gray-300 inline opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </span>
               </div>
@@ -1703,8 +1654,8 @@
                   <div class="p-3 bg-[#0d1117] border border-amber-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div class="flex-1 min-w-[220px]">
                       <div class="text-white font-medium text-sm leading-relaxed">${formatRichText(s.text, '', false)}</div>
-                      ${s.comment ? `<div class="text-[11px] text-zen-muted mt-1 bg-[#161b22] px-2 py-0.5 rounded inline-block">💬 <i>${s.comment}</i></div>` : ''}
-                      <div class="text-[10px] text-gray-500 mt-1 font-mono">${s.author} · ${s.created_at}</div>
+                      ${s.comment ? `<div class="text-[11px] text-zen-muted mt-1 bg-[#161b22] px-2 py-0.5 rounded inline-block">💬 <i>${escapeHtmlAttr(s.comment)}</i></div>` : ''}
+                      <div class="text-[10px] text-gray-500 mt-1 font-mono">${escapeHtmlAttr(s.author)} · ${s.created_at}</div>
                     </div>
                     <div class="flex items-center gap-2">
                       <button onclick="voteSuggestion(${item.id}, '${s.id}', 1)" class="px-2.5 py-1 ${s.user_vote === 1 ? 'bg-amber-600 text-black font-bold' : 'bg-[#21262d] text-zen-muted hover:text-white'} rounded-lg border border-[#30363d] font-mono text-xs flex items-center gap-1.5 transition" title="${t('card.supportTitle')}">
@@ -1764,19 +1715,19 @@
         `;
       });
 
-      if (start === 0) {
+      if (replace) {
         itemsContainer.innerHTML = html;
       } else {
         itemsContainer.insertAdjacentHTML('beforeend', html);
       }
 
-      renderedCountEl.innerText = Math.min(limit, filteredData.length).toLocaleString();
+      renderedCountEl.innerText = currentItems.length.toLocaleString();
     }
 
     function setFocusIndex(idx) {
       currentFocusedIndex = idx;
       document.querySelectorAll('.zen-card').forEach(c => c.classList.remove('active-focused-card'));
-      const item = filteredData[currentFocusedIndex];
+      const item = currentItems[currentFocusedIndex];
       if (item) {
         const card = document.getElementById(`card-${item.id}`);
         if (card) card.classList.add('active-focused-card');
@@ -1785,7 +1736,7 @@
 
     // Zen Focus Mode Logic
     function openFocusMode() {
-      if (filteredData.length === 0) return;
+      if (currentItems.length === 0) return;
       focusModal.classList.remove('hidden');
       updateFocusCard();
     }
@@ -1795,11 +1746,11 @@
     }
 
     function updateFocusCard() {
-      const item = filteredData[currentFocusedIndex];
+      const item = currentItems[currentFocusedIndex];
       if (!item) return;
 
       focusCompName.innerText = item.comp_name;
-      focusCounter.innerText = t('focus.of', { i: currentFocusedIndex + 1, n: filteredData.length.toLocaleString() });
+      focusCounter.innerText = t('focus.of', { i: currentFocusedIndex + 1, n: currentItems.length.toLocaleString() });
       focusEnText.innerHTML = `<span class="text-gray-500 font-semibold uppercase text-[11px] block mb-1">${t('focus.original')}</span> ${formatRichText(item.en, '', false)}`;
       focusRuText.innerHTML = formatRichText(item.ru, '');
 
@@ -1819,8 +1770,11 @@
       }
     }
 
-    function nextFocusCard() {
-      if (currentFocusedIndex < filteredData.length - 1) {
+    async function nextFocusCard() {
+      if (currentFocusedIndex >= currentItems.length - 1 && currentItems.length < currentTotal) {
+        await loadPage(false); // догрузить ещё строк, если Zen Фокус дошёл до конца загруженного
+      }
+      if (currentFocusedIndex < currentItems.length - 1) {
         currentFocusedIndex++;
         updateFocusCard();
         highlightFocusedCard();
@@ -1836,7 +1790,7 @@
     }
 
     async function approveFocusCard() {
-      const item = filteredData[currentFocusedIndex];
+      const item = currentItems[currentFocusedIndex];
       if (!item) return;
       if (isAdmin) {
         await toggleReview(item.id);
@@ -1848,14 +1802,14 @@
 
     // Visual Diff History Modal
     function openDiffModal(id) {
-      const item = allData.find(d => d.id === id);
+      const item = currentItems.find(d => d.id === id);
       if (!item || !item.history || item.history.length === 0) return;
 
       diffModalKey.innerText = item.key;
       diffModalBody.innerHTML = item.history.map((h, hIdx) => `
         <div class="p-3.5 bg-[#0d1117] border border-[#30363d] rounded-lg space-y-2.5">
           <div class="flex items-center justify-between text-[11px] text-zen-muted border-b border-[#30363d]/50 pb-1.5">
-            <span class="font-mono text-gray-400">${t('diff.version', { n: hIdx + 1 })} · ${h.date} (${h.actor})</span>
+            <span class="font-mono text-gray-400">${t('diff.version', { n: hIdx + 1 })} · ${h.date} (${escapeHtmlAttr(h.actor)})</span>
           </div>
           <div class="text-xs text-gray-200 leading-relaxed font-normal p-2 bg-[#161b22]/50 rounded border border-[#30363d]/40">
             ${computeWordDiff(h.old, h.new)}
@@ -1880,7 +1834,7 @@
 
     // Stats Modal
     function openStatsModal() {
-      const total = allData.length;
+      if (!lastStats) return;
       const comps = ['narrative', 'labels', 'extra', 'epilogue', 'remap', 'gdc-literal-fixes'];
 
       let html = `
@@ -1897,9 +1851,9 @@
       `;
 
       comps.forEach(c => {
-        const cItems = allData.filter(d => d.comp === c);
-        const cTotal = cItems.length;
-        const cApproved = cItems.filter(d => d.status === 'admin_approved').length;
+        const cStats = lastStats.by_component[c] || { total: 0, admin_approved: 0 };
+        const cTotal = cStats.total;
+        const cApproved = cStats.admin_approved;
         const cPct = cTotal > 0 ? ((cApproved / cTotal) * 100).toFixed(1) : 0;
 
         html += `
@@ -1928,13 +1882,13 @@
     toggleMockBtn.onclick = () => {
       mockMode = !mockMode;
       mockBtnText.innerText = mockMode ? t('mock.btnLive') : t('mock.btnCode');
-      applyFilter(true);
+      renderCurrentItems(true);
       showToast(mockMode ? t('toast.mockOn') : t('toast.mockOff'));
     };
 
     // Toggle Review Status (Admin Master Approval)
     async function toggleReview(id) {
-      const item = allData.find(d => d.id === id);
+      const item = currentItems.find(d => d.id === id);
       if (!item) return;
 
       const isCurrentlyApproved = item.status === 'admin_approved';
@@ -1951,13 +1905,9 @@
           body: JSON.stringify({ uid: item.uid })
         });
         const data = await res.json();
-        if (data.status === 'ok') {
-          item.status = 'admin_approved';
-        }
-
-        updateStats();
-        applyFilter(true);
-        if (item.status === 'admin_approved') {
+        const wasApproved = data.status === 'ok';
+        await loadPage(true);
+        if (wasApproved) {
           showToast(t('toast.lineApproved'));
         }
       } catch (err) {
@@ -1967,7 +1917,7 @@
 
     // 1-IP Community Voting (Thumbs Up / Down)
     async function vote(id, val) {
-      const item = allData.find(d => d.id === id);
+      const item = currentItems.find(d => d.id === id);
       if (!item) return;
 
       try {
@@ -1977,14 +1927,13 @@
           body: JSON.stringify({ uid: item.uid, vote: val })
         });
         const data = await res.json();
-        
+
         item.up = data.up;
         item.down = data.down;
         item.score = data.score;
         item.user_vote = data.user_vote;
 
-        updateStats();
-        applyFilter(true);
+        renderCurrentItems(true);
         if (data.user_vote === 1) {
           showToast(t('toast.voteUp'));
         } else if (data.user_vote === -1) {
@@ -1998,7 +1947,7 @@
     }
 
     async function voteSuggestion(id, sugId, voteVal) {
-      const item = allData.find(d => d.id === id);
+      const item = currentItems.find(d => d.id === id);
       if (!item) return;
       try {
         await fetch('/api/vote_suggestion', {
@@ -2006,18 +1955,14 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ uid: item.uid, sug_id: sugId, vote: voteVal })
         });
-
-        const res = await fetch('/api/data');
-        allData = (await res.json()).items;
-        updateStats();
-        applyFilter(true);
+        await loadPage(true);
       } catch (err) {
         alert(t('error.voteSuggestion') + err.message);
       }
     }
 
     async function acceptSuggestion(id, sugId) {
-      const item = allData.find(d => d.id === id);
+      const item = currentItems.find(d => d.id === id);
       if (!item) return;
       if (!confirm('👑 ' + t('suggest.acceptConfirm'))) return;
       try {
@@ -2027,25 +1972,25 @@
           body: JSON.stringify({ uid: item.uid, sug_id: sugId })
         });
         showToast(t('toast.suggestionAccepted'));
-
-        const res = await fetch('/api/data');
-        allData = (await res.json()).items;
-        updateStats();
-        applyFilter(true);
+        await loadPage(true);
       } catch (err) {
         alert(t('error.accept') + err.message);
       }
     }
 
     // Story Event Context Modal Logic
-    function openEventModal(id) {
-      const currentItem = allData.find(d => d.id === id);
+    async function openEventModal(id) {
+      const currentItem = currentItems.find(d => d.id === id);
       if (!currentItem || !currentItem.event_id) return;
 
       const eventId = currentItem.event_id;
+      const currentUid = currentItem.uid;
       modalEventId.innerText = eventId;
-      const eventItems = allData.filter(d => d.event_id === eventId || d.key.startsWith(eventId));
-      
+      // Строки-соседи по событию (заголовок + все выборы) не обязаны быть
+      // среди загруженных currentItems -- запрашиваем их отдельно.
+      const res = await fetch('/api/event_siblings?event_id=' + encodeURIComponent(eventId));
+      const eventItems = (await res.json()).items;
+
       const titleItem = eventItems.find(d => d.event_role === 'title' || d.key.endsWith('_title'));
       const msgItem = eventItems.find(d => d.event_role === 'message' || d.key.endsWith('_message'));
       const choices = {};
@@ -2086,7 +2031,7 @@
 
       Object.keys(choices).sort().forEach(num => {
         const ch = choices[num];
-        const isCurrent = (ch.log && ch.log.id === id) || (ch.label && ch.label.id === id);
+        const isCurrent = (ch.log && ch.log.uid === currentUid) || (ch.label && ch.label.uid === currentUid);
 
         modalHtml += `
           <div class="p-3.5 bg-[#0d1117] border ${isCurrent ? 'border-brand-500/80 bg-brand-950/20' : 'border-[#30363d]'} rounded-lg space-y-2">
@@ -2151,7 +2096,7 @@
     }
 
     async function saveEdit(id) {
-      const item = allData.find(d => d.id === id);
+      const item = currentItems.find(d => d.id === id);
       const card = document.getElementById(`card-${id}`);
       if (!item || !card) return;
 
@@ -2172,10 +2117,7 @@
         });
         const respData = await res.json();
 
-        const dataRes = await fetch('/api/data');
-        allData = (await dataRes.json()).items;
-        updateStats();
-        applyFilter(true);
+        await loadPage(true);
 
         showToast(t('toast.suggestionSentFromCard'));
       } catch (err) {
@@ -2203,7 +2145,7 @@
       }
       clearTimeout(searchDebounce);
       searchDebounce = setTimeout(() => {
-        applyFilter();
+        loadPage(true);
       }, 50);
     };
 
@@ -2215,21 +2157,20 @@
       searchInput.value = '';
       searchQuery = '';
       clearSearchBtn.classList.add('hidden');
-      applyFilter();
+      loadPage(true);
       searchInput.focus();
     }
 
     function clearAllFilters() {
       activeStatus = 'all';
       activeComponent = 'all';
-      clearSearchQuery();
       document.querySelectorAll('.status-btn, .comp-btn').forEach(b => {
         b.classList.remove('bg-brand-600', 'bg-amber-600', 'text-white', 'text-black', 'font-bold');
         b.classList.add('bg-[#21262d]', 'text-zen-muted');
       });
       document.querySelector('.status-btn[data-status="all"]').classList.add('bg-brand-600', 'text-white');
       document.querySelector('.comp-btn[data-comp="all"]').classList.add('bg-brand-600', 'text-white');
-      applyFilter();
+      clearSearchQuery();
     }
 
     // Status Filter buttons
@@ -2247,7 +2188,7 @@
         btn.classList.remove('bg-[#21262d]', 'text-zen-muted');
 
         activeStatus = btn.dataset.status;
-        applyFilter();
+        loadPage(true);
       };
     });
 
@@ -2262,7 +2203,7 @@
         btn.classList.remove('bg-[#21262d]', 'text-zen-muted');
 
         activeComponent = btn.dataset.comp;
-        applyFilter();
+        loadPage(true);
       };
     });
 
@@ -2309,10 +2250,8 @@
       requestAnimationFrame(() => {
         scrollTicking = false;
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-          if (renderedLimit < filteredData.length) {
-            const nextLimit = renderedLimit + 50;
-            renderItems(renderedLimit, nextLimit);
-            renderedLimit = nextLimit;
+          if (currentItems.length < currentTotal) {
+            loadPage(false);
           }
         }
       });
@@ -2354,7 +2293,7 @@
         return;
       }
 
-      if (!isInputActive && filteredData.length > 0) {
+      if (!isInputActive && currentItems.length > 0) {
         if (e.key === 'z' || e.key === 'Z') {
           openFocusMode();
           return;
@@ -2367,21 +2306,21 @@
 
         if (e.key === 'v' || e.key === 'V' || e.code === 'Space') {
           e.preventDefault();
-          const item = filteredData[currentFocusedIndex];
+          const item = currentItems[currentFocusedIndex];
           if (item) {
             if (isAdmin) {
               toggleReview(item.id);
             } else {
               vote(item.id, 1);
             }
-            if (currentFocusedIndex < filteredData.length - 1) {
+            if (currentFocusedIndex < currentItems.length - 1) {
               currentFocusedIndex++;
               highlightFocusedCard();
             }
           }
         } else if (e.key === 'j' || e.key === 'ArrowDown') {
           e.preventDefault();
-          if (currentFocusedIndex < filteredData.length - 1) {
+          if (currentFocusedIndex < currentItems.length - 1) {
             currentFocusedIndex++;
             highlightFocusedCard();
           }
@@ -2393,7 +2332,7 @@
           }
         } else if (e.key === 'e' || e.key === 'E') {
           e.preventDefault();
-          const item = filteredData[currentFocusedIndex];
+          const item = currentItems[currentFocusedIndex];
           if (item) startEdit(item.id);
         }
       }
@@ -2401,7 +2340,7 @@
 
     function highlightFocusedCard() {
       document.querySelectorAll('.zen-card').forEach(c => c.classList.remove('active-focused-card'));
-      const item = filteredData[currentFocusedIndex];
+      const item = currentItems[currentFocusedIndex];
       if (item) {
         const card = document.getElementById(`card-${item.id}`);
         if (card) {

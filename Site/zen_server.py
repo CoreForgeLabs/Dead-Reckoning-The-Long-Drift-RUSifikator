@@ -1,3 +1,4 @@
+import collections
 import http.server
 import socketserver
 import json
@@ -87,6 +88,122 @@ def parse_event_info(key):
     if m:
         return m.group(1), m.group(2)
     return "", ""
+
+ParsedQuery = collections.namedtuple(
+    "ParsedQuery", ["target_field", "has_var", "has_color", "has_sugg", "has_diff", "clean_q"])
+
+
+def parse_query(raw_q):
+    """Разобрать поисковую строку: !ru/!en/!key ограничивает поле поиска,
+    has:var/has:color/has:sugg/has:diff -- модификаторы-фильтры. Портировано
+    1-в-1 из прежней клиентской applyFilter() в zen_index.html."""
+    q = (raw_q or "").lower().strip()
+    target_field = "all"
+    for prefix, field, cut in (("!ru ", "ru", 4), ("!en ", "en", 4), ("!key ", "key", 5)):
+        if q.startswith(prefix):
+            target_field = field
+            q = q[cut:].strip()
+            break
+
+    has_var = "has:var" in q
+    q = q.replace("has:var", "").strip()
+    has_color = "has:color" in q
+    q = q.replace("has:color", "").strip()
+    has_sugg = "has:sugg" in q
+    q = q.replace("has:sugg", "").strip()
+    has_diff = "has:diff" in q
+    q = q.replace("has:diff", "").strip()
+
+    return ParsedQuery(target_field, has_var, has_color, has_sugg, has_diff, q)
+
+
+def item_matches(item, status, comp, parsed):
+    if status == "admin_queue":
+        has_activity = bool(item["suggestions"]) or item["score"] > 0 or item["up"] > 0
+        if item["status"] == "admin_approved" or not has_activity:
+            return False
+    elif status == "admin_approved":
+        if item["status"] != "admin_approved":
+            return False
+    elif status == "has_suggestions":
+        if not item["suggestions"]:
+            return False
+    elif status == "unvoted":
+        if (item["status"] != "pending" or item["suggestions"]
+                or item["up"] > 0 or item["down"] > 0):
+            return False
+
+    if comp != "all" and item["comp"] != comp:
+        return False
+
+    if parsed.has_var and not ("%" in item["ru"] or "{" in item["ru"]):
+        return False
+    if parsed.has_color and not item["color_tagged"]:
+        return False
+    if parsed.has_sugg and not item["suggestions"]:
+        return False
+    if parsed.has_diff and not item["history"]:
+        return False
+
+    if not parsed.clean_q:
+        return True
+
+    ru_l, en_l, key_l = item["ru"].lower(), item["en"].lower(), item["key"].lower()
+    if parsed.target_field == "ru":
+        return parsed.clean_q in ru_l
+    if parsed.target_field == "en":
+        return parsed.clean_q in en_l
+    if parsed.target_field == "key":
+        return parsed.clean_q in key_l
+    return parsed.clean_q in ru_l or parsed.clean_q in en_l or parsed.clean_q in key_l
+
+
+def admin_priority_score(item):
+    is_approved = item["status"] == "admin_approved"
+    sugg_count = len(item["suggestions"])
+    vote_score = item["score"]
+    sugg_votes = sum(s.get("score", 0) for s in item["suggestions"])
+    activity = sugg_count * 25 + vote_score * 5 + sugg_votes * 3 + item["up"] * 4
+    category = 0 if (not is_approved and activity > 0) else (1 if not is_approved else 2)
+    return (category, -activity)
+
+
+def query_items(items, comp, status, q, offset, limit):
+    """Отфильтровать/отсортировать/постранично нарезать items -- то же, что
+    раньше делал applyFilter()+renderItems() над ПОЛНЫМ allData в браузере.
+    Возвращает (страница, всего_подходит, глобальная_статистика).
+
+    Глобальная статистика (счётчики вкладок статуса, прогресс-бар) всегда
+    считается по ВСЕМ items, независимо от текущего comp/status/q -- так же,
+    как раньше updateStats() в JS игнорировала активные фильтры раздела."""
+    parsed = parse_query(q)
+    matched = [it for it in items if item_matches(it, status, comp, parsed)]
+    if status == "admin_queue":
+        matched.sort(key=admin_priority_score)
+
+    total = len(matched)
+    page = matched[offset:offset + limit]
+
+    global_stats = {
+        "all": len(items),
+        "admin_approved": sum(1 for it in items if it["status"] == "admin_approved"),
+        "has_suggestions": sum(1 for it in items if it["suggestions"]),
+        "unvoted": sum(1 for it in items if it["status"] == "pending"
+                       and not it["suggestions"] and it["up"] == 0 and it["down"] == 0),
+        "admin_queue": sum(1 for it in items if it["status"] != "admin_approved"
+                            and (it["suggestions"] or it["up"] > 0 or it["score"] > 0)),
+    }
+
+    by_component = {}
+    for it in items:
+        c = by_component.setdefault(it["comp"], {"total": 0, "admin_approved": 0})
+        c["total"] += 1
+        if it["status"] == "admin_approved":
+            c["admin_approved"] += 1
+    global_stats["by_component"] = by_component
+
+    return page, total, global_stats
+
 
 def load_all_data(viewer_token):
     con = zen_store.connect(DB_PATH)
@@ -200,9 +317,28 @@ class ZenHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         if parsed.path == "/api/data":
-            data = load_all_data(self.identity["token"])
+            # Пагинация + фильтрация на сервере -- раньше клиент получал и
+            # держал в памяти ВСЕ 13k+ строк на каждой загрузке, что роняло
+            # вкладку браузера по памяти при переключении разделов.
+            qs = urllib.parse.parse_qs(parsed.query)
+            comp = qs.get("comp", ["all"])[0]
+            status = qs.get("status", ["all"])[0]
+            q = qs.get("q", [""])[0]
+            try:
+                offset = max(0, int(qs.get("offset", ["0"])[0]))
+            except ValueError:
+                offset = 0
+            try:
+                limit = min(200, max(1, int(qs.get("limit", ["50"])[0])))
+            except ValueError:
+                limit = 50
+
+            all_items = load_all_data(self.identity["token"])
+            page, total, stats = query_items(all_items, comp, status, q, offset, limit)
             data_with_identity = {
-                "items": data,
+                "items": page,
+                "total": total,
+                "stats": stats,
                 "identity": {
                     "nickname": self.identity["nickname"],
                     "is_admin": self.is_admin_request,
@@ -215,6 +351,55 @@ class ZenHandler(http.server.SimpleHTTPRequestHandler):
             self.send_identity_cookie_if_new()
             self.end_headers()
             self.wfile.write(payload)
+            return
+
+        if parsed.path == "/api/event_siblings":
+            # Модалка "Событие" показывает весь квест целиком (заголовок +
+            # все выборы) -- этим строкам-соседям нужен полный список
+            # событий, который клиент больше не хранит целиком.
+            qs = urllib.parse.parse_qs(parsed.query)
+            event_id = qs.get("event_id", [""])[0]
+            all_items = load_all_data(self.identity["token"])
+            siblings = [it for it in all_items
+                        if it["event_id"] == event_id or it["key"].startswith(event_id)]
+            payload = json.dumps({"items": siblings}, ensure_ascii=False).encode("utf-8")
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if parsed.path == "/api/export_csv":
+            # CSV раньше строился в браузере из filteredData -- теперь клиент
+            # не держит весь отфильтрованный список, поэтому CSV собирает и
+            # отдаёт сервер напрямую, без прохода через память вкладки.
+            qs = urllib.parse.parse_qs(parsed.query)
+            comp = qs.get("comp", ["all"])[0]
+            status = qs.get("status", ["all"])[0]
+            q = qs.get("q", [""])[0]
+            all_items = load_all_data(self.identity["token"])
+            matched, _, _ = query_items(all_items, comp, status, q, 0, len(all_items))
+
+            import csv
+            buf = io.StringIO()
+            writer = csv.writer(buf)
+            writer.writerow(["Component", "Status", "Key", "English", "Russian", "Score", "Warnings"])
+            for it in matched:
+                writer.writerow([
+                    it["comp_name"], it["status"], it["key"], it["en"], it["ru"],
+                    it["score"], "; ".join(it["qa_warnings"]),
+                ])
+            csv_bytes = ("﻿" + buf.getvalue()).encode("utf-8")
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header(
+                "Content-Disposition",
+                f"attachment; filename=DeadReckoning_Translation_{comp}_{status}_"
+                f"{datetime.now().strftime('%Y%m%d')}.csv")
+            self.send_header("Content-Length", str(len(csv_bytes)))
+            self.end_headers()
+            self.wfile.write(csv_bytes)
             return
 
         if parsed.path == "/api/backup":

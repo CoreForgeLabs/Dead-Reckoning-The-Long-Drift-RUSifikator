@@ -633,6 +633,9 @@
         updateAdminUI();
         const res = await fetch('/api/data');
         const payload = await res.json();
+        if (!res.ok || payload.status === 'error') {
+          throw new Error(payload.message || `HTTP ${res.status}`);
+        }
         allData = payload.items;
         isAdmin = payload.identity.is_admin;
         currentNickname = payload.identity.nickname;

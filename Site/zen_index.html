@@ -148,7 +148,7 @@
       <div class="flex items-center gap-2 text-xs">
         
         <!-- Interface Language Toggle -->
-        <button onclick="setLang(lang === 'ru' ? 'en' : 'ru')" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1 font-mono font-bold text-xs" data-i18n-title="lang.title">
+        <button onclick="toggleLang()" class="px-2.5 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white border border-[#30363d] transition flex items-center gap-1 font-mono font-bold text-xs" data-i18n-title="lang.title">
           🌐 <span id="langBtnText">EN</span>
         </button>
 
@@ -759,6 +759,9 @@
         'edit.charCount': 'Символов: {n}',
         'error.status': 'Ошибка обновления статуса: ',
         'card.insertVarTitle': 'Вставить переменную',
+        'card.editSaveHint': 'сохранить',
+        'card.editCancel': 'Отмена',
+        'card.editSaveSubmit': '💡 Сохранить и отправить',
       },
       en: {
         'brand.badge': 'Community Proofreading',
@@ -950,6 +953,9 @@
         'edit.charCount': 'Characters: {n}',
         'error.status': 'Error updating status: ',
         'card.insertVarTitle': 'Insert variable',
+        'card.editSaveHint': 'to save',
+        'card.editCancel': 'Cancel',
+        'card.editSaveSubmit': '💡 Save and submit',
       },
     };
     let lang = localStorage.getItem('zen_lang') || 'ru';
@@ -974,6 +980,10 @@
       applyStaticI18n();
       updateAdminUI();
       if (typeof applyFilter === 'function' && allData.length) applyFilter(true);
+    }
+
+    function toggleLang() {
+      setLang(lang === 'ru' ? 'en' : 'ru');
     }
 
     // Lore Glossary Terms
@@ -1760,7 +1770,7 @@
               <div class="edit-form hidden mt-3 pt-3 border-t border-[#30363d]">
                 ${itemVars.length > 0 ? `
                   <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-zen-muted">
-                    <span class="text-gray-500 text-[11px]">Вставить переменную:</span>
+                    <span class="text-gray-500 text-[11px]">${t('suggest.insertVar')}</span>
                     ${itemVars.map(v => `
                       <button type="button" onclick="insertVarAtCursor(${item.id}, '${v}')" class="px-2 py-0.5 rounded bg-[#21262d] hover:bg-brand-900 hover:text-brand-300 text-sky-400 border border-sky-500/30 font-mono text-[11px] transition shadow-sm" title="${t('card.insertVarTitle')}">
                         + ${v}
@@ -1775,16 +1785,16 @@
                 >${item.ru}</textarea>
                 <div class="flex items-center justify-between mt-2.5">
                   <div class="flex items-center gap-2 text-xs text-zen-muted">
-                    <span class="edit-counter font-mono text-[11px]">Символов: ${item.ru.length}</span>
+                    <span class="edit-counter font-mono text-[11px]">${t('edit.charCount', { n: item.ru.length })}</span>
                     <span>·</span>
-                    <kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-gray-300 font-mono text-[11px]">Ctrl+Enter</kbd> сохранить
+                    <kbd class="px-1.5 py-0.5 bg-[#21262d] rounded text-gray-300 font-mono text-[11px]">Ctrl+Enter</kbd> ${t('card.editSaveHint')}
                   </div>
                   <div class="flex items-center gap-2">
                     <button onclick="cancelEdit(${item.id})" class="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-zen-muted hover:text-white rounded-md text-xs transition">
-                      Отмена
+                      ${t('card.editCancel')}
                     </button>
                     <button onclick="saveEdit(${item.id})" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-md text-xs transition shadow-sm">
-                      👑 Сохранить и утвердить
+                      ${t('card.editSaveSubmit')}
                     </button>
                   </div>
                 </div>
@@ -2393,15 +2403,23 @@
       });
     }
 
-    // Infinite Scrolling
+    // Infinite Scrolling -- rAF-gated so the layout-forcing offsetHeight read
+    // and potential 50-card render happen at most once per frame, not on
+    // every one of the dozens of scroll events a single gesture fires.
+    let scrollTicking = false;
     window.onscroll = () => {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-        if (renderedLimit < filteredData.length) {
-          const nextLimit = renderedLimit + 50;
-          renderItems(renderedLimit, nextLimit);
-          renderedLimit = nextLimit;
+      if (scrollTicking) return;
+      scrollTicking = true;
+      requestAnimationFrame(() => {
+        scrollTicking = false;
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+          if (renderedLimit < filteredData.length) {
+            const nextLimit = renderedLimit + 50;
+            renderItems(renderedLimit, nextLimit);
+            renderedLimit = nextLimit;
+          }
         }
-      }
+      });
     };
 
     // Keyboard Hotkeys

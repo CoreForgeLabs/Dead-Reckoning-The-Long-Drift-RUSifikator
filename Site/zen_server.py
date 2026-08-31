@@ -417,6 +417,10 @@ class ZenHandler(http.server.SimpleHTTPRequestHandler):
         self.send_error(404, "Not found")
 
 if __name__ == "__main__":
-    print(f"Starting Zen Standalone Dashboard Server on http://0.0.0.0:{PORT}...")
-    with socketserver.ThreadingTCPServer(("0.0.0.0", PORT), ZenHandler) as httpd:
+    # По умолчанию только localhost -- наружу сайт смотрит через reverse proxy
+    # (Caddy/nginx) с TLS. Слушать 0.0.0.0 напрямую -- значит отдавать HTTP
+    # без шифрования (включая /api/admin_login) любому в интернете.
+    host = os.environ.get("ZEN_HOST", "127.0.0.1")
+    print(f"Starting Zen Standalone Dashboard Server on http://{host}:{PORT}...")
+    with socketserver.ThreadingTCPServer((host, PORT), ZenHandler) as httpd:
         httpd.serve_forever()

@@ -259,7 +259,11 @@ class ZenHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(content)
             return
 
-        super().do_GET()
+        # Никакой раздачи произвольных файлов из рабочей директории --
+        # SimpleHTTPRequestHandler.do_GET() отдал бы .env, .git и что угодно
+        # ещё, лежащее рядом с zen_server.py. Все нужные маршруты уже
+        # обработаны выше; всё остальное -- честный 404.
+        self.send_error(404, "Not found")
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
